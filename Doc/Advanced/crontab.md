@@ -26,7 +26,7 @@ class ClearExpiredToken implements JobInterface
         return '*/5 * * * *';
     }
 
-    public function run(): int
+    public function run(): mixed
     {
         // return TokenModel::query()
         //     ->where('expired_at', time(), '<')
@@ -42,6 +42,18 @@ class ClearExpiredToken implements JobInterface
     }
 }
 ```
+
+最新版 `JobInterface::run()` 的返回类型是 `mixed`，实现类应保持相同签名：
+
+```php
+public function run(): mixed
+{
+    // 可以返回受影响行数、业务结果、布尔值或 null。
+    return null;
+}
+```
+
+返回值类型由具体任务决定；如果任务不需要返回结果，可以直接返回 `null`。任务执行失败时应抛出异常，让组件进入 `onException()`，不要只返回 `false` 后静默结束。
 
 Cron 表达式包含五段：
 
@@ -93,7 +105,9 @@ php easyswoole crontab resume --taskName=ClearExpiredToken
 php easyswoole crontab setCrontabRule --taskName=ClearExpiredToken --taskRule='*/10 * * * *'
 ```
 
-非默认运行模式需要追加 `--mode=produce`。`stop`、`resume` 和 `setCrontabRule` 修改的是当前运行实例中的状态，服务重启后仍以代码中的 `crontabRule()` 为准。
+`show` 支持 `--watch=2` 持续刷新。`stop`、`resume` 和 `runJobNow` 省略 `--taskName` 时，会在交互式终端中打开多选界面；自动化脚本必须显式指定任务名。
+
+非默认运行模式需要追加 `--mode=produce`。`stop`、`resume` 和 `setCrontabRule` 修改的是当前运行实例中的状态，服务重启后仍以代码中的 `crontabRule()` 为准。完整参数、交互选择和状态字段参见[Crontab 管理命令](/Advanced/ManagementCommand/crontab.md)。
 
 ## 避免重复和堆积
 

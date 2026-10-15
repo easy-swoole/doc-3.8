@@ -24,7 +24,7 @@ php easyswoole.php server status
 php easyswoole.php server stop
 
 # 强制停止
-php easyswoole.php server stop -force
+php easyswoole.php server stop --force
 ```
 
 `reload` 向主进程发送 `SIGUSR1`，主要用于更新 Worker 中加载的业务代码。主进程级配置、监听端口和部分启动期资源发生变化时，应完整重启服务。
@@ -47,7 +47,7 @@ php easyswoole.php
 php easyswoole.php server
 ```
 
-框架还注册了 `install`、`process` 和 `crontab` 等命令。具体可用 action 和 option 应以当前命令输出为准。
+框架还注册了 `install`、`process`、`task` 和 `crontab` 等命令。服务、进程、异步任务和 Crontab 的完整管理方法参见[管理命令](/Advanced/ManagementCommand/server.md)。具体可用 Action 和 Option 应以当前命令输出为准。
 
 ## 部署注意
 

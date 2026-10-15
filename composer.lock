@@ -147,16 +147,16 @@
         },
         {
             "name": "easyswoole/bridge",
-            "version": "2.1.3",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/bridge.git",
-                "reference": "e7da16bd8d11d62001363e3adcf978714e44b17f"
+                "reference": "4dd4fa39e89fc4c6e21c76f49f464b0392986647"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/bridge/zipball/e7da16bd8d11d62001363e3adcf978714e44b17f",
-                "reference": "e7da16bd8d11d62001363e3adcf978714e44b17f",
+                "url": "https://api.github.com/repos/easy-swoole/bridge/zipball/4dd4fa39e89fc4c6e21c76f49f464b0392986647",
+                "reference": "4dd4fa39e89fc4c6e21c76f49f464b0392986647",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,8 @@
                 "php": ">=8.1"
             },
             "require-dev": {
-                "easyswoole/swoole-ide-helper": "^1.0"
+                "easyswoole/swoole-ide-helper": "^1.0",
+                "phpunit/phpunit": "^10.5"
             },
             "type": "library",
             "autoload": {
@@ -195,9 +196,9 @@
             ],
             "support": {
                 "issues": "https://github.com/easy-swoole/bridge/issues",
-                "source": "https://github.com/easy-swoole/bridge/tree/2.1.3"
+                "source": "https://github.com/easy-swoole/bridge/tree/2.2.1"
             },
-            "time": "2026-07-18T11:20:42+00:00"
+            "time": "2026-10-15T09:02:42+00:00"
         },
         {
             "name": "easyswoole/command",
@@ -251,16 +252,16 @@
         },
         {
             "name": "easyswoole/component",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/component.git",
-                "reference": "60ce506adbda778c23d941c6e4f766eaaccfc6bd"
+                "reference": "0d8218e63b31c1021b18f8fabbb7dedad84c18ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/component/zipball/60ce506adbda778c23d941c6e4f766eaaccfc6bd",
-                "reference": "60ce506adbda778c23d941c6e4f766eaaccfc6bd",
+                "url": "https://api.github.com/repos/easy-swoole/component/zipball/0d8218e63b31c1021b18f8fabbb7dedad84c18ff",
+                "reference": "0d8218e63b31c1021b18f8fabbb7dedad84c18ff",
                 "shasum": ""
             },
             "require": {
@@ -299,9 +300,9 @@
             ],
             "support": {
                 "issues": "https://github.com/easy-swoole/component/issues",
-                "source": "https://github.com/easy-swoole/component/tree/2.5.1"
+                "source": "https://github.com/easy-swoole/component/tree/2.5.2"
             },
-            "time": "2026-10-14T09:22:39+00:00"
+            "time": "2026-10-15T02:49:22+00:00"
         },
         {
             "name": "easyswoole/config",
@@ -358,16 +359,16 @@
         },
         {
             "name": "easyswoole/crontab",
-            "version": "1.2.3",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/crontab.git",
-                "reference": "e5b03394580c034f1b9c4f8418e3918cabc1a234"
+                "reference": "e2e01538a9ae975fc3aa687639a24b68e9daba95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/crontab/zipball/e5b03394580c034f1b9c4f8418e3918cabc1a234",
-                "reference": "e5b03394580c034f1b9c4f8418e3918cabc1a234",
+                "url": "https://api.github.com/repos/easy-swoole/crontab/zipball/e2e01538a9ae975fc3aa687639a24b68e9daba95",
+                "reference": "e2e01538a9ae975fc3aa687639a24b68e9daba95",
                 "shasum": ""
             },
             "require": {
@@ -376,7 +377,8 @@
                 "php": ">=8.1"
             },
             "require-dev": {
-                "easyswoole/swoole-ide-helper": "^1.3"
+                "easyswoole/swoole-ide-helper": "^1.3",
+                "phpunit/phpunit": "^10.5"
             },
             "type": "library",
             "autoload": {
@@ -397,9 +399,9 @@
             "description": "easyswoole extension tool library",
             "support": {
                 "issues": "https://github.com/easy-swoole/crontab/issues",
-                "source": "https://github.com/easy-swoole/crontab/tree/1.2.3"
+                "source": "https://github.com/easy-swoole/crontab/tree/1.3.2"
             },
-            "time": "2026-07-18T16:29:08+00:00"
+            "time": "2026-10-15T16:08:33+00:00"
         },
         {
             "name": "easyswoole/easyswoole",
@@ -407,12 +409,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/easyswoole.git",
-                "reference": "db711009dd7ac4f61c209ce0c531fca07e5e2773"
+                "reference": "e21ca4424f19859af86c0a8c3d9bcc28f58a64b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/easyswoole/zipball/db711009dd7ac4f61c209ce0c531fca07e5e2773",
-                "reference": "db711009dd7ac4f61c209ce0c531fca07e5e2773",
+                "url": "https://api.github.com/repos/easy-swoole/easyswoole/zipball/e21ca4424f19859af86c0a8c3d9bcc28f58a64b6",
+                "reference": "e21ca4424f19859af86c0a8c3d9bcc28f58a64b6",
                 "shasum": ""
             },
             "require": {
@@ -466,7 +468,7 @@
                 "issues": "https://github.com/easy-swoole/easyswoole/issues",
                 "source": "https://github.com/easy-swoole/easyswoole/tree/3.x"
             },
-            "time": "2026-10-10T04:16:09+00:00"
+            "time": "2026-10-15T16:13:52+00:00"
         },
         {
             "name": "easyswoole/http",
