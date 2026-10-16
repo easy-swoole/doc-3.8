@@ -49,6 +49,23 @@ php easyswoole.php server
 
 框架还注册了 `install`、`process`、`task` 和 `crontab` 等命令。服务、进程、异步任务和 Crontab 的完整管理方法参见[管理命令](/Advanced/ManagementCommand/server.md)。具体可用 Action 和 Option 应以当前命令输出为准。
 
+## 组件进程重载
+
+常驻组件进程有各自的重载入口：
+
+```bash
+# 重载 easyswoole/task 的 Task Worker
+php easyswoole.php task reload --mode=produce
+
+# 重载 Crontab Scheduler 和 Worker
+php easyswoole.php crontab reload --mode=produce
+
+# 重启指定的普通自定义进程
+php easyswoole.php process kill --mode=produce --pid=12345
+```
+
+`crontab reload` 默认发送 `SIGTERM`，并同时重建当前实例的全部 Crontab 进程。它支持 `--force`，但没有滚动重载参数。Job 注册结构发生变化时仍需完整重启；具体边界参见[热重启](/Advanced/reload.md)。
+
 ## 部署注意
 
 - 不要并行启动两套使用相同端口和 PID 文件的实例。

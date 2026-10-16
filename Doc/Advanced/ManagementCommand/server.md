@@ -125,9 +125,9 @@ php easyswoole.php server status --mode=produce --watch=1.5
 php easyswoole.php server reload --mode=produce
 ```
 
-命令读取当前模式的 PID 文件，确认 Master 进程存在，然后向 Master 发送 `SIGUSR1`。Swoole 会替换 Worker 和 TaskWorker，但不会重新创建 Master、监听端口、自定义进程或整个 Server。
+命令读取当前模式的 PID 文件，确认 Master 进程存在，然后向 Master 发送 `SIGUSR1`。Swoole 会替换服务 Worker，但不会重新创建 Master、监听端口、自定义进程或整个 Server。
 
-普通控制器和 Worker 中加载的业务代码通常可以通过 reload 更新；监听端口、Worker 数量、Server 类型、`mainServerCreate()` 中的子服务和自定义进程发生变化时必须完整重启。详细原理参见[热重启](/Advanced/reload.md)。
+普通控制器和 Worker 中加载的业务代码通常可以通过 `server reload` 更新。`easyswoole/task` 创建的 Task Worker 及其加载代码应使用 `task reload` 更新；监听端口、Worker 数量、Server 类型、`mainServerCreate()` 中的子服务和普通自定义进程发生变化时必须完整重启。详细原理参见[热重启](/Advanced/reload.md)。
 
 命令提示信号已发送，仅表示 reload 已开始。发布脚本还应通过 `server status`、进程 PID、日志和健康检查确认新 Worker 已经就绪。
 

@@ -409,12 +409,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/easyswoole.git",
-                "reference": "e21ca4424f19859af86c0a8c3d9bcc28f58a64b6"
+                "reference": "1568b70ad006a72a31e335771bf96ea69606687d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/easyswoole/zipball/e21ca4424f19859af86c0a8c3d9bcc28f58a64b6",
-                "reference": "e21ca4424f19859af86c0a8c3d9bcc28f58a64b6",
+                "url": "https://api.github.com/repos/easy-swoole/easyswoole/zipball/1568b70ad006a72a31e335771bf96ea69606687d",
+                "reference": "1568b70ad006a72a31e335771bf96ea69606687d",
                 "shasum": ""
             },
             "require": {
@@ -468,7 +468,7 @@
                 "issues": "https://github.com/easy-swoole/easyswoole/issues",
                 "source": "https://github.com/easy-swoole/easyswoole/tree/3.x"
             },
-            "time": "2026-10-15T16:13:52+00:00"
+            "time": "2026-10-16T03:10:18+00:00"
         },
         {
             "name": "easyswoole/http",

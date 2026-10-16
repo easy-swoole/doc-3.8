@@ -10,7 +10,8 @@ crontab
 ├── resume             恢复指定任务
 ├── resumeAll          恢复全部任务
 ├── runJobNow          立即执行指定任务
-└── setCrontabRule     临时修改任务规则
+├── setCrontabRule     临时修改任务规则
+└── reload             重载 Crontab 相关进程
 ```
 
 任务类的定义和注册方式参见[Crontab](/Advanced/crontab.md)。所有命令都应传入和服务启动时相同的 `--mode`。
@@ -188,6 +189,100 @@ Crontab tasks (total: 1, running: 1, stopped: 0)
     Runs 1   Last run 2026-10-16 01:01:12
 ```
 
+## 重载 Crontab 进程
+
+发布了 Crontab 进程在运行阶段延迟加载的业务代码，或者需要重建调度器、Worker 及其连接时，可以执行：
+
+```bash
+php easyswoole.php crontab reload --mode=produce
+```
+
+命令会根据当前运行模式自动计算 Crontab 进程组。例如服务名为 `EasySwoole`、模式为 `produce` 时，目标组为：
+
+```text
+EasySwoole.produce.Crontab
+```
+
+该组通常包含：
+
+```text
+EasySwoole.produce.Crontab
+├── EasySwoole.produce.CrontabScheduler       调度进程
+├── EasySwoole.produce.CrontabWorker          普通任务 Worker
+└── EasySwoole.produce.CrontabWorker.任务名   特权任务独立 Worker
+```
+
+`reload` 内部复用 `process kill` 的筛选与信号逻辑，默认向组内全部进程发送 `SIGTERM`。Swoole Manager 会在旧进程退出后重新创建替代进程。
+
+输出示例：
+
+```text
+[SIGTERM] EasySwoole.produce.CrontabScheduler   PID 20101: signal sent
+[SIGTERM] EasySwoole.produce.CrontabWorker   PID 20102: signal sent
+```
+
+如果还注册了特权任务，输出中会继续列出对应的独立 Worker。PID 会随每次重载变化。
+
+当前实例没有注册任何 Crontab Job 时，不会创建 Crontab 进程，命令输出：
+
+```text
+not any process match
+```
+
+这不表示框架重载失败，而是当前运行模式下没有匹配 `SERVER_NAME.mode.Crontab` 进程组的目标。若预期已经注册任务，应检查 `--mode`、`SERVER_NAME`、注册代码和当前进程列表。
+
+### 重载后的状态
+
+新的 Scheduler 会根据服务启动时已经注册的 Job 重新建立调度表，因此以下运行时数据会重置：
+
+- `stop`、`stopAll` 设置的暂停状态。
+- `setCrontabRule` 临时修改的表达式。
+- `Runs`、`Last run`、`Last error` 等运行统计。
+- 下一次执行时间会按照 Job 的 `crontabRule()` 重新计算。
+
+如果某个任务在发布期间必须保持暂停，不要只依赖进程内的 `stop` 状态。应把开关持久化到配置中心、Redis 或数据库，并让任务执行前检查该开关；也可以在 reload 后重新执行 `stop`。
+
+### 哪些代码能够更新
+
+Job 在 `mainServerCreate()` 中通过 `new ClearExpiredToken()` 注册时，Job 类本身已经由主进程加载。`crontab reload` 只替换现有 Crontab 子进程，不会重新执行 `mainServerCreate()`，因此：
+
+- Job 的 `run()` 中首次自动加载的 Service、Repository 等独立业务类，可以随新 Worker 加载新版代码。
+- 已在 Master 中加载的 Job 类本身不能依赖此次 reload 更新。
+- 新增或删除 Job、修改注册方式、修改 Job 类中的 `jobName()` 或 `crontabRule()`，应完整重启服务。
+
+推荐让 Job 保持为稳定的调度壳，把实际业务放到独立类中：
+
+```php
+public function run(): mixed
+{
+    // CleanupExpiredTokenService 在 Crontab Worker 中首次使用时自动加载。
+    return (new \App\Service\CleanupExpiredTokenService())->run();
+}
+```
+
+详细的延迟加载原理参见[热重启：自定义进程的热重启](/Advanced/reload.md)。
+
+### 强制重载
+
+仅当 Crontab 进程失去响应且确认可以中断当前任务时使用：
+
+```bash
+php easyswoole.php crontab reload \
+    --mode=produce \
+    --force
+```
+
+也可以显式传入 `--force=true`；`--force=false` 仍使用 `SIGTERM`。强制模式会向所有 Crontab 进程发送 `SIGKILL`，不会执行正常清理，正在运行的任务可能只完成一部分。
+
+强制模式输出中的信号名会变为：
+
+```text
+[SIGKILL] EasySwoole.produce.CrontabScheduler   PID 20101: signal sent
+[SIGKILL] EasySwoole.produce.CrontabWorker   PID 20102: signal sent
+```
+
+`crontab reload` 当前没有滚动重载参数，会同时操作整个 Crontab 进程组。重载期间可能短暂没有调度器或可用 Worker，所以任务必须具备幂等性；严格依赖单次准点执行的业务还应增加持久化调度记录和补偿扫描。
+
 ## 交互操作的并发保护
 
 进入交互选择后，任务状态可能在用户确认前发生变化。框架会在真正执行前重新读取任务列表，并比较任务名、Rule 和停止状态；如果任务已经消失或变化，本次命令会终止，要求重新选择。
@@ -206,6 +301,8 @@ Crontab tasks (total: 1, running: 1, stopped: 0)
 | 恢复全部 | `crontab resumeAll --mode=produce` |
 | 立即运行 | `crontab runJobNow --mode=produce --taskName=任务名` |
 | 修改规则 | `crontab setCrontabRule --mode=produce --taskName=任务名 --taskRule='*/10 * * * *'` |
+| 重载进程 | `crontab reload --mode=produce` |
+| 强制重载 | `crontab reload --mode=produce --force` |
 
 表格中省略了统一前缀，完整命令需加：
 
@@ -217,3 +314,4 @@ php easyswoole.php
 
 - [Crontab 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Crontab.php)
 - [CrontabSelector](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/Selector/CrontabSelector.php)
+- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Process.php)

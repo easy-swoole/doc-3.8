@@ -91,7 +91,7 @@ class EasySwooleEvent implements Event
 }
 ```
 
-`jobName()` 在同一服务中必须唯一，重复注册会抛出异常。注册代码修改后需要重启服务。
+`jobName()` 在同一服务中必须唯一，重复注册会抛出异常。新增、删除 Job 或修改注册代码后需要完整重启服务。只修改 Job 在 `run()` 中延迟加载的独立业务类时，可以使用后文的 `crontab reload` 重建调度和执行进程。
 
 ## 管理定时任务
 
@@ -103,11 +103,29 @@ php easyswoole crontab runJobNow --taskName=ClearExpiredToken
 php easyswoole crontab stop --taskName=ClearExpiredToken
 php easyswoole crontab resume --taskName=ClearExpiredToken
 php easyswoole crontab setCrontabRule --taskName=ClearExpiredToken --taskRule='*/10 * * * *'
+php easyswoole crontab reload
 ```
 
 `show` 支持 `--watch=2` 持续刷新。`stop`、`resume` 和 `runJobNow` 省略 `--taskName` 时，会在交互式终端中打开多选界面；自动化脚本必须显式指定任务名。
 
-非默认运行模式需要追加 `--mode=produce`。`stop`、`resume` 和 `setCrontabRule` 修改的是当前运行实例中的状态，服务重启后仍以代码中的 `crontabRule()` 为准。完整参数、交互选择和状态字段参见[Crontab 管理命令](/Advanced/ManagementCommand/crontab.md)。
+非默认运行模式需要追加 `--mode=produce`。`stop`、`resume` 和 `setCrontabRule` 修改的是当前运行实例中的状态，服务重启或执行 `crontab reload` 后仍以启动时注册的 Job 配置为准。
+
+`crontab reload` 会同时重建 Scheduler、普通 Worker 和特权任务 Worker。Job 类在 `mainServerCreate()` 注册时已经由 Master 加载，因此推荐让 `run()` 只作为稳定入口，把实际业务放在子进程中首次加载的 Service 中：
+
+```php
+public function run(): mixed
+{
+    return (new \App\Service\CleanupExpiredTokenService())->run();
+}
+```
+
+这样部署新的 Service 代码后，可以执行：
+
+```bash
+php easyswoole crontab reload --mode=produce
+```
+
+如果修改的是 Job 类自身、新增或删除 Job、调整 `jobName()`、`crontabRule()` 或注册逻辑，仍然需要完整重启。完整参数、进程范围、状态重置和强制重载风险参见[Crontab 管理命令](/Advanced/ManagementCommand/crontab.md)。
 
 ## 避免重复和堆积
 

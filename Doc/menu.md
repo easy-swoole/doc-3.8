@@ -141,8 +141,19 @@
         - [Manager 与框架接入](/Library/Pool/manager.md)
         - [预热、检查与监控](/Library/Pool/maintenance.md)
         - [实践建议与常见问题](/Library/Pool/practice.md)
+    - 可信队列
+        - [安装与基本概念](/Library/Queue/index.md)
+        - [Redis 驱动](/Library/Queue/redis.md)
+        - [RabbitMQ 驱动](/Library/Queue/rabbitmq.md)
+        - [生产、消费与延迟任务](/Library/Queue/usage.md)
+        - [可信任务与框架接入](/Library/Queue/reliable.md)
     - 链路追踪
         - [安装与快速开始](/Library/Trace/index.md)
         - [调用链与状态](/Library/Trace/span.md)
         - [HTTP 跨服务传递](/Library/Trace/http.md)
         - [持久化与展示](/Library/Trace/storage.md)
+    - IpAccess
+        - [安装与组件选择](/Library/IpAccess/index.md)
+        - [IP 黑白名单](/Library/IpAccess/ip-access.md)
+        - [IP 与端口规则](/Library/IpAccess/ip-port-access.md)
+        - [框架接入与代理部署](/Library/IpAccess/integration.md)
