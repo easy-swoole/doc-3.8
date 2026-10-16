@@ -157,3 +157,8 @@
         - [IP 黑白名单](/Library/IpAccess/ip-access.md)
         - [IP 与端口规则](/Library/IpAccess/ip-port-access.md)
         - [框架接入与代理部署](/Library/IpAccess/integration.md)
+    - AccessPolicy
+        - [安装与基本概念](/Library/AccessPolicy/index.md)
+        - [路径规则与通配符](/Library/AccessPolicy/rules.md)
+        - [策略树与持久化](/Library/AccessPolicy/tree.md)
+        - [框架鉴权接入](/Library/AccessPolicy/integration.md)
