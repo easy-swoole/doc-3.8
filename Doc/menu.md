@@ -121,6 +121,18 @@
         - [发送文本与 HTML 邮件](/Client/Smtp/send.md)
         - [收件人、抄送与附件](/Client/Smtp/attachment.md)
         - [响应、异常与常见问题](/Client/Smtp/error.md)
+    - Consul 客户端
+        - [安装与连接](/Client/Consul/index.md)
+        - [KV 配置读写](/Client/Consul/kv.md)
+        - [服务注册与发现](/Client/Consul/service.md)
+        - [Session 与其他端点](/Client/Consul/session.md)
+        - [认证、响应与异常](/Client/Consul/response.md)
+    - Etcd 客户端
+        - [安装与连接](/Client/Etcd/index.md)
+        - [KV 读写与范围查询](/Client/Etcd/kv.md)
+        - [租约与临时键](/Client/Etcd/lease.md)
+        - [认证与权限](/Client/Etcd/auth.md)
+        - [响应、异常与 TLS](/Client/Etcd/response.md)
 - 厂商 SDK
     - Pay 支付
         - [安装与配置](/VendorSdk/Pay/index.md)

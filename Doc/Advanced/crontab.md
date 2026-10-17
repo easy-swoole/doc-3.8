@@ -93,6 +93,73 @@ class EasySwooleEvent implements Event
 
 `jobName()` 在同一服务中必须唯一，重复注册会抛出异常。新增、删除 Job 或修改注册代码后需要完整重启服务。只修改 Job 在 `run()` 中延迟加载的独立业务类时，可以使用后文的 `crontab reload` 重建调度和执行进程。
 
+## 普通任务与特权任务
+
+普通任务实现 `JobInterface`，所有普通任务由同一个 `CrontabWorker` 进程接收并执行。特权任务实现 `PrivilegeJobInterface`；这个接口继承 `JobInterface`，没有增加新的方法。框架会为**每个特权任务**额外创建一个以任务名命名的独立 Worker，并将该任务的定时触发和 `runJobNow` 请求发往这个 Worker。
+
+| 项目 | 普通任务 | 特权任务 |
+| --- | --- | --- |
+| 实现接口 | `JobInterface` | `PrivilegeJobInterface` |
+| 执行进程 | 共用 `CrontabWorker` | 每个任务有独立的 `CrontabWorker.任务名` |
+| 通信 Socket | 共用普通任务 Socket | 每个任务有专用 Socket |
+| 调度规则与管理命令 | 使用相同的 Cron 规则、`show`、`stop`、`resume` 等命令 | 相同 |
+| 进程资源 | 任务之间共享一个 Worker 的进程资源 | 每个任务额外占用一个进程及其资源 |
+
+这里的“特权”表示**独立执行进程**，不是 Linux root 权限，也不会改变进程用户、提高调度优先级或自动保证任务只运行一次。两类任务都由同一个 Scheduler 调度，执行 `crontab reload` 时都会被重建。
+
+例如，报表任务使用独立进程可以避免它与普通清理任务共用 Worker 的内存和进程级状态。新建 `App/Crontab/GenerateDailyReport.php`：
+
+```php
+<?php
+
+namespace App\Crontab;
+
+use EasySwoole\Crontab\PrivilegeJobInterface;
+
+class GenerateDailyReport implements PrivilegeJobInterface
+{
+    public function jobName(): string
+    {
+        return 'GenerateDailyReport';
+    }
+
+    public function crontabRule(): string
+    {
+        return '0 2 * * *';
+    }
+
+    public function run(): mixed
+    {
+        // 将业务类留到执行进程中首次加载，便于发布后重载 Crontab 进程。
+        return (new \App\Service\DailyReportService())->generate();
+    }
+
+    public function onException(\Throwable $throwable): void
+    {
+        throw $throwable;
+    }
+}
+```
+
+`DailyReportService` 是示例业务类，需要在项目中自行实现。然后在前面的 `EasySwooleEvent::mainServerCreate()` 中同时注册两个任务：
+
+```php
+use App\Crontab\GenerateDailyReport;
+
+Crontab::getInstance()->register(new ClearExpiredToken());
+Crontab::getInstance()->register(new GenerateDailyReport());
+```
+
+服务重启后，进程结构类似：
+
+```text
+EasySwoole.<mode>.CrontabScheduler                  调度全部任务
+EasySwoole.<mode>.CrontabWorker                     执行普通任务
+EasySwoole.<mode>.CrontabWorker.GenerateDailyReport  执行该特权任务
+```
+
+普通任务数量较多但资源消耗较轻时，先使用普通任务。只有某个任务需要独立的进程资源或与其他任务隔离时，再使用特权任务。专用 Worker 仍可能因任务自身执行过久、重复触发或多实例部署而产生并发与重复执行问题；需要业务锁、超时或幂等处理时仍须自行实现。
+
 ## 管理定时任务
 
 服务启动后可以在项目根目录执行：
