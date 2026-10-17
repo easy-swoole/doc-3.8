@@ -1,6 +1,6 @@
 # 路由基础
 
-本章从一个刚创建好的 EasySwoole 项目开始，完成第一条显式路由。完成后访问 `GET /hello`，服务器会返回 JSON。
+本章接着[第一个 HTTP 接口](/QuickStart/helloworld.md)往下做：保留已有的 `Hello.php`，在安装器生成的 `Router.php` 中增加一条显式路由。完成后访问 `GET /api/hello?name=Swoole`，会执行 `Hello::greet()`。
 
 ## 路由写在哪里
 
@@ -11,16 +11,16 @@ EasySwoole 会在 HTTP 控制器命名空间中寻找名为 `Router` 的类。�
 ├── App/
 │   └── HttpController/
 │       ├── Index.php
+│       ├── Hello.php       ← 上一章创建的控制器
 │       └── Router.php       ← 在这里统一定义路由
-├── Config/
 ├── vendor/
 ├── composer.json
-└── easyswoole
+└── easyswoole.php
 ```
 
 文件名、类名和命名空间必须分别是 `Router.php`、`Router`、`App\\HttpController`。Linux 区分大小写。
 
-如果项目中还没有这个文件，请新建 `App/HttpController/Router.php`：
+安装器已经生成 `App/HttpController/Router.php`。入门练习可把这个文件**完整替换**为以下代码。它会移除安装器自带的 `/router` 和 `/closure` 演示路由，不影响 `/` 欢迎页和 `/hello` 的自动映射；如果你的项目已在 `Router.php` 中定义业务路由，就只把 `get('/api/hello', '/Hello/greet')` 那一行加进现有的 `initialize()`，不要覆盖业务路由。
 
 ```php
 <?php
@@ -34,69 +34,46 @@ class Router extends AbstractRouter
 {
     public function initialize(RouteCollector $routeCollector): void
     {
-        $routeCollector->get('/hello', '/Index/hello');
+        $routeCollector->get('/api/hello', '/Hello/greet');
     }
 }
 ```
 
-不需要在其他配置文件中再次注册 `Router`。框架第一次分发 HTTP 请求时，会自动查找 `App\\HttpController\\Router`，实例化它并调用 `initialize()`。
+不需要在其他配置文件中再次注册 `Router`。框架会自动查找 `App\\HttpController\\Router`，实例化它并调用 `initialize()`。
 
-## 创建路由对应的控制器
+## 路由与控制器如何对应
 
-上面的 `'/Index/hello'` 不是文件路径，而是“控制器/Action”。编辑 `App/HttpController/Index.php`：
+上面的 `'/Hello/greet'` 不是文件路径，而是“控制器/Action”。它对应上一章创建的 `App/HttpController/Hello.php` 中的 `greet()`，这里不需要改动控制器。
 
-```php
-<?php
-
-namespace App\HttpController;
-
-use EasySwoole\Http\AbstractInterface\Controller;
-
-class Index extends Controller
-{
-    public function index(): void
-    {
-        $this->response()->write('EasySwoole');
-    }
-
-    public function hello(): void
-    {
-        $this->writeJson(200, [
-            'message' => 'Hello EasySwoole',
-        ]);
-    }
-}
-```
 
 映射关系如下：
 
 ```text
-GET /hello
+GET /api/hello?name=Swoole
     ↓ Router.php 中匹配
-/Index/hello
+/Hello/greet
     ↓
-App\HttpController\Index::hello()
+App\HttpController\Hello::greet()
 ```
 
 ## 启动并验证
 
-在项目根目录执行：
+如果服务尚未运行，在第一个终端、项目根目录执行：
 
 ```bash
-php easyswoole server start
-curl -i http://127.0.0.1:9501/hello
+php easyswoole.php server start
 ```
 
-已经启动过服务并修改了路由时，执行：
+如果服务已经运行并且刚修改了 `Router.php`，先执行 `php easyswoole.php server reload`，不要再次启动服务。然后在第二个终端执行：
 
 ```bash
-php easyswoole server reload
+curl -i 'http://127.0.0.1:9501/api/hello?name=Swoole'
 ```
 
 预期响应包含：
 
 ```json
-{"code":200,"result":{"message":"Hello EasySwoole"},"msg":null}
+{"code":200,"result":{"message":"Hello Swoole"},"msg":null}
 ```
 
 ## 支持哪些 HTTP 方法
@@ -245,19 +222,19 @@ $routeCollector->get('/docs/{path:.+\\.md}', '/Document/read');
 
 ```php
 $this->setPathInfoMode(false);
-$routeCollector->get('/mode/test', '/Index/hello');
-$routeCollector->get('/mode/test.html', '/Index/helloHtml');
+$routeCollector->get('/mode/test', '/Hello/index');
+$routeCollector->get('/mode/test.html', '/Hello/greet');
 ```
 
 reload 后分别请求：
 
 ```bash
-php easyswoole server reload
+php easyswoole.php server reload
 curl -i http://127.0.0.1:9501/mode/test
 curl -i http://127.0.0.1:9501/mode/test.html
 ```
 
-两条路由应分别进入不同 Action。如果切换为 `true`，它们会被规范化到同一个 `/mode/test`，FastRoute 会把它们视为重复路由，因此不能同时注册。
+第一条应返回文本 `Hello EasySwoole`，第二条应返回 JSON。两个 Action 都在快速开始创建的 `Hello.php` 中。如果切换为 `true`，它们会被规范化到同一个 `/mode/test`，FastRoute 会把它们视为重复路由，因此不能同时注册。
 
 ## 自动映射和显式路由的区别
 

@@ -55,8 +55,8 @@ return [
 修改 Server 类型后应完整重启，不能只 reload Worker：
 
 ```bash
-php easyswoole server stop
-php easyswoole server start
+php easyswoole.php server stop
+php easyswoole.php server start
 ```
 
 ## 第二步：注册 WebSocket 事件

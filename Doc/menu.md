@@ -3,17 +3,12 @@
     - [环境要求](/QuickStart/environment.md)
     - [安装 Swoole](/QuickStart/installSw.md)
     - [安装框架](/QuickStart/install.md)
-    - [HelloWorld](/QuickStart/helloworld.md)
-    - [基础管理命令](/QuickStart/command.md)
+    - [第一个 HTTP 接口](/QuickStart/helloworld.md)
     - [配置文件](/QuickStart/config.md)
-    - [使用 systemd 管理服务](/QuickStart/systemd.md)
+    - [基础管理命令](/QuickStart/command.md)
     - [开发者必读](/QuickStart/notice.md)
     - [常见问题](/QuickStart/problem.md)
-- 框架设计
-    - [启动流程总览](/FrameworkDesign/index.md)
-    - [命令解析](/FrameworkDesign/command.md)
-    - [事件注册](/FrameworkDesign/event.md)
-    - [服务创建与启动](/FrameworkDesign/server.md)
+    - [使用 systemd 管理服务](/QuickStart/systemd.md)
 - HTTP 服务
     - 服务基础
         - [启动 HTTP 服务](/Http/Basics/start.md)
@@ -83,6 +78,11 @@
         - [Crontab 管理](/Advanced/ManagementCommand/crontab.md)
     - [自定义命令](/Advanced/command.md)
     - [自定义进程](/Advanced/process.md)
+- 框架设计
+    - [启动流程总览](/FrameworkDesign/index.md)
+    - [命令解析](/FrameworkDesign/command.md)
+    - [事件注册](/FrameworkDesign/event.md)
+    - [服务创建与启动](/FrameworkDesign/server.md)
 - 基础组件
     - [组件概览](/Component/index.md)
     - [单例模式](/Component/singleton.md)
@@ -157,12 +157,13 @@
         - [七牛云 Kodo](/VendorSdk/Oss/qiniu.md)
         - [腾讯云 COS](/VendorSdk/Oss/tencent.md)
 - 组件库
+    - [组件选型与阅读路线](/Library/index.md)
     - 连接池
         - [组件概览](/Library/Pool/index.md)
         - [连接对象与生命周期](/Library/Pool/object.md)
         - [连接池配置](/Library/Pool/config.md)
-        - [获取、归还与销毁](/Library/Pool/usage.md)
         - [Manager 与框架接入](/Library/Pool/manager.md)
+        - [获取、归还与销毁](/Library/Pool/usage.md)
         - [预热、检查与监控](/Library/Pool/maintenance.md)
         - [实践建议与常见问题](/Library/Pool/practice.md)
     - 可信队列

@@ -4,7 +4,7 @@
 
 ## 第一个控制器
 
-创建 `App/HttpController/Index.php`：
+沿用[第一个 HTTP 接口](/QuickStart/helloworld.md)中创建的 `App/HttpController/Hello.php`，不要覆盖安装模板自带的 `Index.php`。如果跳过了快速开始，可新建这个文件：
 
 ```php
 <?php
@@ -13,7 +13,7 @@ namespace App\HttpController;
 
 use EasySwoole\Http\AbstractInterface\Controller;
 
-class Index extends Controller
+class Hello extends Controller
 {
     public function index(): void
     {
@@ -25,8 +25,11 @@ class Index extends Controller
 请求：
 
 ```bash
-curl http://127.0.0.1:9501/
+php easyswoole.php server reload
+curl http://127.0.0.1:9501/Hello/index
 ```
+
+预期输出是 `Hello EasySwoole`。这里的 `/Hello/index` 分别对应类名 `Hello` 和公开方法 `index()`；如果你已按快速开始注册 `/api/hello`，也可访问 `http://127.0.0.1:9501/api/hello`。修改控制器文件后先执行 reload；如果服务尚未启动，请先按[启动 HTTP 服务](/Http/Basics/start.md)启动。
 
 ## 控制器里有什么
 

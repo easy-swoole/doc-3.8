@@ -31,6 +31,8 @@ use EasySwoole\Policy\PolicyNode;
 
 ## 最小示例
 
+在项目根目录新建 `policy-demo.php`，写入完整内容：
+
 ```php
 <?php
 
@@ -47,6 +49,8 @@ var_dump($policy->check('/article/read'));   // allow
 var_dump($policy->check('/article/delete')); // deny
 var_dump($policy->check('/article/create')); // unknown
 ```
+
+运行 `php policy-demo.php`，三行结果依次应为 `string(5) "allow"`、`string(4) "deny"`、`string(7) "unknown"`。这个例子不依赖登录系统或数据库，也不需要启动 HTTP 服务。
 
 路径开头和结尾的 `/` 会被忽略，因此 `article/read`、`/article/read` 与 `/article/read/` 表示同一条路径。路径大小写敏感，建议项目统一使用小写名称。
 

@@ -165,12 +165,12 @@ EasySwoole.<mode>.CrontabWorker.GenerateDailyReport  执行该特权任务
 服务启动后可以在项目根目录执行：
 
 ```bash
-php easyswoole crontab show
-php easyswoole crontab runJobNow --taskName=ClearExpiredToken
-php easyswoole crontab stop --taskName=ClearExpiredToken
-php easyswoole crontab resume --taskName=ClearExpiredToken
-php easyswoole crontab setCrontabRule --taskName=ClearExpiredToken --taskRule='*/10 * * * *'
-php easyswoole crontab reload
+php easyswoole.php crontab show
+php easyswoole.php crontab runJobNow --taskName=ClearExpiredToken
+php easyswoole.php crontab stop --taskName=ClearExpiredToken
+php easyswoole.php crontab resume --taskName=ClearExpiredToken
+php easyswoole.php crontab setCrontabRule --taskName=ClearExpiredToken --taskRule='*/10 * * * *'
+php easyswoole.php crontab reload
 ```
 
 `show` 支持 `--watch=2` 持续刷新。`stop`、`resume` 和 `runJobNow` 省略 `--taskName` 时，会在交互式终端中打开多选界面；自动化脚本必须显式指定任务名。
@@ -189,7 +189,7 @@ public function run(): mixed
 这样部署新的 Service 代码后，可以执行：
 
 ```bash
-php easyswoole crontab reload --mode=produce
+php easyswoole.php crontab reload --mode=produce
 ```
 
 如果修改的是 Job 类自身、新增或删除 Job、调整 `jobName()`、`crontabRule()` 或注册逻辑，仍然需要完整重启。完整参数、进程范围、状态重置和强制重载风险参见[Crontab 管理命令](/Advanced/ManagementCommand/crontab.md)。

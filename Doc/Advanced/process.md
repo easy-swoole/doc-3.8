@@ -251,9 +251,9 @@ protected function onSigTerm(): void
 服务启动后执行：
 
 ```bash
-php easyswoole process show
-php easyswoole process kill --pid=进程PID
-php easyswoole process kill --group=OrderConsumer
+php easyswoole.php process show
+php easyswoole.php process kill --pid=进程PID
+php easyswoole.php process kill --group=OrderConsumer
 ```
 
 默认使用 `SIGTERM`，组件会依次触发 `onSigTerm()` 和 `onShutDown()`。只有进程无法正常退出时才考虑 `--force`；强制终止不会给业务清理资源的机会。

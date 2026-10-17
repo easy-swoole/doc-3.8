@@ -2,7 +2,7 @@
 
 ## 修改代码为何没生效？
 
-EasySwoole 是常驻进程，开发时执行 `php easyswoole server reload`；进程级配置变化应完整重启。
+EasySwoole 是常驻进程，开发时执行 `php easyswoole.php server reload`；进程级配置变化应完整重启。
 
 ## 为什么请求之间会串数据？
 

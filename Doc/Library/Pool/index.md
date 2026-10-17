@@ -110,28 +110,33 @@ final class DemoPool extends AbstractPool
 }
 ```
 
-在协程中创建连接池并使用：
+最后在项目根目录新建 `pool-demo.php`。前两步的 `App/Pool/...` 文件会通过安装器配置的 `App\` 自动加载；这个脚本则需要显式加载 `vendor/autoload.php`：
 
 ```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
 use App\Pool\DemoConnection;
 use App\Pool\DemoPool;
 use EasySwoole\Pool\Config;
+use Swoole\Coroutine;
 
-$pool = new DemoPool(new Config([
-    'minObjectNum' => 2,
-    'maxObjectNum' => 10,
-]));
+Coroutine\run(function (): void {
+    $pool = new DemoPool(new Config([
+        'minObjectNum' => 0,
+        'maxObjectNum' => 10,
+    ]));
 
-go(function () use ($pool): void {
     $result = $pool->invoke(
         fn (DemoConnection $connection) => $connection->execute('ping')
     );
 
-    var_dump($result);
+    echo $result, PHP_EOL;
 });
 ```
 
-`invoke()` 会获取一个对象，把它传给回调，并在回调结束后自动归还。控制器中的一次性操作优先使用这种方式，可以避免遗漏归还。
+运行 `php pool-demo.php`，预期输出 `executed: ping`。这个演示对象不连接数据库或 Redis，所以不需要启动外部服务。`invoke()` 会获取一个对象，把它传给回调，并在回调结束后自动归还。控制器中的一次性操作优先使用这种方式，可以避免遗漏归还。接入框架时不要每次请求都 `new DemoPool()`；先按[Manager 与框架接入](/Library/Pool/manager.md)在全局初始化事件注册，再在控制器中获取。
 
 ## 学习顺序
 
@@ -139,6 +144,6 @@ go(function () use ($pool): void {
 
 1. [连接对象与生命周期](/Library/Pool/object.md)：理解池为什么需要四个生命周期方法。
 2. [连接池配置](/Library/Pool/config.md)：确定容量、等待时间和检查周期。
-3. [获取、归还与销毁](/Library/Pool/usage.md)：选择 `invoke()`、`defer()` 或 `getObj()`。
-4. [Manager 与框架接入](/Library/Pool/manager.md)：在框架全局初始化事件中注册连接池。
+3. [Manager 与框架接入](/Library/Pool/manager.md)：在框架全局初始化事件中注册连接池。
+4. [获取、归还与销毁](/Library/Pool/usage.md)：选择 `invoke()`、`defer()` 或 `getObj()`。
 5. [预热、检查与监控](/Library/Pool/maintenance.md)：处理冷启动、健康检查和状态观测。

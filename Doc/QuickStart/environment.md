@@ -14,6 +14,8 @@
 
 ## 检查环境
 
+在**准备运行 EasySwoole 的同一个终端**执行：
+
 ```bash
 php -v
 composer --version
@@ -21,7 +23,9 @@ php --ri swoole
 php -m | grep -E 'json|mbstring|swoole'
 ```
 
-也可以使用 PHP 检查关键版本：
+`php -v` 应显示 PHP 8.1 或更高；`php --ri swoole` 应能打印 Swoole 扩展信息且版本不低于 5.1。如果看到 `Extension 'swoole' not present`，先按[安装 Swoole](/QuickStart/installSw.md)处理，暂时不要继续 `composer require`。`mbstring` 是后续 Annotation 功能的推荐依赖；缺失时应先安装扩展再尝试对应章节。
+
+确认 Swoole 已加载后，也可以用 PHP 打印关键版本：
 
 ```bash
 php -r 'echo PHP_VERSION, PHP_EOL; echo swoole_version(), PHP_EOL;'
@@ -50,6 +54,8 @@ lsof -iTCP:9501 -sTCP:LISTEN
 ## 版本建议
 
 项目必须提交 `composer.lock`。升级框架、HTTP 或 Annotation 组件后，应重新执行接口测试，尤其关注路由、请求参数来源、上传文件和常驻内存行为。
+
+检查通过后，下一步是[安装框架](/QuickStart/install.md)。
 
 ## 源码依据
 

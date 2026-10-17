@@ -75,7 +75,7 @@ class StaticFile extends Controller
 验证：
 
 ```bash
-php easyswoole server reload
+php easyswoole.php server reload
 curl -i http://127.0.0.1:9501/assets/css/app.css
 curl -i http://127.0.0.1:9501/assets/../composer.json
 ```

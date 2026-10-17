@@ -156,8 +156,8 @@ class EasySwooleEvent implements Event
 修改 `EasySwooleEvent.php` 后需要完整重启服务：
 
 ```bash
-php easyswoole server stop
-php easyswoole server start
+php easyswoole.php server stop
+php easyswoole.php server start
 ```
 
 测试允许的 Host：

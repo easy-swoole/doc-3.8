@@ -240,7 +240,7 @@ Base::onRequest()
 修改代码后 reload：
 
 ```bash
-php easyswoole server reload
+php easyswoole.php server reload
 ```
 
 登录接口没有 Token 也可以访问：

@@ -21,12 +21,14 @@ class Router extends AbstractRouter
         // 将 FastRoute 匹配出的路径参数合并到 GET 参数。
         $this->parseParams(self::PARSE_PARAMS_IN_GET);
 
-        $routeCollector->get('/users/{id:\\d+}', '/User/detail');
+        // 保留上一章注册的路由；新增路由时不要覆盖已有规则。
+        $routeCollector->get('/api/hello', '/Hello/greet');
+        $routeCollector->get('/users/{id:\d+}', '/User/detail');
     }
 }
 ```
 
-`{id:\\d+}` 表示参数名是 `id`，并且只匹配数字：
+`{id:\d+}` 表示参数名是 `id`，并且只匹配数字：
 
 - `/users/42`：匹配，`id` 为 `42`。
 - `/users/abc`：不匹配，进入 404 处理。
@@ -65,9 +67,11 @@ class User extends Controller
 验证：
 
 ```bash
-php easyswoole server reload
+php easyswoole.php server reload
 curl http://127.0.0.1:9501/users/42
 ```
+
+预期返回的 JSON 中，`result.id` 为 `42`，`result.name` 为 `User 42`。在两个终端分别保持服务运行和执行 `curl`；如果得到 404，先检查 `Router.php` 的文件位置、路由是否已加入 `initialize()`，以及是否执行了 reload。
 
 ## 默认的 Context 模式
 
@@ -97,9 +101,9 @@ $id = (int) ($params['id'] ?? 0);
 FastRoute 的可选段必须放在路径末尾：
 
 ```php
-$routeCollector->get('/articles[/{page:\\d+}]', '/Article/index');
+$routeCollector->get('/articles[/{page:\d+}]', '/Article/index');
 $routeCollector->get(
-    '/teams/{teamId:\\d+}/members/{memberId:\\d+}',
+    '/teams/{teamId:\d+}/members/{memberId:\d+}',
     '/Team/member'
 );
 ```

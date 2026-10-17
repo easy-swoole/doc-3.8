@@ -45,7 +45,7 @@ ulimit -Hn  # hard nofile：普通用户可设置的上限
 ```text
 当前 Shell 的 ulimit
         ↓ 继承
-php easyswoole server start
+php easyswoole.php server start
         ↓ 继承
 EasySwoole Master → Manager → Worker/TaskWorker
 ```
@@ -59,7 +59,7 @@ EasySwoole Master → Manager → Worker/TaskWorker
 ```bash
 ulimit -n 200000
 ulimit -Sn
-php easyswoole server start
+php easyswoole.php server start
 ```
 
 如果出现 `ulimit: open files: cannot modify limit: Operation not permitted`，通常表示目标值超过当前硬限制。此时不要反复执行命令，应配置 PAM limits、systemd 或容器运行参数。

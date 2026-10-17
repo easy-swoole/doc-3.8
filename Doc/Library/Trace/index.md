@@ -87,7 +87,13 @@ Trace：一次完整请求
 
 ## 第一个调用链
 
+在项目根目录新建 `trace-demo.php`，写入下面的完整脚本：
+
 ```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
 use EasySwoole\Trace\Trace;
 use EasySwoole\Trace\Utility;
 
@@ -119,6 +125,8 @@ try {
 
 echo Utility::toTree($trace);
 ```
+
+运行 `php trace-demo.php`，应看到从 `http-request` 到 `query-user` 的四层树。实际 Trace ID、Span ID 和耗时每次都会不同；这里没有发起真实 HTTP 请求，也不需要启动服务。接下来的[调用链与状态](/Library/Trace/span.md)会展示带分支与状态的输出。
 
 形成的结构：
 

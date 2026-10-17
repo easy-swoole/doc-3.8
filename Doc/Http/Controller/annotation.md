@@ -155,7 +155,7 @@ $routeCollector->get('/admin/users', '/Admin/User/index');
 reload 后测试：
 
 ```bash
-php easyswoole server reload
+php easyswoole.php server reload
 
 curl -i http://127.0.0.1:9501/admin/users \
   -H 'Authorization: Bearer demo-admin-token' \

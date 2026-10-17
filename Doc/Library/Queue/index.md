@@ -50,7 +50,7 @@ Queue（持有驱动模板和当前节点 ID）
 
 ## 最小示例
 
-下面使用 Redis 单机驱动。代码必须在协程环境中执行：
+下面使用 Redis 单机驱动。先确认本机 Redis 已在 `127.0.0.1:6379` 运行，且 `php --ri redis` 与 `php --ri swoole` 均能显示扩展信息。然后在项目根目录新建 `queue-demo.php`，写入完整内容；代码必须在协程环境中执行：
 
 ```php
 <?php
@@ -93,6 +93,8 @@ array(1) {
   int(1001)
 }
 ```
+
+运行 `php queue-demo.php` 查看输出。`order` 是示例 topic；脚本会向它写入一条任务后立刻消费。若 Redis 有密码或不在本机，应先按[Redis 驱动](/Library/Queue/redis.md)调整连接配置，再运行脚本。
 
 ## 如何选择驱动
 

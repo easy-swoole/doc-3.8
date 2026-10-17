@@ -57,7 +57,7 @@ class RequestDemo extends Controller
 }
 ```
 
-在 `App/HttpController/Router.php` 注册：
+打开已有的 `App/HttpController/Router.php`，把下面三行加入 `initialize(RouteCollector $routeCollector)` 方法内部，保留文件里原有路由；不要把这三行保存为独立 PHP 文件。如果还没有 Router 文件，先完成[路由基础](/Http/Routing/index.md)。
 
 ```php
 $routeCollector->get('/request/query', '/RequestDemo/query');
@@ -68,12 +68,15 @@ $routeCollector->post('/request/json', '/RequestDemo/jsonBody');
 测试三种来源：
 
 ```bash
+php easyswoole.php server reload
 curl 'http://127.0.0.1:9501/request/query?page=2'
 curl -X POST http://127.0.0.1:9501/request/form -d 'name=Alice'
 curl -X POST http://127.0.0.1:9501/request/json \
   -H 'Content-Type: application/json' \
   -d '{"name":"Alice","age":20}'
 ```
+
+依次检查响应 JSON 的 `result`：应分别包含 `"page":2`、`"name":"Alice"`，以及 `"name":"Alice","age":20`。`writeJson()` 的完整响应还包含 `code` 和 `msg`。如果接口返回 404，确认路由已放进 `initialize()`，并在修改后 reload；服务未启动时，先按[启动 HTTP 服务](/Http/Basics/start.md)启动。
 
 ## JSON 语法错误
 

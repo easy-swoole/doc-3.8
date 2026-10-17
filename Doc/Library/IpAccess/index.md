@@ -30,6 +30,8 @@ use EasySwoole\IpAccess\IpPortAccess;
 
 ## 最小示例
 
+在项目根目录新建 `ip-access-demo.php`，写入完整内容：
+
 ```php
 <?php
 
@@ -45,6 +47,8 @@ var_dump($access->isAllowAccess('192.168.1.31')); // true
 var_dump($access->isAllowAccess('192.168.1.32')); // false
 var_dump($access->isAllowAccess('10.0.0.1'));     // true
 ```
+
+运行 `php ip-access-demo.php`，三行结果依次应为 `bool(true)`、`bool(false)`、`bool(true)`。这个例子只检查内存规则，不需要启动 EasySwoole HTTP 服务。
 
 这里最后一个结果是 `true`，因为两个类采用相同的默认策略：**没有命中任何规则时放行**。因此只配置白名单并不等于“除白名单外全部拒绝”。如果业务需要严格的仅白名单模式，应在应用层明确实现默认拒绝策略，不能误以为添加一条白名单后组件会自动拒绝其他地址。
 

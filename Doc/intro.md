@@ -1,21 +1,20 @@
 # EasySwoole 3.x
 
-EasySwoole 是运行在 Swoole 之上的常驻内存 PHP 框架，面向 HTTP API、WebSocket、TCP/UDP 服务以及需要协程并发能力的长期运行程序。
+EasySwoole 是运行在 Swoole 之上的常驻内存 PHP 框架，可以开发 HTTP API、WebSocket、TCP/UDP 服务和长期运行的任务。本教程先带你启动一个 HTTP 服务并写出第一个接口；其他组件可以等接口跑通后再学。
 
 与传统 PHP-FPM 的“每次请求重新加载应用”不同，EasySwoole 会启动主进程、Manager 进程、Worker 进程和可选的 Task Worker。应用代码在 Worker 生命周期内持续驻留，因此能够减少重复加载开销，同时也要求开发者正确处理全局状态、连接资源和热重载。
 
-## 当前文档基线
+## 第一次使用，按这个顺序读
 
-本文档于 **2026-10-14** 根据以下 GitHub 最新分支核对：
+1. [环境要求](/QuickStart/environment.md)：确认命令行 PHP 和 Swoole 可用。
+2. [安装框架](/QuickStart/install.md)：创建项目，启动安装器自带的欢迎页。
+3. [第一个 HTTP 接口](/QuickStart/helloworld.md)：创建 `Hello.php`，用 `curl` 验证文本和 JSON 响应。
+4. [配置文件](/QuickStart/config.md)：知道端口在哪里改，为什么改完要重启。
+5. [路由基础](/Http/Routing/index.md)：需要自定义 URL 时再学习显式路由。
 
-| 组件 | 分支/版本 | 核对提交 |
-| --- | --- | --- |
-| `easy-swoole/easyswoole` | `3.x` | `db711009` |
-| `easy-swoole/http` | `3.x` | `25570eb8` |
-| `easy-swoole/http-annotation` | `4.x` | `6008e72a` |
-| `swoole/swoole-src` | `master`（开发分支） | `f0796270` |
+准备发布到服务器时，再看[开发者必读](/QuickStart/notice.md)、[管理命令](/QuickStart/command.md)和[systemd 管理服务](/QuickStart/systemd.md)。[框架设计](/FrameworkDesign/index.md)解释内部启动流程，初学时可先跳过，不影响完成上面的练习。
 
-当前 EasySwoole 3.x 源码要求 PHP `^8.1`、Swoole `>=5.1` 和 JSON 扩展。生产环境应固定 Composer 锁文件和已验证的 Swoole 发布版本，不建议直接追踪 Swoole 的开发分支。
+本项目文档以 EasySwoole `3.x` 为主线，要求 PHP 8.1+、Swoole 5.1+。各组件章节会说明自己的安装与接口。生产环境应提交 `composer.lock`，并固定已验证的 PHP、Swoole 与组件组合。
 
 ## 核心能力
 
@@ -26,15 +25,15 @@ EasySwoole 是运行在 Swoole 之上的常驻内存 PHP 框架，面向 HTTP AP
 - PHP 8 原生 Attribute 参数解析、验证和接口文档生成。
 - Task Worker、自定义进程、定时任务、日志和依赖注入。
 
-## 最小启动流程
+## 三条命令看全局
 
 ```bash
-composer require easyswoole/easyswoole:3.x-dev
+composer require 'easyswoole/easyswoole:3.x-dev'
 php vendor/bin/easyswoole.php install
 php easyswoole.php server start
 ```
 
-安装命令会生成 `easyswoole.php`、`EasySwooleEvent.php`、`dev.php`、`produce.php`、`bootstrap.php`、示例控制器和路由文件，并为 `App\\` 写入 PSR-4 自动加载配置。
+这三条命令要在**已创建 `composer.json` 的新项目根目录**执行；从零建项目、检查环境、验证 HTTP 输出的完整步骤在[安装框架](/QuickStart/install.md)。安装器会生成 `easyswoole.php`、`EasySwooleEvent.php`、`dev.php`、`produce.php`、`bootstrap.php`、示例控制器和路由文件，并为 `App\` 写入 PSR-4 自动加载配置。
 
 ## 源码参考
 

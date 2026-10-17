@@ -21,7 +21,7 @@ php easyswoole.php myCommand run --name=EasySwoole --times=2 --force
 项目入口文件如果命名为 `easyswoole`，对应命令就是：
 
 ```bash
-php easyswoole myCommand run --name=EasySwoole --times=2 --force
+php easyswoole.php myCommand run --name=EasySwoole --times=2 --force
 ```
 
 ## 创建命令类
