@@ -104,9 +104,9 @@ public static function handlePaid(array $data): void
 
 生产环境密码建议通过环境变量或密钥服务注入，不要提交到 Git。
 
-## 建立队列工厂
+## 建立进程内队列单例
 
-新建 `App/Queue/QueueFactory.php`。队列对象应在实际 Worker 或自定义进程中创建，不要在 Master 进程提前建立网络连接后再 fork：
+新建 `App/Queue/OrderQueue.php`。`Queue` 可以继承，直接使用 Component 的 `Singleton` trait；队列对象应在实际 Worker 或自定义进程中首次取得，不要在 Master 进程提前建立网络连接后再 fork：
 
 ```php
 <?php
@@ -114,20 +114,17 @@ public static function handlePaid(array $data): void
 namespace App\Queue;
 
 use EasySwoole\EasySwoole\Config as FrameworkConfig;
+use EasySwoole\Component\Singleton;
 use EasySwoole\Queue\Driver\Redis\Config;
 use EasySwoole\Queue\Driver\Redis\Redis as RedisDriver;
 use EasySwoole\Queue\Queue;
 
-final class QueueFactory
+final class OrderQueue extends Queue
 {
-    private static ?Queue $queue = null;
+    use Singleton;
 
-    public static function getInstance(): Queue
+    public function __construct()
     {
-        if (self::$queue !== null) {
-            return self::$queue;
-        }
-
         $data = FrameworkConfig::getInstance()->getConf('QUEUE.REDIS');
 
         $config = new Config();
@@ -138,17 +135,17 @@ final class QueueFactory
         $config->setMinObjectNum((int) $data['poolMin']);
         $config->setMaxObjectNum((int) $data['poolMax']);
 
-        return self::$queue = new Queue(new RedisDriver($config));
+        parent::__construct(new RedisDriver($config));
     }
 }
 ```
 
-静态属性只在当前进程内共享：每个 HTTP Worker 和自定义消费进程都会创建自己的 Queue 及连接池，这符合 Swoole 多进程模型。
+`Singleton` 只在当前进程内复用实例：每个 HTTP Worker 和自定义消费进程都会在首次调用 `OrderQueue::getInstance()` 时创建自己的 Queue 及连接池，这符合 Swoole 多进程模型。
 
 ## 在控制器中生产任务
 
 ```php
-use App\Queue\QueueFactory;
+use App\Queue\OrderQueue;
 use EasySwoole\Queue\Job;
 
 public function create(): void
@@ -164,7 +161,7 @@ public function create(): void
     $job->setRetryTimes(3);
     $job->setWaitConfirmTime(30);
 
-    $success = QueueFactory::getInstance()
+    $success = OrderQueue::getInstance()
         ->producer('order')
         ->push($job);
 
@@ -183,7 +180,7 @@ public function create(): void
 
 namespace App\Process;
 
-use App\Queue\QueueFactory;
+use App\Queue\OrderQueue;
 use App\Service\FailedQueueService;
 use App\Service\OrderService;
 use EasySwoole\Component\Process\AbstractProcess;
@@ -195,7 +192,7 @@ class OrderQueueConsumer extends AbstractProcess
 
     protected function run($arg): void
     {
-        $consumer = QueueFactory::getInstance()->consumer('order');
+        $consumer = OrderQueue::getInstance()->consumer('order');
 
         while ($this->running) {
             $job = null;

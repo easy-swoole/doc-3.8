@@ -11,20 +11,23 @@
 
 namespace App\Permission;
 
+use EasySwoole\Component\Singleton;
 use EasySwoole\Policy\Policy;
 use EasySwoole\Policy\PolicyNode;
 
 final class AccessPolicyManager
 {
-    /** @var array<string, Policy> */
-    private static array $policies = [];
+    use Singleton;
 
-    public static function forRole(string $role): Policy
+    /** @var array<string, Policy> */
+    private array $policies = [];
+
+    public function forRole(string $role): Policy
     {
-        return self::$policies[$role] ??= self::build($role);
+        return $this->policies[$role] ??= $this->build($role);
     }
 
-    private static function build(string $role): Policy
+    private function build(string $role): Policy
     {
         $policy = new Policy();
 
@@ -50,7 +53,7 @@ final class AccessPolicyManager
 }
 ```
 
-这里用静态属性让每个 Worker 只构建一次角色策略。它不是跨进程共享数据；动态更新规则时，应让各 Worker 分别重建缓存。
+`Singleton` 让每个 Worker 拥有一个策略管理器，并在该实例中按角色缓存策略。它不是跨进程共享数据；动态更新规则时，应让各 Worker 分别重建缓存。
 
 ## 在 Base 控制器中拦截
 
@@ -93,7 +96,7 @@ abstract class Base extends Controller
             return false;
         }
 
-        $effect = AccessPolicyManager::forRole($role)->check($permission);
+        $effect = AccessPolicyManager::getInstance()->forRole($role)->check($permission);
         if ($effect !== PolicyNode::EFFECT_ALLOW) {
             // deny 与 unknown 都拒绝，避免漏配规则时意外放行。
             $this->writeJson(403, null, '没有操作权限');
@@ -175,7 +178,7 @@ function checkRoles(array $roles, string $path): string
     $hasAllow = false;
 
     foreach ($roles as $role) {
-        $effect = AccessPolicyManager::forRole($role)->check($path);
+        $effect = AccessPolicyManager::getInstance()->forRole($role)->check($path);
         if ($effect === PolicyNode::EFFECT_DENY) {
             return PolicyNode::EFFECT_DENY;
         }

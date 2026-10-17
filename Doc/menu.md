@@ -171,6 +171,10 @@
         - [RabbitMQ 驱动](/Library/Queue/rabbitmq.md)
         - [生产、消费与延迟任务](/Library/Queue/usage.md)
         - [可信任务与框架接入](/Library/Queue/reliable.md)
+    - 同步调用
+        - [安装、原理与快速开始](/Library/SyncInvoker/index.md)
+        - [在 EasySwoole 中接入](/Library/SyncInvoker/integration.md)
+        - [超时、并发与使用边界](/Library/SyncInvoker/practice.md)
     - 链路追踪
         - [安装与快速开始](/Library/Trace/index.md)
         - [调用链与状态](/Library/Trace/span.md)

@@ -2,6 +2,44 @@
 
 本章以“只允许办公网和本机访问后台接口”为例，把 `IpAccess` 接入 EasySwoole 控制器。IP 检查应尽早执行，拒绝后写入响应并返回 `false`，避免目标 Action 继续运行。
 
+## 建立进程内规则单例
+
+`IpAccess` 是 `final` 类，不能继承后直接 `use Singleton`。新建一个轻量包装类 `App/Security/AdminIpRules.php`，让每个 Worker 只构建一次规则：
+
+```php
+<?php
+
+namespace App\Security;
+
+use EasySwoole\Component\Singleton;
+use EasySwoole\IpAccess\IpAccess;
+
+class AdminIpRules
+{
+    use Singleton;
+
+    private IpAccess $access;
+
+    public function __construct()
+    {
+        $this->access = (new IpAccess())
+            // 示例采用黑名单策略：封禁整个网段，再放行办公出口。
+            ->addBlackIpSegment('203.0.113.0/24')
+            ->addWhiteIp('203.0.113.10');
+    }
+
+    public function isAllowed(string $ip): bool
+    {
+        return $this->access->isAllowAccess($ip);
+    }
+
+    public function replace(IpAccess $newAccess): void
+    {
+        $this->access = $newAccess;
+    }
+}
+```
+
 ## 建立后台 Base 控制器
 
 新建 `App/HttpController/Admin/Base.php`：
@@ -11,36 +49,21 @@
 
 namespace App\HttpController\Admin;
 
+use App\Security\AdminIpRules;
 use EasySwoole\Http\AbstractInterface\Controller;
-use EasySwoole\IpAccess\IpAccess;
 
 abstract class Base extends Controller
 {
-    /** 每个 Worker 只构建一次规则，后续请求复用。 */
-    private static ?IpAccess $ipAccess = null;
-
     final protected function onRequest(?string $action): ?bool
     {
         $clientIp = $this->request()->getServerParams()['remote_addr'] ?? '';
 
-        if ($clientIp === '' || !self::ipAccess()->isAllowAccess($clientIp)) {
+        if ($clientIp === '' || !AdminIpRules::getInstance()->isAllowed($clientIp)) {
             $this->writeJson(403, null, '当前 IP 不允许访问');
             return false;
         }
 
         return true;
-    }
-
-    private static function ipAccess(): IpAccess
-    {
-        if (self::$ipAccess === null) {
-            self::$ipAccess = (new IpAccess())
-                // 示例采用黑名单策略：封禁整个网段，再放行办公出口。
-                ->addBlackIpSegment('203.0.113.0/24')
-                ->addWhiteIp('203.0.113.10');
-        }
-
-        return self::$ipAccess;
     }
 }
 ```
@@ -114,7 +137,7 @@ location / {
 构建新的 IpAccess 对象并整体替换旧对象
 ```
 
-整体替换比在旧对象上逐条追加更容易保证一致性。当前公开 API 用于添加和判断，没有删除单条规则的方法；需要撤销规则时应重新构建对象。
+整体替换比在旧对象上逐条追加更容易保证一致性。重建完整的 `IpAccess` 对象后，在各 Worker 中分别调用 `AdminIpRules::getInstance()->replace($newAccess)`。当前公开 API 用于添加和判断，没有删除单条规则的方法；需要撤销规则时应重新构建对象。
 
 ## 使用 IpPortAccess
 
