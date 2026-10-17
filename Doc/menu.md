@@ -133,6 +133,18 @@
         - [租约与临时键](/Client/Etcd/lease.md)
         - [认证与权限](/Client/Etcd/auth.md)
         - [响应、异常与 TLS](/Client/Etcd/response.md)
+    - NSQ 客户端
+        - [安装与连接](/Client/Nsq/index.md)
+        - [发布消息](/Client/Nsq/publish.md)
+        - [订阅与消费](/Client/Nsq/consume.md)
+        - [配置、认证与 TLS](/Client/Nsq/config.md)
+        - [服务发现与故障处理](/Client/Nsq/discovery.md)
+    - RabbitMQ 客户端
+        - [安装与连接](/Client/RabbitMq/index.md)
+        - [交换机、队列与绑定](/Client/RabbitMq/topology.md)
+        - [发布消息与可靠投递](/Client/RabbitMq/publish.md)
+        - [消费、确认与进程部署](/Client/RabbitMq/consume.md)
+        - [配置、TLS 与故障处理](/Client/RabbitMq/config.md)
 - 厂商 SDK
     - Pay 支付
         - [安装与配置](/VendorSdk/Pay/index.md)
