@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9e5b9835bde9c08f1c81e4b32e5227cc",
+    "content-hash": "aa59f64456ca2859ce21e9ff8b35bb5e",
     "packages": [
         {
             "name": "dflydev/dot-access-data",
@@ -730,6 +730,37 @@
                 "source": "https://github.com/easy-swoole/spl/tree/2.1.7"
             },
             "time": "2026-08-23T07:02:05+00:00"
+        },
+        {
+            "name": "easyswoole/swoole-ide-helper",
+            "version": "1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/easy-swoole/ide-helper.git",
+                "reference": "45b77095133f8e95d394117a82cc88da4498502a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/easy-swoole/ide-helper/zipball/45b77095133f8e95d394117a82cc88da4498502a",
+                "reference": "45b77095133f8e95d394117a82cc88da4498502a",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Team Swoole",
+                    "email": "team@swoole.com"
+                }
+            ],
+            "description": "IDE help files for Swoole.",
+            "support": {
+                "source": "https://github.com/easy-swoole/ide-helper/tree/1.4.1"
+            },
+            "time": "2026-10-09T09:23:51+00:00"
         },
         {
             "name": "easyswoole/task",

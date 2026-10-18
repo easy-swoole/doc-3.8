@@ -60,24 +60,17 @@
             display: flex;
             align-items: center;
             width: calc(var(--sidebar-width) - 32px);
-            color: #304052;
-            font-size: 20px;
-            font-weight: 750;
-            letter-spacing: .02em;
             text-decoration: none;
         }
 
-        .brand-mark {
-            display: grid;
-            width: 40px;
-            height: 44px;
-            margin-right: 13px;
-            place-items: center;
-            clip-path: polygon(50% 0, 94% 23%, 94% 76%, 50% 100%, 6% 76%, 6% 23%);
-            color: white;
-            background: var(--brand);
-            font-size: 22px;
-            font-weight: 800;
+        .header-brand img {
+            display: block;
+            width: 220px;
+            max-width: 100%;
+            height: auto;
+            max-height: 52px;
+            object-fit: contain;
+            object-position: left center;
         }
 
         .header-tools {
@@ -103,8 +96,6 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgb(22 135 232 / 12%);
         }
-
-        .header-title { color: var(--text); font-size: 16px; white-space: nowrap; }
 
         .search-wrap { position: relative; }
 
@@ -308,9 +299,8 @@
         @media (max-width: 820px) {
             .header { padding: 0 18px; }
             .header-brand { width: auto; }
-            .brand-mark { width: 34px; height: 38px; }
+            .header-brand img { width: 160px; }
             .header-tools { gap: 12px; }
-            .header-title { display: none; }
             .layout { grid-template-columns: 1fr; }
             .sidebar { position: static; height: auto; padding: 24px; border-right: 0; border-bottom: 1px solid var(--border); }
             .main { padding: 18px; }
@@ -319,16 +309,14 @@
 </head>
 <body>
 <header class="header">
-    <a class="header-brand" href="/intro.md">
-        <span class="brand-mark">E</span>
-        <span>EasySwoole</span>
+    <a class="header-brand" href="/">
+        <img src="/Images/docNavLogo.png" alt="EasySwoole" width="220" height="49">
     </a>
     <div class="header-tools">
         <div class="search-wrap">
             <input class="search" id="menu-search" type="search" placeholder="搜索文档" aria-label="搜索文档标题和正文" autocomplete="off">
             <div class="search-results" id="search-results" role="status" aria-live="polite" hidden></div>
         </div>
-        <span class="header-title">EasySwoole 文档中心</span>
     </div>
 </header>
 <div class="layout">

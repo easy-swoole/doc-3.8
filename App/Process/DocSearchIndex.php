@@ -5,6 +5,8 @@ namespace App\Process;
 use App\Utility\MarkdownDoc;
 use EasySwoole\Component\Process\AbstractProcess;
 use Swoole\Coroutine;
+use Swoole\Event;
+use Swoole\Timer;
 use Throwable;
 
 class DocSearchIndex extends AbstractProcess
@@ -48,6 +50,8 @@ class DocSearchIndex extends AbstractProcess
 
     protected function onSigTerm(): void
     {
+        Timer::clearAll();
+        Event::exit();
         $this->running = false;
     }
 }

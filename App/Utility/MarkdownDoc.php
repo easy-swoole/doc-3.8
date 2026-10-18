@@ -134,6 +134,81 @@ class MarkdownDoc
         return $documents;
     }
 
+    /**
+     * @return array<int, array{title: string, url: string, snippet: string}>
+     */
+    public function search(string $keyword, string $cacheFile, int $limit = 10): array
+    {
+        $keyword = mb_substr(trim($keyword), 0, 100, 'UTF-8');
+        if ($keyword === '' || $limit < 1) {
+            return [];
+        }
+
+        $json = is_file($cacheFile) ? file_get_contents($cacheFile) : false;
+        if ($json === false) {
+            throw new RuntimeException("Search cache is not readable: {$cacheFile}");
+        }
+
+        try {
+            $documents = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new RuntimeException("Search cache is invalid: {$cacheFile}", 0, $exception);
+        }
+        if (!is_array($documents)) {
+            throw new RuntimeException("Search cache is invalid: {$cacheFile}");
+        }
+
+        $matches = [];
+        $keywordLength = mb_strlen($keyword, 'UTF-8');
+        $contextBefore = 50;
+        $snippetLength = $contextBefore + $keywordLength + 90;
+
+        foreach ($documents as $document) {
+            if (!is_array($document)) {
+                continue;
+            }
+            $title = $document['title'] ?? null;
+            $url = $document['url'] ?? null;
+            $body = $document['body'] ?? null;
+            if (!is_string($title) || !is_string($url) || !is_string($body)) {
+                continue;
+            }
+
+            $titlePosition = mb_stripos($title, $keyword, 0, 'UTF-8');
+            $bodyPosition = mb_stripos($body, $keyword, 0, 'UTF-8');
+            if ($titlePosition === false && $bodyPosition === false) {
+                continue;
+            }
+
+            $start = $bodyPosition === false ? 0 : max(0, $bodyPosition - $contextBefore);
+            $snippet = mb_substr($body, $start, $snippetLength, 'UTF-8');
+            if ($start > 0) {
+                $snippet = '…' . $snippet;
+            }
+            if ($start + $snippetLength < mb_strlen($body, 'UTF-8')) {
+                $snippet .= '…';
+            }
+
+            $matches[] = [
+                'title' => $title,
+                'url' => $url,
+                'snippet' => $snippet,
+                'score' => $titlePosition === false ? 1 : 2,
+            ];
+        }
+
+        usort($matches, static fn (array $a, array $b): int =>
+            ($b['score'] <=> $a['score']) ?: strcmp($a['url'], $b['url'])
+        );
+        $results = array_slice($matches, 0, $limit);
+        foreach ($results as &$result) {
+            unset($result['score']);
+        }
+        unset($result);
+
+        return $results;
+    }
+
     private function resolveDocumentPath(string $relativePath): string
     {
         $root = realpath($this->docRoot);
