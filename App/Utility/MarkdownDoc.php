@@ -3,6 +3,7 @@
 namespace App\Utility;
 
 use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\Attributes\AttributesExtension;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
@@ -68,7 +69,9 @@ class MarkdownDoc
         $converter = new GithubFlavoredMarkdownConverter([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
+            'attributes' => ['allow' => ['style']],
         ]);
+        $converter->getEnvironment()->addExtension(new AttributesExtension());
 
         return $converter->convert($markdown)->getContent();
     }
@@ -86,7 +89,9 @@ class MarkdownDoc
         $converter = new GithubFlavoredMarkdownConverter([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
+            'attributes' => ['allow' => ['style']],
         ]);
+        $converter->getEnvironment()->addExtension(new AttributesExtension());
         $documents = [];
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS)
