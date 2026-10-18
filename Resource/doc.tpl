@@ -234,9 +234,11 @@
         }
 
         .document {
+            min-width: 0;
             max-width: 1080px;
             margin: 0;
             background: var(--surface);
+            overflow-wrap: anywhere;
         }
 
         .document h1, .document h2, .document h3 { line-height: 1.3; }
@@ -248,11 +250,15 @@
         .document a { color: var(--primary); }
         .document img { max-width: 100%; height: auto; }
         .document table { width: 100%; border-collapse: collapse; }
+        .table-scroll table { width: max-content; min-width: 100%; }
         .document th, .document td { padding: 9px 12px; border: 1px solid var(--border); text-align: left; }
         .document blockquote { margin-left: 0; padding: 2px 18px; border-left: 4px solid var(--primary); color: var(--muted); }
         .document code { padding: 2px 5px; border-radius: 4px; background: #eef2f7; }
-        .document pre { overflow-x: auto; padding: 18px; border-radius: 10px; color: #e5e7eb; background: var(--code); }
+        .document pre { max-width: 100%; overflow-x: auto; padding: 18px; border-radius: 10px; color: #e5e7eb; background: var(--code); }
         .document pre code { padding: 0; color: inherit; background: transparent; }
+        .table-scroll { max-width: 100%; overflow-x: auto; }
+
+        .mobile-menu-toggle, .menu-backdrop { display: none; }
 
         .toc {
             position: sticky;
@@ -297,18 +303,70 @@
         }
 
         @media (max-width: 820px) {
-            .header { padding: 0 18px; }
-            .header-brand { width: auto; }
-            .header-brand img { width: 160px; }
-            .header-tools { gap: 12px; }
+            :root { --header-height: 112px; }
+            .header {
+                display: grid;
+                grid-template-columns: 40px minmax(0, 1fr);
+                grid-template-rows: 48px 44px;
+                column-gap: 10px;
+                height: var(--header-height);
+                padding: 8px 16px 10px;
+            }
+            .mobile-menu-toggle {
+                display: grid;
+                width: 40px;
+                height: 40px;
+                padding: 0;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                place-items: center;
+                color: var(--text);
+                background: #fff;
+                font-size: 24px;
+                line-height: 1;
+                cursor: pointer;
+            }
+            .header-brand { width: auto; min-width: 0; }
+            .header-brand img { width: 170px; }
+            .header-tools { grid-column: 1 / -1; min-width: 0; }
+            .search-wrap, .search { width: 100%; }
+            .search { height: 42px; padding-top: 8px; padding-bottom: 8px; font-size: 16px; }
+            .search-wrap::after { top: 23px; }
+            .search-results { right: 0; width: 100%; max-height: min(55vh, 420px); }
             .layout { grid-template-columns: 1fr; }
-            .sidebar { position: static; height: auto; padding: 24px; border-right: 0; border-bottom: 1px solid var(--border); }
-            .main { padding: 18px; }
+            .sidebar {
+                position: fixed;
+                z-index: 18;
+                top: var(--header-height);
+                bottom: 0;
+                left: 0;
+                width: min(320px, 85vw);
+                height: auto;
+                padding: 20px 18px calc(32px + env(safe-area-inset-bottom));
+                border-right: 1px solid var(--border);
+                box-shadow: 8px 0 24px rgb(38 52 69 / 10%);
+                transform: translateX(-105%);
+                transition: transform .2s ease;
+            }
+            .menu-backdrop {
+                position: fixed;
+                z-index: 17;
+                inset: var(--header-height) 0 0;
+                background: rgb(17 24 39 / 38%);
+            }
+            body.menu-open { overflow: hidden; }
+            body.menu-open .sidebar { transform: translateX(0); }
+            body.menu-open .menu-backdrop { display: block; }
+            .main { padding: 24px 16px 64px; }
+            .document h1 { font-size: 1.8rem; }
+            .document h2 { font-size: 1.4rem; }
+            .document pre { padding: 14px; }
         }
     </style>
 </head>
 <body>
 <header class="header">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" type="button" aria-label="打开文档菜单" aria-controls="document-sidebar" aria-expanded="false">☰</button>
     <a class="header-brand" href="/">
         <img src="/Images/docNavLogo.png" alt="EasySwoole" width="220" height="49">
     </a>
@@ -319,8 +377,9 @@
         </div>
     </div>
 </header>
+<div class="menu-backdrop" id="menu-backdrop" aria-hidden="true"></div>
 <div class="layout">
-    <aside class="sidebar">
+    <aside class="sidebar" id="document-sidebar">
         <nav aria-label="文档菜单">
             <ul class="menu" id="doc-menu"></ul>
         </nav>
@@ -442,6 +501,42 @@
     markCurrentBranch(menu);
     const renderedMenu = renderMenu(menu);
     menuRoot.replaceChildren(...renderedMenu.children);
+
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const menuBackdrop = document.getElementById('menu-backdrop');
+    const documentSidebar = document.getElementById('document-sidebar');
+    const mobileViewport = window.matchMedia('(max-width: 820px)');
+
+    function setMobileMenuOpen(open) {
+        const isOpen = mobileViewport.matches && open;
+        document.body.classList.toggle('menu-open', isOpen);
+        mobileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+        mobileMenuToggle.setAttribute('aria-label', isOpen ? '关闭文档菜单' : '打开文档菜单');
+        documentSidebar.inert = mobileViewport.matches && !isOpen;
+    }
+
+    mobileMenuToggle.addEventListener('click', () => {
+        setMobileMenuOpen(mobileMenuToggle.getAttribute('aria-expanded') !== 'true');
+    });
+    menuBackdrop.addEventListener('click', () => setMobileMenuOpen(false));
+    menuRoot.addEventListener('click', event => {
+        if (event.target.closest('a')) setMobileMenuOpen(false);
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
+            setMobileMenuOpen(false);
+            mobileMenuToggle.focus();
+        }
+    });
+    mobileViewport.addEventListener('change', () => setMobileMenuOpen(false));
+    setMobileMenuOpen(false);
+
+    document.querySelectorAll('.document table').forEach(table => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-scroll';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+    });
 
     function createHeadingId(text, index, usedIds) {
         let base = text.trim()
