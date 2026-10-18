@@ -29,17 +29,17 @@ class Router extends AbstractRouter
     {
         $this->parseParams(self::PARSE_PARAMS_IN_GET);
 
-        $routeCollector->get('/api/users/{id:\\d+}', '/user/detail');
-        $routeCollector->post('/api/users', '/user/create');
-        $routeCollector->put('/api/users/{id:\\d+}', '/user/update');
-        $routeCollector->delete('/api/users/{id:\\d+}', '/user/delete');
+        $routeCollector->get('/api/users/{id:\\d+}', '/UserApi/detail');
+        $routeCollector->post('/api/users', '/UserApi/create');
+        $routeCollector->put('/api/users/{id:\\d+}', '/UserApi/update');
+        $routeCollector->delete('/api/users/{id:\\d+}', '/UserApi/delete');
     }
 }
 ```
 
-## User 控制器
+## UserApi 控制器
 
-`App/HttpController/User.php`：
+`App/HttpController/UserApi.php`：
 
 ```php
 <?php
@@ -61,8 +61,8 @@ use EasySwoole\HttpAnnotation\Validator\Min;
 use EasySwoole\HttpAnnotation\Validator\NotEmpty;
 use EasySwoole\HttpAnnotation\Validator\Required;
 
-#[ApiGroup(groupName: 'User')]
-class User extends AnnotationController
+#[ApiGroup(groupName: 'UserApi')]
+class UserApi extends AnnotationController
 {
     private const USERS = [
         1 => ['id' => 1, 'name' => 'Alice', 'email' => 'alice@example.com'],

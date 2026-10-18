@@ -1,5 +1,20 @@
 # 开发者必读
 
+## 文件路径不要依赖当前工作目录
+
+本地前台启动时，相对路径可能碰巧从项目根目录解析；使用 `php easyswoole.php server start -d` 后，Swoole 守护进程的当前工作目录可能变化，代码中的 `./Config`、`Temp/cache.json` 就可能指向错误位置。**这是工作目录变化，不是 `-d` 自动启用了 `chroot`。**
+
+在控制器、事件或任务中，用框架常量构造绝对路径：
+
+```php
+$projectFile = EASYSWOOLE_ROOT . '/Config/business.php';
+$temporaryFile = EASYSWOOLE_TEMP_DIR . '/business-cache.json';
+```
+
+`EASYSWOOLE_ROOT` 是项目根目录；`EASYSWOOLE_TEMP_DIR` 是已初始化的临时目录，默认对应项目下的 `Temp`，也可能由 `TEMP_DIR` 配置改到其他绝对路径。框架定义的是 **`EASYSWOOLE_TEMP_DIR`**，不是 `EASYSWOOLE_TMP_DIR`。配置文件加载发生在临时目录初始化之前，因此在 `dev.php`、`produce.php` 中设置目录时使用 `EASYSWOOLE_ROOT`，不要提前使用 `EASYSWOOLE_TEMP_DIR`。详情见[基础管理命令](/QuickStart/command.md)与[配置文件](/QuickStart/config.md)。
+
+如果另外显式配置了 Swoole 的 `chroot`，那是真正的文件系统根目录隔离；还需确认这些绝对路径在隔离后的进程中可见，不能只靠改用常量解决。
+
 ## 常驻内存不是 PHP-FPM
 
 Worker 启动后，已加载的类、静态属性、单例和全局变量会持续存在。不要假设一次请求结束后所有状态都会自动清空。

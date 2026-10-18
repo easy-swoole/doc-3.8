@@ -10,7 +10,7 @@ EasySwoole\HttpAnnotation\Validator
 
 ## 从一个完整例子开始
 
-新建 `App/HttpController/User.php`：
+新建 `App/HttpController/ValidationDemo.php`，避免覆盖其他章节的控制器：
 
 ```php
 <?php
@@ -19,6 +19,7 @@ namespace App\HttpController;
 
 use EasySwoole\HttpAnnotation\AnnotationController;
 use EasySwoole\HttpAnnotation\Attributes\Api;
+use EasySwoole\HttpAnnotation\Attributes\ApiGroup;
 use EasySwoole\HttpAnnotation\Attributes\Param;
 use EasySwoole\HttpAnnotation\Enum\ContentType;
 use EasySwoole\HttpAnnotation\Enum\HttpMethod;
@@ -31,7 +32,8 @@ use EasySwoole\HttpAnnotation\Validator\Min;
 use EasySwoole\HttpAnnotation\Validator\NotEmpty;
 use EasySwoole\HttpAnnotation\Validator\Required;
 
-class User extends AnnotationController
+#[ApiGroup(groupName: 'ValidationDemo')]
+class ValidationDemo extends AnnotationController
 {
     #[Api(
         allowMethod: HttpMethod::POST,
@@ -79,13 +81,13 @@ class User extends AnnotationController
 在 `App/HttpController/Router.php` 中注册：
 
 ```php
-$routeCollector->post('/users', '/User/create');
+$routeCollector->post('/validation-demo', '/ValidationDemo/create');
 ```
 
 验证成功：
 
 ```bash
-curl -i -X POST http://127.0.0.1:9501/users \
+curl -i -X POST http://127.0.0.1:9501/validation-demo \
   -H 'Content-Type: application/json' \
   -d '{"name":"张三","email":"zhangsan@example.com","age":20}'
 ```
@@ -93,7 +95,7 @@ curl -i -X POST http://127.0.0.1:9501/users \
 验证失败：
 
 ```bash
-curl -i -X POST http://127.0.0.1:9501/users \
+curl -i -X POST http://127.0.0.1:9501/validation-demo \
   -H 'Content-Type: application/json' \
   -d '{"name":"张","email":"wrong","age":16}'
 ```
@@ -482,3 +484,5 @@ new Param('price', from: ParamFrom::JSON, type: null, validate: [
 - 字段比较规则引用了未定义的参数。
 - 文件扩展名验证通过后就直接信任文件内容。
 - 把数据库唯一性、库存等业务规则全部写成参数 Validator；这类规则仍应由 Service 和数据库约束完成。
+
+下一章：[生成接口文档](/Http/AnnotationController/document.md)。

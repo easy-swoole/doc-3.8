@@ -19,6 +19,8 @@ Linux 上可以使用 systemd 管理 EasySwoole。本章以以下部署信息为
 
 请将这些值替换为服务器上的真实信息。
 
+systemd 示例使用前台模式（不带 `-d`），不会因为守护化改变工作目录。但业务代码仍建议用 `EASYSWOOLE_ROOT`、`EASYSWOOLE_TEMP_DIR` 构造路径，不依赖 Unit 的 `WorkingDirectory`；原因和常量初始化时机见[开发者必读](/QuickStart/notice.md#文件路径不要依赖当前工作目录)。
+
 ## 部署前检查
 
 首先进入项目目录，确认应用可以由目标用户正常启动：
@@ -38,7 +40,7 @@ sudo chown -R www-data:www-data /var/www/easyswoole/Temp
 sudo chown -R www-data:www-data /var/www/easyswoole/Log
 ```
 
-如果项目修改了 `TEMP_DIR`、`LOG_DIR` 或日志组件配置，应以实际目录为准。不要为了省事把整个项目设置成 `777`。
+如果项目修改了 `TEMP_DIR`、`LOG.dir` 或日志组件配置，应以实际目录为准。不要为了省事把整个项目设置成 `777`。
 
 ## 创建 Unit 文件
 
@@ -229,7 +231,7 @@ systemd 不会自动加载用户 Shell 中的 alias、`.bashrc`、`.zshrc` 或�
 ```bash
 command -v php
 /usr/bin/php -v
-/usr/bin/php -m | grep -i swoole
+/usr/bin/php --ri swoole
 ```
 
 然后在 `ExecStart` 中使用验证过的绝对路径。

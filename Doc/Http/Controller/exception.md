@@ -28,23 +28,9 @@ class BusinessException extends RuntimeException
 ```php
 use App\Exception\BusinessException;
 use EasySwoole\EasySwoole\Trigger;
-use EasySwoole\HttpAnnotation\Exception\ParamValidateFail;
-use EasySwoole\HttpAnnotation\Exception\RequestMethodNotAllow;
 
 protected function onException(\Throwable $throwable): void
 {
-    if ($throwable instanceof ParamValidateFail) {
-        $message = $throwable->getFailRule()
-            ->errorMsg($throwable->getParamName());
-        $this->writeJson(422, null, $message);
-        return;
-    }
-
-    if ($throwable instanceof RequestMethodNotAllow) {
-        $this->writeJson(405, null, 'Method Not Allowed');
-        return;
-    }
-
     if ($throwable instanceof BusinessException) {
         $this->writeJson(
             $throwable->httpStatus,
@@ -76,6 +62,8 @@ Router 没有命中与控制器 Action 不存在是两个阶段。全局路由�
 
 Dispatcher 支持 `setHttpExceptionHandler()`。它适合处理控制器构造前、路由回调或 Dispatcher 层异常；控制器的 `onException()` 负责控制器生命周期内部异常。
 
+注解参数验证失败会产生专门的异常，其处理示例见[注解参数验证](/Http/AnnotationController/validation.md)。
+
 ## 状态码建议
 
 | 场景 | 状态码 |
@@ -94,4 +82,3 @@ Dispatcher 支持 `setHttpExceptionHandler()`。它适合处理控制器构造�
 
 - [Controller 异常流程](https://github.com/easy-swoole/http/blob/3.x/src/AbstractInterface/Controller.php)
 - [Dispatcher 异常处理](https://github.com/easy-swoole/http/blob/3.x/src/Dispatcher.php)
-- [ParamValidateFail](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Exception/ParamValidateFail.php)

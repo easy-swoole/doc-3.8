@@ -70,7 +70,7 @@ php easyswoole.php server reload
 
 - 想改端口、Worker 数量：看[配置文件](/QuickStart/config.md)。
 - 想定义 `/api/users/{id}`：看[路由基础](/Http/Routing/index.md)。
-- 想做参数验证：看[Attribute 参数验证](/Http/Controller/annotation.md)。
+- 想做参数验证：看[注解控制器](/Http/AnnotationController/index.md)与[注解参数验证](/Http/AnnotationController/validation.md)。
 - 想理解服务为什么要 reload：看[开发者必读](/QuickStart/notice.md)。
 
 ## 源码依据

@@ -71,6 +71,20 @@ return [
 
 `MAIN_SERVER.PORT` 是 HTTP 监听端口；`MAIN_SERVER.SETTING.worker_num` 是 HTTP Worker 数量；`MAIN_SERVER.TASK` 配置框架 Task 组件。对于首次运行，先保留安装器默认值，确认服务可访问后再逐项调整。
 
+## 目录配置与路径常量
+
+`dev.php`、`produce.php` 在临时目录初始化之前加载。需要自定义目录时，在现有配置数组中设置**绝对路径**，例如：
+
+```php
+'TEMP_DIR' => EASYSWOOLE_ROOT . '/Temp',
+'LOG' => [
+    'dir' => EASYSWOOLE_ROOT . '/Log',
+    // 保留原有的其他 LOG 配置项
+],
+```
+
+上面是局部示例，不要用它覆盖已有 `LOG` 数组。在框架初始化完成后的控制器、事件或任务中，可用 `EASYSWOOLE_ROOT` 定位项目文件，用 `EASYSWOOLE_TEMP_DIR` 定位临时文件；后者跟随实际 `TEMP_DIR` 配置，不应把 `'/Temp'` 写死在业务代码里。`EASYSWOOLE_TEMP_DIR` **不是** `EASYSWOOLE_TMP_DIR`。守护模式下避免依赖当前工作目录的原因见[开发者必读](/QuickStart/notice.md#文件路径不要依赖当前工作目录)。
+
 ## 读取和修改
 
 ```php

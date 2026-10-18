@@ -57,10 +57,7 @@ TLS、PostgreSQL、c-ares、Brotli、io_uring 等能力需要对应系统开发�
 # 检查 CLI 加载的配置文件
 php --ini
 
-# 检查扩展是否加载
-php -m | grep -i swoole
-
-# 查看扩展编译信息
+# 检查扩展是否加载并查看编译信息
 php --ri swoole
 ```
 

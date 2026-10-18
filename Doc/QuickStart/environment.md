@@ -20,16 +20,11 @@
 php -v
 composer --version
 php --ri swoole
-php -m | grep -E 'json|mbstring|swoole'
+php --ri json
+php --ri mbstring
 ```
 
-`php -v` 应显示 PHP 8.1 或更高；`php --ri swoole` 应能打印 Swoole 扩展信息且版本不低于 5.1。如果看到 `Extension 'swoole' not present`，先按[安装 Swoole](/QuickStart/installSw.md)处理，暂时不要继续 `composer require`。`mbstring` 是后续 Annotation 功能的推荐依赖；缺失时应先安装扩展再尝试对应章节。
-
-确认 Swoole 已加载后，也可以用 PHP 打印关键版本：
-
-```bash
-php -r 'echo PHP_VERSION, PHP_EOL; echo swoole_version(), PHP_EOL;'
-```
+`php -v` 应显示 PHP 8.1 或更高；`php --ri swoole` 应能打印 Swoole 扩展信息且版本不低于 5.1。如果看到 `Extension 'swoole' not present`，先按[安装 Swoole](/QuickStart/installSw.md)处理，暂时不要继续 `composer require`。`php --ri json` 用于确认必需的 JSON 扩展；`mbstring` 是后续 Annotation 功能的推荐依赖，缺失时应先安装扩展再尝试对应章节。
 
 ## 推荐扩展
 

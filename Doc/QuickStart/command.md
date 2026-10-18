@@ -2,6 +2,8 @@
 
 EasySwoole 的项目命令入口是根目录下的 `easyswoole.php`。
 
+> **守护模式的路径提醒：** `server start -d` 会让 Swoole 以守护进程运行，进程的当前工作目录可能变化。`-d` **不会自动执行 `chroot`**；`chroot` 是另一个独立的 Swoole 配置。业务代码不要依赖 `getcwd()` 或 `./Storage` 这样的相对路径：项目文件以 `EASYSWOOLE_ROOT` 为基准，运行时临时文件以 `EASYSWOOLE_TEMP_DIR` 为基准。框架没有 `EASYSWOOLE_TMP_DIR` 这个常量。
+
 ## 服务管理
 
 ```bash
@@ -28,6 +30,15 @@ php easyswoole.php server stop --force
 ```
 
 `reload` 向主进程发送 `SIGUSR1`，主要用于更新 Worker 中加载的业务代码。主进程级配置、监听端口和部分启动期资源发生变化时，应完整重启服务。
+
+例如，在控制器或任务中读写项目文件与临时文件：
+
+```php
+$configFile = EASYSWOOLE_ROOT . '/Config/business.php';
+$cacheFile = EASYSWOOLE_TEMP_DIR . '/business-cache.json';
+```
+
+不要写成 `file_get_contents('./Config/business.php')` 或 `file_put_contents('Temp/business-cache.json', $data)`。`EASYSWOOLE_TEMP_DIR` 在框架加载配置并初始化临时目录后定义，可在事件、控制器、任务等运行阶段使用；编写根目录的 `dev.php`、`produce.php` 时，应改用 `EASYSWOOLE_ROOT . '/Temp'` 指定路径。更多说明见[开发者必读：文件路径](/QuickStart/notice.md#文件路径不要依赖当前工作目录)。
 
 ## 运行模式
 
@@ -69,10 +80,11 @@ php easyswoole.php process kill --mode=produce --pid=12345
 ## 部署注意
 
 - 不要并行启动两套使用相同端口和 PID 文件的实例。
-- 守护模式下路径必须使用绝对路径；框架默认将临时目录和日志目录转换为项目根目录下的绝对路径。
+- 守护模式下业务文件使用上述绝对路径常量；框架默认临时目录和日志目录也以项目根目录为基准。自定义 `TEMP_DIR`、`LOG.dir`、PID、Swoole 日志路径时同样应写绝对路径。
 - 发布脚本应先检查 `server stop/reload` 的退出结果，而不是只判断命令是否执行。
 
 ## 源码依据
 
 - [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
 - [命令入口模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/easyswoole)
+- [Swoole Server 配置：daemonize 与 chroot](https://openswoole.com/docs/modules/swoole-server/configuration)

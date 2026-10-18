@@ -47,33 +47,9 @@ $xml = $this->xml();
 
 其中 `request()`、`response()` 和 `getActionName()` 是 `protected`，用于控制器内部及子类。
 
-## 三种控制器选择
+## 本章使用的控制器基类
 
-### Controller
-
-最基础、依赖最少，适合简单接口或希望完全手动处理参数的场景。
-
-```php
-use EasySwoole\Http\AbstractInterface\Controller;
-```
-
-### AnnotationController
-
-支持 PHP 8 Attribute、参数来源、类型转换、验证以及接口文档，是当前框架安装模板的默认选择。
-
-```php
-use EasySwoole\HttpAnnotation\AnnotationController;
-```
-
-### REST
-
-根据 HTTP Method 自动给 Action 加前缀。例如 `/user/info` 的 GET 请求调用 `getInfo()`，POST 请求调用 `postInfo()`。
-
-```php
-use EasySwoole\Http\AbstractInterface\REST;
-```
-
-新项目通常选择 `AnnotationController`；需要传统 REST 方法前缀映射时再选择 `REST`。
+本章只使用 `EasySwoole\Http\AbstractInterface\Controller`。它不要求为类或 Action 写 Attribute；参数可通过 `$this->request()` 手动读取，响应通过 `$this->response()` 或 `writeJson()` 写入。想声明参数来源、自动校验并生成接口文档，读完普通控制器后再看[注解控制器](/Http/AnnotationController/index.md)。
 
 ## 可访问的 Action
 
@@ -102,5 +78,3 @@ App/HttpController/
 ## 源码依据
 
 - [Controller](https://github.com/easy-swoole/http/blob/3.x/src/AbstractInterface/Controller.php)
-- [REST](https://github.com/easy-swoole/http/blob/3.x/src/AbstractInterface/REST.php)
-- [AnnotationController](https://github.com/easy-swoole/http-annotation/blob/4.x/src/AnnotationController.php)
