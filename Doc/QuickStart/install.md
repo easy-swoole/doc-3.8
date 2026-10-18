@@ -8,7 +8,7 @@
 mkdir my-easyswoole-app
 cd my-easyswoole-app
 composer init --no-interaction --name=demo/my-easyswoole-app
-composer require 'easyswoole/easyswoole:3.x-dev'
+composer require 'easyswoole/easyswoole:^3.8.1'
 php vendor/bin/easyswoole.php install
 ```
 
@@ -27,7 +27,7 @@ do you want to release Router.php? [ Y / N (default) ] :
 
 如果目标文件已经存在，安装器还会先询问是否替换。已有项目不要直接输入 `y` 覆盖自己修改过的文件；先检查内容并做好备份。新建空项目一般不会遇到替换提示。
 
-本文档针对框架 `3.x` 分支；团队部署时应提交 `composer.lock`，使各环境使用经过验证的同一组依赖。
+本文档使用 EasySwoole `3.8.1` 起的 3.x 正式版；`^3.8.1` 允许安装兼容的后续 3.x 更新。团队部署时应提交 `composer.lock`，使各环境使用经过验证的同一组依赖。
 
 ## 安装命令生成的文件
 
@@ -95,4 +95,4 @@ php easyswoole.php server start -d --mode=produce
 ## 源码依据
 
 - [安装命令实现](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Install.php)
-- [框架 3.x](https://github.com/easy-swoole/easyswoole/tree/3.x)
+- [框架 3.8.1](https://github.com/easy-swoole/easyswoole/tree/3.8.1)

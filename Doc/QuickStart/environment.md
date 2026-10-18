@@ -2,7 +2,7 @@
 
 ## 必需环境
 
-根据 EasySwoole `3.x` 最新 `composer.json`：
+根据 EasySwoole `3.8.1` 正式版的 `composer.json`：
 
 - PHP `8.1` 或更高版本。
 - Swoole 扩展 `5.1` 或更高版本。
@@ -59,6 +59,6 @@ lsof -iTCP:9501 -sTCP:LISTEN
 
 ## 源码依据
 
-- [EasySwoole 3.x composer.json](https://github.com/easy-swoole/easyswoole/blob/3.x/composer.json)
+- [EasySwoole 3.8.1 composer.json](https://github.com/easy-swoole/easyswoole/blob/3.8.1/composer.json)
 - [Swoole 源码与安装说明](https://github.com/swoole/swoole-src)
 - [HTTP Annotation 4.x](https://github.com/easy-swoole/http-annotation/tree/4.x)

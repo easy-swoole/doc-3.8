@@ -21,15 +21,15 @@ php -v
 php --ri swoole
 ```
 
-## 安装 3.x 分支
+## 安装 3.x 正式版
 
 在项目根目录执行：
 
 ```bash
-composer require easyswoole/fast-db:3.x-dev
+composer require 'easyswoole/fast-db:^3.0'
 ```
 
-3.x 当前是开发分支约束。生产项目应提交 `composer.lock`，在测试环境验证后再部署，避免每次安装取得不同提交。
+`^3.0` 会安装兼容的 3.x 正式版。生产项目应提交 `composer.lock`，在测试环境验证后再部署，避免不同环境安装到不同版本。
 
 确认版本和依赖：
 

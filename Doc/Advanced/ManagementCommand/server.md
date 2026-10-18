@@ -49,7 +49,7 @@ Environment
   reload_async          : true           max_wait_time         : 3
   daemonize             : true           user                  : www
   swoole version        : 6.2.2          php version           : 8.4.23
-  easyswoole version    : 3.8.1-dev      run mode              : produce
+  easyswoole version    : 3.8.1          run mode              : produce
   pid_file              : /var/www/project/Temp/produce.pid
   log_file              : /var/www/project/Log/produce.swoole.log
   temp dir              : /var/www/project/Temp
@@ -88,7 +88,7 @@ Environment
   main server           : SWOOLE_WEB     listen address        : 0.0.0.0
   listen port           : 9501           worker_num            : 8
   daemonize             : true           swoole version        : 6.2.2
-  php version           : 8.4.23         easyswoole version    : 3.8.1-dev
+  php version           : 8.4.23         easyswoole version    : 3.8.1
   run mode              : dev
   pid_file              : /var/www/project/Temp/dev.pid
   log_file              : /var/www/project/Log/dev.swoole.log
