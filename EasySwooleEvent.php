@@ -4,6 +4,8 @@
 namespace EasySwoole\EasySwoole;
 
 
+use App\Process\DocSearchIndex;
+use EasySwoole\Component\Process\Manager;
 use EasySwoole\EasySwoole\AbstractInterface\Event;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
 use Swoole\Coroutine;
@@ -18,6 +20,6 @@ class EasySwooleEvent implements Event
 
     public static function mainServerCreate(EventRegister $register)
     {
-
+        Manager::getInstance()->addProcess(new DocSearchIndex('DocSearchIndex'));
     }
 }

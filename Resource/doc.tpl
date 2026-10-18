@@ -133,6 +133,29 @@
             transform: rotate(45deg);
         }
 
+        .search-results {
+            position: absolute;
+            z-index: 30;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(420px, calc(100vw - 36px));
+            max-height: min(65vh, 560px);
+            overflow-y: auto;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            box-shadow: 0 12px 30px rgb(38 52 69 / 15%);
+        }
+
+        .search-results[hidden] { display: none; }
+        .search-result { display: block; padding: 9px 11px; border-radius: 6px; color: var(--text); text-decoration: none; }
+        .search-result:hover, .search-result:focus { background: var(--primary-soft); }
+        .search-result-title { display: block; color: var(--primary); font-weight: 600; }
+        .search-result-snippet { display: block; overflow: hidden; color: var(--muted); font-size: 13px; line-height: 1.5; }
+        .search-result mark { color: #d92d20; background: transparent; font-weight: 700; }
+        .search-message { padding: 10px 12px; color: var(--muted); font-size: 14px; }
+
         .layout {
             display: grid;
             grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
@@ -301,10 +324,10 @@
         <span>EasySwoole</span>
     </a>
     <div class="header-tools">
-        <label class="search-wrap">
-            <span hidden>搜索文档菜单</span>
-            <input class="search" id="menu-search" type="search" placeholder="搜索文档" autocomplete="off">
-        </label>
+        <div class="search-wrap">
+            <input class="search" id="menu-search" type="search" placeholder="搜索文档" aria-label="搜索文档标题和正文" autocomplete="off">
+            <div class="search-results" id="search-results" role="status" aria-live="polite" hidden></div>
+        </div>
         <span class="header-title">EasySwoole 文档中心</span>
     </div>
 </header>
@@ -530,18 +553,97 @@
 
     buildDocumentToc();
 
-    document.getElementById('menu-search').addEventListener('input', (event) => {
-        const keyword = event.target.value.trim().toLocaleLowerCase();
+    const searchInput = document.getElementById('menu-search');
+    const searchResults = document.getElementById('search-results');
+    let searchTimer;
+    let searchRequest;
 
-        for (const item of menuRoot.querySelectorAll('li')) {
-            item.hidden = keyword !== '' && !item.textContent.toLocaleLowerCase().includes(keyword);
+    function showSearchMessage(message) {
+        const item = document.createElement('div');
+        item.className = 'search-message';
+        item.textContent = message;
+        searchResults.replaceChildren(item);
+        searchResults.hidden = false;
+    }
+
+    function appendHighlightedText(element, value, keyword) {
+        const text = String(value ?? '');
+        const needle = keyword.toLocaleLowerCase();
+        const lowerText = text.toLocaleLowerCase();
+        let cursor = 0;
+        let position;
+
+        while ((position = lowerText.indexOf(needle, cursor)) !== -1) {
+            element.append(document.createTextNode(text.slice(cursor, position)));
+            const mark = document.createElement('mark');
+            mark.textContent = text.slice(position, position + keyword.length);
+            element.append(mark);
+            cursor = position + keyword.length;
+        }
+        element.append(document.createTextNode(text.slice(cursor)));
+    }
+
+    searchInput.addEventListener('input', () => {
+        const keyword = searchInput.value.trim();
+        clearTimeout(searchTimer);
+        searchRequest?.abort();
+
+        if (keyword === '') {
+            searchResults.replaceChildren();
+            searchResults.hidden = true;
+            return;
         }
 
-        for (const childList of menuRoot.querySelectorAll('ul[data-collapsible]')) {
-            const button = childList.previousElementSibling.querySelector('.menu-toggle');
-            const expanded = keyword !== '' || childList.dataset.defaultExpanded === 'true';
-            setMenuExpanded(button, childList, expanded);
-        }
+        searchTimer = setTimeout(async () => {
+            const request = new AbortController();
+            searchRequest = request;
+            try {
+                const response = await fetch(`/search?q=${encodeURIComponent(keyword)}`, {
+                    signal: request.signal,
+                    headers: { Accept: 'application/json' }
+                });
+                const payload = await response.json();
+                if (!response.ok) {
+                    throw new Error(payload.msg || '搜索暂不可用');
+                }
+                if (searchInput.value.trim() !== keyword) return;
+
+                const results = Array.isArray(payload.result) ? payload.result : [];
+                if (results.length === 0) {
+                    showSearchMessage('没有找到匹配的文档');
+                    return;
+                }
+
+                const links = results.filter(item =>
+                    typeof item.url === 'string' && /^\/[A-Za-z0-9_./-]+\.md$/.test(item.url)
+                ).map(item => {
+                    const link = document.createElement('a');
+                    const title = document.createElement('span');
+                    const snippet = document.createElement('span');
+                    link.className = 'search-result';
+                    link.href = item.url;
+                    title.className = 'search-result-title';
+                    appendHighlightedText(title, item.title, keyword);
+                    snippet.className = 'search-result-snippet';
+                    appendHighlightedText(snippet, item.snippet, keyword);
+                    link.append(title, snippet);
+                    return link;
+                });
+                searchResults.replaceChildren(...links);
+                searchResults.hidden = false;
+            } catch (error) {
+                if (error.name !== 'AbortError' && searchInput.value.trim() === keyword) {
+                    showSearchMessage(error.message || '搜索暂不可用');
+                }
+            }
+        }, 250);
+    });
+
+    searchInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') searchResults.hidden = true;
+    });
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.search-wrap')) searchResults.hidden = true;
     });
 </script>
 </body>

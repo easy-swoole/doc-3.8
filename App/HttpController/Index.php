@@ -19,6 +19,90 @@ use RuntimeException;
 class Index extends AnnotationController
 {
 
+    public function search(): void
+    {
+        $this->response()->withHeader('Cache-Control', 'no-store');
+        $query = $this->request()->getQueryParam('q');
+        if ($query !== null && !is_string($query)) {
+            $this->writeJson(400, [], '搜索关键词格式错误');
+            return;
+        }
+        $keyword = trim($query ?? '');
+        if ($keyword === '') {
+            $this->writeJson(200, []);
+            return;
+        }
+
+        $keyword = mb_substr($keyword, 0, 100, 'UTF-8');
+        $cacheFile = EASYSWOOLE_TEMP_DIR . '/doc-search.json';
+        $json = is_file($cacheFile) ? file_get_contents($cacheFile) : false;
+        if ($json === false) {
+            $this->writeJson(503, [], '搜索索引正在构建，请稍后重试');
+            return;
+        }
+
+        try {
+            $documents = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            $this->writeJson(503, [], '搜索索引暂不可用');
+            return;
+        }
+
+        if (!is_array($documents)) {
+            $this->writeJson(503, [], '搜索索引暂不可用');
+            return;
+        }
+
+        $matches = [];
+        foreach ($documents as $document) {
+            if (!is_array($document)) {
+                continue;
+            }
+            $title = $document['title'] ?? null;
+            $url = $document['url'] ?? null;
+            $body = $document['body'] ?? null;
+            if (!is_string($title) || !is_string($url) || !is_string($body)) {
+                continue;
+            }
+
+            $titlePosition = mb_stripos($title, $keyword, 0, 'UTF-8');
+            $bodyPosition = mb_stripos($body, $keyword, 0, 'UTF-8');
+            if ($titlePosition === false && $bodyPosition === false) {
+                continue;
+            }
+
+            $contextBefore = 50;
+            $contextAfter = 90;
+            $snippetLength = $contextBefore + mb_strlen($keyword, 'UTF-8') + $contextAfter;
+            $start = $bodyPosition === false ? 0 : max(0, $bodyPosition - $contextBefore);
+            $snippet = mb_substr($body, $start, $snippetLength, 'UTF-8');
+            if ($start > 0) {
+                $snippet = '…' . $snippet;
+            }
+            if ($start + $snippetLength < mb_strlen($body, 'UTF-8')) {
+                $snippet .= '…';
+            }
+
+            $matches[] = [
+                'title' => $title,
+                'url' => $url,
+                'snippet' => $snippet,
+                'score' => $titlePosition === false ? 1 : 2,
+            ];
+        }
+
+        usort($matches, static fn (array $a, array $b): int =>
+            ($b['score'] <=> $a['score']) ?: strcmp($a['url'], $b['url'])
+        );
+        $results = array_slice($matches, 0, 10);
+        foreach ($results as &$result) {
+            unset($result['score']);
+        }
+        unset($result);
+
+        $this->writeJson(200, $results);
+    }
+
     public function parseDoc(): void
     {
         $routeParams = ContextManager::getInstance()

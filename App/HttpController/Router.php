@@ -11,6 +11,7 @@ class Router extends AbstractRouter
     {
 
         $this->setPathInfoMode(false);
+        $routeCollector->get('/search', '/search');
         $routeCollector->get('/{docPath:.+\.md}', '/parseDoc');
     }
 }

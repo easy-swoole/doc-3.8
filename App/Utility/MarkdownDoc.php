@@ -11,6 +11,8 @@ use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Node\StringContainerInterface;
 use League\CommonMark\Parser\MarkdownParser;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RuntimeException;
 
 class MarkdownDoc
@@ -69,6 +71,67 @@ class MarkdownDoc
         ]);
 
         return $converter->convert($markdown)->getContent();
+    }
+
+    /**
+     * @return array<int, array{title: string, url: string, body: string}>
+     */
+    public function buildSearch(): array
+    {
+        $root = realpath($this->docRoot);
+        if ($root === false || !is_dir($root)) {
+            throw new RuntimeException("Document directory not found: {$this->docRoot}");
+        }
+
+        $converter = new GithubFlavoredMarkdownConverter([
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+        ]);
+        $documents = [];
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+
+        foreach ($files as $entry) {
+            if (!$entry->isFile() || strtolower($entry->getExtension()) !== 'md') {
+                continue;
+            }
+
+            $path = $entry->getRealPath();
+            if ($path === false || !str_starts_with($path, $root . DIRECTORY_SEPARATOR)) {
+                continue;
+            }
+
+            $relativePath = substr($path, strlen($root) + 1);
+            if ($relativePath === 'menu.md') {
+                continue;
+            }
+
+            $markdown = file_get_contents($path);
+            if ($markdown === false) {
+                throw new RuntimeException("Failed to read document: {$path}");
+            }
+
+            $html = $converter->convert($markdown)->getContent();
+            $body = html_entity_decode(strip_tags(str_replace('</', ' </', $html)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $body = trim((string) preg_replace('/\s+/u', ' ', $body));
+            $title = pathinfo($path, PATHINFO_FILENAME);
+            if (preg_match('/<h1(?:\s[^>]*)?>(.*?)<\/h1>/isu', $html, $match)) {
+                $heading = trim(html_entity_decode(strip_tags($match[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+                if ($heading !== '') {
+                    $title = $heading;
+                }
+            }
+
+            $documents[] = [
+                'title' => $title,
+                'url' => '/' . str_replace(DIRECTORY_SEPARATOR, '/', $relativePath),
+                'body' => $body,
+            ];
+        }
+
+        usort($documents, static fn (array $a, array $b): int => strcmp($a['url'], $b['url']));
+        return $documents;
     }
 
     private function resolveDocumentPath(string $relativePath): string
