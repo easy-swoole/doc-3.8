@@ -16,9 +16,9 @@ $errorMessage = $response->getErrMsg();
 推荐按三层判断：
 
 ```php
-if ($response->getErrCode() !== 0) {
+if (($response->getStatusCode() ?? -1) < 0 || ($response->getErrCode() ?? 0) !== 0) {
     throw new RuntimeException(sprintf(
-        'transport error [%d]: %s',
+        'transport error [%s]: %s',
         $response->getErrCode(),
         $response->getErrMsg()
     ));
@@ -46,7 +46,7 @@ if (($payload['code'] ?? null) !== 0) {
 
 ## 重定向
 
-默认最多跟随 3 次 301 或 302：
+默认最多跟随 3 次 `301`、`302`、`303`、`307` 或 `308`：
 
 ```php
 $client->setFollowLocation(5);
@@ -58,7 +58,7 @@ $client->setFollowLocation(5);
 $client->setFollowLocation(0);
 ```
 
-303、307、308 或需要严格保留请求方法时，建议关闭自动跳转并根据 `Location` 自行发送下一次请求。
+当前实现中，`301/302` 会把 POST 转成 GET；`303` 会把除 HEAD 外的方法转成 GET；`307/308` 则保留方法与请求体。跨 origin 跳转会移除 Authorization、Proxy-Authorization 和 Cookie。若业务要求严格控制跳转目标或整条重定向链的耗时，可关闭自动跳转并自行处理 `Location`。每次自动跳转都会再次请求，因此[单次连接/读写超时](/Client/Http/timeout.md)不等于整条链的截止时间。
 
 ## HTTPS 与代理
 
@@ -107,7 +107,9 @@ if ($response === false) {
     throw new RuntimeException('download failed');
 }
 
-if ($response->getErrCode() !== 0 || $response->getStatusCode() !== 200) {
+if (($response->getStatusCode() ?? -1) < 0
+    || ($response->getErrCode() ?? 0) !== 0
+    || $response->getStatusCode() !== 200) {
     throw new RuntimeException('download response error');
 }
 ```

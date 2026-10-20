@@ -30,15 +30,21 @@ composer show easyswoole/http-client
 use EasySwoole\HttpClient\HttpClient;
 
 $client = new HttpClient('https://api.example.com/users/1001');
-$client->setConnectTimeout(1.0)
+$client->setTimeout(5.0)
+    ->setConnectTimeout(1.0)
     ->setReadTimeout(3.0);
 
 $response = $client->get([
     'Accept' => 'application/json',
 ]);
 
-if ($response->getErrCode() !== 0) {
-    throw new RuntimeException($response->getErrMsg());
+if (($response->getStatusCode() ?? -1) < 0 || ($response->getErrCode() ?? 0) !== 0) {
+    throw new RuntimeException(sprintf(
+        'HTTP transport failed: status=%s, errCode=%s, errMsg=%s',
+        $response->getStatusCode(),
+        $response->getErrCode(),
+        $response->getErrMsg()
+    ));
 }
 
 if ($response->getStatusCode() !== 200) {
@@ -60,7 +66,7 @@ new HttpClient(URL)
   → 设置 Query、Header、Cookie、Body 和超时
   → get()/post()/put()/patch() 发送请求
   → 获得 Response
-  → 检查 errCode
+  → 检查负数 statusCode 和 errCode（传输层）
   → 检查 HTTP statusCode
   → 解析 Body 并检查业务状态
 ```
@@ -80,10 +86,10 @@ final class User extends Controller
     public function profile(): void
     {
         $client = new HttpClient('https://api.example.com/profile');
-        $client->setConnectTimeout(1.0)->setReadTimeout(3.0);
+        $client->setTimeout(5.0)->setConnectTimeout(1.0)->setReadTimeout(3.0);
         $response = $client->get();
 
-        if ($response->getErrCode() !== 0) {
+        if (($response->getStatusCode() ?? -1) < 0 || ($response->getErrCode() ?? 0) !== 0) {
             $this->writeJson(502, null, 'upstream connection failed');
             return;
         }
@@ -114,4 +120,4 @@ go(function (): void {
 
 同一协程连续访问同一个 Host 时可以开启 Keep-Alive 后复用；不同 Host 应创建不同实例。
 
-下一章：[发送请求](/Client/Http/request.md)。
+超时的精确判定见[超时配置与判定](/Client/Http/timeout.md)。下一章：[发送请求](/Client/Http/request.md)。

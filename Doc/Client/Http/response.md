@@ -23,21 +23,30 @@ $response->getHost();
 $response->getPort();
 ```
 
-## 第一步：判断传输错误
+## 第一步：判断本地超时与其他传输错误
 
-DNS、连接、TLS 和读写超时通过 `errCode` 表示：
+普通请求失败时仍会返回 `Response`。先看负数 `statusCode`，再结合 `errCode`：`-2` 代表请求超时；`-1` 是连接失败，`-4` 是发送失败，二者只有错误码为 `SOCKET_ETIMEDOUT` 时才能进一步归类为超时；`-3` 是连接被重置。完整示例和 408/504 的区别见[超时配置与判定](/Client/Http/timeout.md)。
 
 ```php
-if ($response->getErrCode() !== 0) {
+$status = $response->getStatusCode();
+$errCode = $response->getErrCode();
+
+if ($status === -2 || ($status !== null && $status < 0
+    && defined('SOCKET_ETIMEDOUT') && $errCode === SOCKET_ETIMEDOUT)) {
+    throw new RuntimeException('upstream timed out');
+}
+
+if ($status === null || $status < 0 || ($errCode ?? 0) !== 0) {
     throw new RuntimeException(sprintf(
-        'transport error [%d]: %s',
-        $response->getErrCode(),
+        'transport error: status=%s, errCode=%s, errMsg=%s',
+        $status,
+        $errCode,
         $response->getErrMsg()
     ));
 }
 ```
 
-不能只判断 Response 是否存在，因为发生传输错误时通常仍会返回 Response。
+`errCode` 的 getter 允许返回 `null`。因此不能只用 `!== 0` 判断；更不能把所有非 2xx 状态都归类为超时。
 
 ## 第二步：判断 HTTP 状态
 

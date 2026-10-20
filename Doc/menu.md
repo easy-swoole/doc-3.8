@@ -116,6 +116,7 @@
     - HTTP 客户端
         - [安装与快速开始](/Client/Http/index.md)
         - [发送请求](/Client/Http/request.md)
+        - [超时配置与判定](/Client/Http/timeout.md)
         - [处理响应](/Client/Http/response.md)
         - [高级用法与错误处理](/Client/Http/advanced.md)
     - Redis 连接池

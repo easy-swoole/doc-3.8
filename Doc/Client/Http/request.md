@@ -101,14 +101,10 @@ $client->setHeaders([
 $client->setHeader('X-Request-Id', 'request-1001');
 ```
 
-当前 `setHeader()` 默认把 Header 名和值转成小写。Token、签名等区分大小写的值必须传第三个参数 `false`：
+当前 `setHeader()` 默认只把 Header **名称**转成小写，不会修改值。因此 Token、签名等区分大小写的值可直接传入：
 
 ```php
-$client->setHeader(
-    'Authorization',
-    'Bearer AbCdEf123456',
-    false
-);
+$client->setHeader('Authorization', 'Bearer AbCdEf123456');
 ```
 
 Basic Auth：
@@ -127,7 +123,7 @@ $client->addCookies([
 $client->addCookie('deviceId', 'device-1001');
 ```
 
-## 超时
+## 超时参数在哪里设置
 
 ```php
 $client->setTimeout(5.0)
@@ -138,9 +134,9 @@ $client->setTimeout(5.0)
 
 | 方法 | 控制范围 |
 | --- | --- |
-| `setTimeout()` | 默认总超时 |
-| `setConnectTimeout()` | TCP/TLS 连接阶段 |
-| `setReadTimeout()` | 等待响应数据 |
-| `setWriteTimeout()` | 发送请求数据 |
+| `setTimeout()` | Swoole 的 `timeout` 基础超时设置；不是整次业务调用的严格截止时间 |
+| `setConnectTimeout()` | 连接阶段，覆盖该阶段的基础设置 |
+| `setReadTimeout()` | 等待响应数据，覆盖该阶段的基础设置 |
+| `setWriteTimeout()` | 发送请求数据，覆盖该阶段的基础设置 |
 
-下一章：[处理响应](/Client/Http/response.md)。
+单位均为秒，可以使用 `0.5` 这样的浮点数。具体超时判定、负数状态码及重定向的影响见[超时配置与判定](/Client/Http/timeout.md)。下一章：[超时配置与判定](/Client/Http/timeout.md)。
