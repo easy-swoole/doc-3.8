@@ -207,3 +207,7 @@
         - [路径规则与通配符](/Library/AccessPolicy/rules.md)
         - [策略树与持久化](/Library/AccessPolicy/tree.md)
         - [框架鉴权接入](/Library/AccessPolicy/integration.md)
+    - 模板引擎
+        - [安装与工作原理](/Library/Template/index.md)
+        - [在框架中渲染页面](/Library/Template/integration.md)
+        - [配置、超时与排查](/Library/Template/config.md)
