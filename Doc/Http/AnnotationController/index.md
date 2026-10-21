@@ -58,7 +58,7 @@ curl -i http://127.0.0.1:9501/helloAnnotation
 
 默认控制器映射会进入 `HelloAnnotation::index()`。这里的 `#[ApiGroup]` 为文档定义分组，`#[Api]` 声明该接口只接受 GET。注解**不会自动创建 URL 路由**；显式路由仍需在 `App/HttpController/Router.php` 定义。现有 `Controller` 子类不能同时 `extends Controller, AnnotationController`；要启用 Attribute 处理，只需把基类改为 `AnnotationController`，它本身继承普通 `Controller`。
 
-后续按[Attribute 清单与定义参数](/Http/AnnotationController/attributes.md) → [控制器组与接口定义](/Http/AnnotationController/api.md) → [接口参数与传参](/Http/AnnotationController/params.md) → [onRequest 公共参数与继承](/Http/AnnotationController/common-params.md) → [参数验证](/Http/AnnotationController/validation.md) → [生成接口文档](/Http/AnnotationController/document.md)阅读。
+后续按[Attribute 清单与定义参数](/Http/AnnotationController/attributes.md) → [控制器组与接口定义](/Http/AnnotationController/api.md) → [接口参数与传参](/Http/AnnotationController/params.md) → [onRequest 公共参数与继承](/Http/AnnotationController/common-params.md) → [参数验证](/Http/AnnotationController/validation.md) → [响应参数与示例](/Http/AnnotationController/response-params.md) → [生成接口文档](/Http/AnnotationController/document.md)阅读。
 
 ## 源码依据
 

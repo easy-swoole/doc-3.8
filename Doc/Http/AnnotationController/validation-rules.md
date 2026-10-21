@@ -485,4 +485,4 @@ new Param('price', from: ParamFrom::JSON, type: null, validate: [
 - 文件扩展名验证通过后就直接信任文件内容。
 - 把数据库唯一性、库存等业务规则全部写成参数 Validator；这类规则仍应由 Service 和数据库约束完成。
 
-下一章：[生成接口文档](/Http/AnnotationController/document.md)。
+下一章：[响应参数与示例](/Http/AnnotationController/response-params.md)。

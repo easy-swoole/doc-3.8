@@ -92,25 +92,34 @@ curl -i http://127.0.0.1:9501/doc
 
 例如 `#[ApiGroup(groupName: 'Catalog.Product')]` 会形成 Catalog → Product 导航；其 `Product::index()` 和 `Product::create()` 只有在方法上写了 `#[Api]` 才会被扫描。分组名不能重复。组件按控制器类和 Action 名构建默认文档路径，不会读取你在 Router 中自定义的所有 URL；若实际项目用 `/api/products` 等别名，需要核对文档展示路径，不能误以为注解会自动注册路由。
 
-`Api` 支持 `description`、`requestParam`、请求/响应示例及 `deprecated` 标记。可在接口上增加响应样例：
+`Api` 支持 `description`、`requestParam`、`responseParam`、请求/响应示例及 `deprecated` 标记。下面给上一章的 `Product::index()` 同时补充响应字段说明和完整响应样例：
 
 ```php
 use EasySwoole\HttpAnnotation\Bean\Example\Array2Json;
+use EasySwoole\HttpAnnotation\Bean\Example\ResParam;
+use EasySwoole\HttpAnnotation\Bean\Example\ResParamType;
 
 #[Api(
     allowMethod: HttpMethod::GET,
     description: '列出商品',
+    responseParam: [
+        new ResParam('code', 200, ResParamType::int, '业务响应码'),
+        new ResParam('result', [['id' => 1]], ResParamType::object, '商品列表（JSON 数组）'),
+        new ResParam('msg', 'ok', ResParamType::string, '响应说明'),
+    ],
     responseExamples: [
-        new Array2Json(['code' => 200, 'result' => [['id' => 1]]]),
+        new Array2Json(['code' => 200, 'result' => [['id' => 1]], 'msg' => 'ok']),
     ]
 )]
 public function index(): void
 {
-    $this->writeJson(200, [['id' => 1]]);
+    $this->writeJson(200, [['id' => 1]], 'ok');
 }
 ```
 
-这段是对上一章 `Product::index()` 的替换片段，不是可单独运行的文件。接口文档还提供“立即尝试”，会按声明的请求方法和参数构造浏览器请求。浏览器跨域、Cookie、CORS 仍受普通 Web 安全规则约束；公开生成文件前检查其中的示例数据和说明，不要把密钥或内部地址发布出去。
+这段是对上一章 `Product::index()` 的替换片段，不是可单独运行的文件。生成页面会在“请求参数”后显示“响应参数”四列表格，然后显示成功/失败响应示例；`ResParam` 构造参数、嵌套字段与完整可运行控制器见[响应参数与示例](/Http/AnnotationController/response-params.md)。这些声明只负责文档展示，不会自动校验 `writeJson()` 的内容。
+
+接口文档还提供“立即尝试”，会按声明的请求方法和参数构造浏览器请求。浏览器跨域、Cookie、CORS 仍受普通 Web 安全规则约束；公开生成文件前检查其中的示例数据和说明，不要把密钥或内部地址发布出去。
 
 ## 常见问题
 

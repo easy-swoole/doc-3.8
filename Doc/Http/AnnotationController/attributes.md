@@ -52,9 +52,9 @@ public function create(string $name): void
 | `allowMethod` | `HttpMethod`，默认 `GET` | 单个 HTTP 方法：`GET`、`POST`、`PUT`、`DELETE`、`HEAD`、`PATCH`、`OPTIONS` |
 | `registerRouter` | `bool`，默认 `false` | 当前 4.x 尚未实现自动注册路由，设置为 `true` 也不能代替 Router |
 | `requestParam` | `Param[]`，默认 `[]` | 本 Action 的请求参数声明 |
-| `responseParam` | `array`，默认 `[]` | 可定义响应参数；当前 HTML 模板尚不显示响应参数表 |
+| `responseParam` | `ResParam[]`，默认 `[]` | 定义响应字段；生成的 HTML 会显示四列“响应参数”表，见[响应参数与示例](/Http/AnnotationController/response-params.md) |
 | `requestExamples` | 示例对象数组，默认 `[]` | 请求样例，如 `Array2Json`、`ArrayForm`、`Raw` |
-| `responseExamples` | 示例对象数组，默认 `[]` | 成功/失败响应样例 |
+| `responseExamples` | 示例对象数组，默认 `[]` | 完整响应的成功/失败样例；与 `responseParam` 独立配置 |
 | `description` | `string\|Text\|Markdown\|null`，默认 `null` | 接口说明 |
 | `deprecated` | `bool`，默认 `false` | 在文档中标记废弃，不会禁止访问 |
 | `acceptContentType` | `ContentType\|null`，GET/HEAD 默认 `null`，其余方法默认 `FORM_DATA` | 声明允许的请求体来源；可选 `FORM_DATA`、`FORM_URLENCODED`、`JSON`、`XML`、`RAW` |
