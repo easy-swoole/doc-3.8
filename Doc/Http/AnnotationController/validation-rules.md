@@ -1,12 +1,14 @@
 # Attribute 验证规则
 
-EasySwoole HTTP Annotation 4.x 当前提供 61 个内置 Validator。它们都放在：
+EasySwoole HTTP Annotation 4.x 当前提供 63 个内置 Validator。它们都放在：
 
 ```php
 EasySwoole\HttpAnnotation\Validator
 ```
 
 验证规则写在 `Param` 的 `validate` 数组中。一个参数可以组合多条规则，框架按顺序执行，遇到第一条失败规则时抛出 `ParamValidateFail`。
+
+验证 JSON 对象和数组时，使用新增的 `ObjectShape` 与 `Each`；完整控制器、请求与文档 Example 见[嵌套与多级验证](/Http/AnnotationController/nested-validation.md)。
 
 ## 从一个完整例子开始
 

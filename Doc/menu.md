@@ -51,6 +51,7 @@
         - [onRequest 公共参数与继承](/Http/AnnotationController/common-params.md)
         - [参数验证](/Http/AnnotationController/validation.md)
         - [Attribute 验证规则](/Http/AnnotationController/validation-rules.md)
+        - [嵌套与多级验证](/Http/AnnotationController/nested-validation.md)
         - [响应参数与示例](/Http/AnnotationController/response-params.md)
         - [生成接口文档](/Http/AnnotationController/document.md)
         - [REST API 实战](/Http/AnnotationController/rest.md)

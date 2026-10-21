@@ -81,7 +81,7 @@ curl -i -X POST http://127.0.0.1:9501/member/create \
 
 第一条请求进入 `create()` 并返回 201；第二条至少有一条规则不通过，进入 `onException()` 返回 422。示例只处理参数验证异常；真实项目还应按[异常处理](/Http/Controller/exception.md)处理其他业务异常并记录服务端错误。
 
-可选参数可以使用 `Optional` 与默认值，但不能把可选规则与 `Required`、`NotEmpty` 等必填规则混在同一个 `Param` 中。完整规则及用法见[Attribute 验证规则](/Http/AnnotationController/validation-rules.md)；在 `onRequest()` 中声明公共参数的做法见[onRequest 公共参数与继承](/Http/AnnotationController/common-params.md)。
+可选参数可以使用 `Optional` 与默认值，但不能把可选规则与 `Required`、`NotEmpty` 等必填规则混在同一个 `Param` 中。完整规则及用法见[Attribute 验证规则](/Http/AnnotationController/validation-rules.md)；对象和列表的递归校验见[嵌套与多级验证](/Http/AnnotationController/nested-validation.md)；在 `onRequest()` 中声明公共参数的做法见[onRequest 公共参数与继承](/Http/AnnotationController/common-params.md)。
 
 下一章：[生成接口文档](/Http/AnnotationController/document.md)。
 
