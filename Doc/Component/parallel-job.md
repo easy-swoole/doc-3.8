@@ -3,11 +3,11 @@
 `ParallelJob` 用于“单协程持续拉取任务，多协程并行消费”的场景。
 
 ```text
-setAddTask 回调
+setTaskProducer 回调
       ↓ 单个生产协程持续取任务
 内部 Channel 队列
       ↓
-多个消费协程并行执行 setOnTask 回调
+多个消费协程并行执行 setTaskHandler 回调
 ```
 
 它适合任务不能一次性全部载入内存，需要从分页接口、生成器或其他任务源持续取出的场景。
@@ -15,17 +15,21 @@ setAddTask 回调
 ## 完整示例
 
 ```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
 use EasySwoole\Component\CoroutineRunner\ParallelJob;
 
 Co\run(function (): void {
     $jobs = new SplQueue();
-    $jobs->enqueue(['id' => 1001]);
-    $jobs->enqueue(['id' => 1002]);
-    $jobs->enqueue(['id' => 1003]);
+    $jobs->enqueue(0);
+    $jobs->enqueue(1001);
+    $jobs->enqueue(1002);
 
     $parallel = new ParallelJob(maxQueueSize: 128);
 
-    $parallel->setAddTask(function () use ($jobs): ?array {
+    $parallel->setTaskProducer(function () use ($jobs): ?int {
         if ($jobs->isEmpty()) {
             return null;
         }
@@ -33,15 +37,15 @@ Co\run(function (): void {
         return $jobs->dequeue();
     });
 
-    $parallel->setOnTask(function (array $job): void {
-        OrderService::sync($job['id']);
+    $parallel->setTaskHandler(function (int $job): void {
+        echo "处理任务 {$job}" . PHP_EOL;
     });
 
     $parallel->setOnException(
-        function (Throwable $throwable, ?array $job = null): void {
+        function (Throwable $throwable, ?int $job = null): void {
             error_log(sprintf(
                 'job %s failed: %s',
-                $job['id'] ?? 'producer',
+                $job === null ? 'producer' : (string) $job,
                 $throwable->getMessage()
             ));
         }
@@ -71,18 +75,17 @@ $parallel = new ParallelJob(maxQueueSize: 1024);
 
 ## 定义任务来源
 
-`setAddTask()` 注册生产回调。组件会在单独一个协程中反复调用它，每次取得一个任务：
+`setTaskProducer()` 注册生产回调。组件会在单独一个协程中反复调用它，每次取得一个任务：
 
 ```php
-$parallel->setAddTask(function (): mixed {
+$parallel->setTaskProducer(function (): mixed {
     return fetchNextJob();
 });
 ```
 
-返回 truthy 值表示取得任务，并把它写入内部队列。以下值会被视为“本次没有任务”：
+只有返回 `null` 才表示“本次没有任务”。其他返回值都会写入内部队列并交给处理回调，包括：
 
 ```php
-null
 false
 0
 '0'
@@ -90,9 +93,9 @@ false
 []
 ```
 
-因此，合法任务本身不能是这些 falsy 值。建议任务统一使用非空数组或对象表示。
+例如上面的完整示例会把任务 `0` 交给消费者，而不会把它当成任务结束。如果业务本身需要处理 `null`，可把它包装到数组或对象中再返回。
 
-`maxJobTry` 表示生产回调连续返回 falsy 值多少次后，认定任务源已经结束：
+`maxJobTry` 表示生产回调连续返回 `null` 多少次后，认定任务源已经结束：
 
 ```php
 $parallel->exec(
@@ -101,14 +104,14 @@ $parallel->exec(
 );
 ```
 
-成功取得一个任务后，连续空结果计数会清零。生产回调应自行处理分页游标，并避免在“暂时没有任务但后续还会出现”的长驻队列场景中过早达到该阈值。
+取得任何非 `null` 任务（包括 `false`、`0` 和空数组）后，连续空结果计数会清零。生产回调应自行处理分页游标，并避免在“暂时没有任务但后续还会出现”的长驻队列场景中过早达到该阈值。这里的重试是重新调用**生产回调**寻找下一项任务，不是失败任务的重试次数。
 
 ## 定义消费逻辑
 
-`setOnTask()` 注册任务处理回调：
+`setTaskHandler()` 注册任务处理回调：
 
 ```php
-$parallel->setOnTask(function (array $job): void {
+$parallel->setTaskHandler(function (array $job): void {
     handleJob($job);
 });
 ```
@@ -141,8 +144,8 @@ $parallel->setOnException(
 
 回调参数取决于异常来源：
 
-- `setAddTask()` 抛出异常时，只传入 `$throwable`。
-- `setOnTask()` 抛出异常时，传入 `$throwable` 和当前 `$job`。
+- `setTaskProducer()` 抛出异常时，只传入 `$throwable`。
+- `setTaskHandler()` 抛出异常时，传入 `$throwable` 和当前 `$job`。
 
 因此，异常处理器的第二个参数应提供默认值。没有设置 `onException` 时，异常会从对应协程继续抛出。
 
@@ -182,13 +185,13 @@ $finished = $parallel->sync(
 - 自然结束时返回 `true`。
 - 超时后调用 `interrupt()` 并返回 `false`。
 
-整体超时不会中断已经进入 `setOnTask()` 的业务回调。数据库、HTTP 等 I/O 仍需分别设置超时。
+整体超时不会中断已经进入 `setTaskHandler()` 的业务回调。数据库、HTTP 等 I/O 仍需分别设置超时。
 
 ### sync 返回 true 的准确含义
 
-当前源码在“生产回调达到连续空结果次数，并且内部待消费队列为空”时，把 `isFinish` 设置为 `true`。消费者可能已经从队列取出最后一个任务，但其 `setOnTask()` 回调尚未执行完毕。
+当前源码在“生产回调连续返回 `null` 达到指定次数，并且内部待消费队列为空”时，把 `isFinish` 设置为 `true`。消费者可能已经从队列取出最后一个任务，但其 `setTaskHandler()` 回调尚未执行完毕。
 
-因此，`sync()` 返回 `true` 表示任务源结束且待消费队列已经取空，不严格保证所有已经取出的业务回调都执行结束。业务必须等所有处理回调完成时，应在 `setOnTask()` 外再配合完成计数或 `WaitGroup`，或者选择能够明确等待运行中任务数归零的调度方式。
+因此，`sync()` 返回 `true` 表示任务源结束且待消费队列已经取空，不严格保证所有已经取出的业务回调都执行结束。业务必须等所有处理回调完成时，应在 `setTaskHandler()` 外再配合完成计数或 `WaitGroup`，或者选择能够明确等待运行中任务数归零的调度方式。
 
 ## interrupt 与 flushJobQueue
 
@@ -230,14 +233,14 @@ function runBatch(SplQueue $jobs): bool
 | 对比项 | `ParallelJob` | `CoroutineRunner` |
 | --- | --- | --- |
 | 任务提供方式 | 生产回调持续拉取 | 调用 `addTask()` 入队 |
-| 任务对象 | 任意 truthy 值 | 必须是 `Task` 对象 |
+| 任务对象 | 任意非 `null` 值 | 必须是 `Task` 对象 |
 | 成功/失败回调 | 没有，由业务自行处理 | Task 提供 success/fail |
 | 调度复用 | 完成后不能再次执行 | 正常结束后可处理下一批 |
 | 完成判断 | 任务源结束且队列取空 | 队列空且运行计数归零 |
 
 ## 常见错误
 
-- 使用 `0`、空字符串或空数组作为合法任务，结果被当成无任务。
+- 生产回调在尚有任务时返回 `null`，导致连续空结果次数达到 `maxJobTry` 后提前结束。
 - 把 `maxQueueSize` 当成消费协程数量。
 - 将 `jobWaitTime` 误认为业务任务超时。
 - 认为 `interrupt()` 会强制取消正在执行的任务。
@@ -247,4 +250,5 @@ function runBatch(SplQueue $jobs): bool
 
 ## 源码依据
 
-- [ParallelJob](https://github.com/easy-swoole/component/blob/master/src/CoroutineRunner/ParallelJob.php)
+- [ParallelJob 2.5.5 源码](https://github.com/easy-swoole/component/blob/2.5.5/src/CoroutineRunner/ParallelJob.php)
+- [ParallelJob 2.5.5 README 示例](https://github.com/easy-swoole/component/blob/2.5.5/README.md#paralleljob)

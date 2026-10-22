@@ -252,16 +252,16 @@
         },
         {
             "name": "easyswoole/component",
-            "version": "2.5.3",
+            "version": "2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/component.git",
-                "reference": "b3b07d514f08fb982bab4e088045d380b6952e03"
+                "reference": "bbfbdd90699882ea9f92f379f3b960e6fd8bc6cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/component/zipball/b3b07d514f08fb982bab4e088045d380b6952e03",
-                "reference": "b3b07d514f08fb982bab4e088045d380b6952e03",
+                "url": "https://api.github.com/repos/easy-swoole/component/zipball/bbfbdd90699882ea9f92f379f3b960e6fd8bc6cc",
+                "reference": "bbfbdd90699882ea9f92f379f3b960e6fd8bc6cc",
                 "shasum": ""
             },
             "require": {
@@ -300,9 +300,9 @@
             ],
             "support": {
                 "issues": "https://github.com/easy-swoole/component/issues",
-                "source": "https://github.com/easy-swoole/component/tree/2.5.3"
+                "source": "https://github.com/easy-swoole/component/tree/2.5.5"
             },
-            "time": "2026-10-16T05:53:03+00:00"
+            "time": "2026-10-22T03:54:37+00:00"
         },
         {
             "name": "easyswoole/config",
@@ -532,16 +532,16 @@
         },
         {
             "name": "easyswoole/http-annotation",
-            "version": "4.1.7",
+            "version": "4.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/http-annotation.git",
-                "reference": "422ce6d3e85e563b6e9805487d332b059e1f5b9f"
+                "reference": "d309a4e365effa28f7781ba7192f0807dfcefd5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/http-annotation/zipball/422ce6d3e85e563b6e9805487d332b059e1f5b9f",
-                "reference": "422ce6d3e85e563b6e9805487d332b059e1f5b9f",
+                "url": "https://api.github.com/repos/easy-swoole/http-annotation/zipball/d309a4e365effa28f7781ba7192f0807dfcefd5e",
+                "reference": "d309a4e365effa28f7781ba7192f0807dfcefd5e",
                 "shasum": ""
             },
             "require": {
@@ -585,9 +585,9 @@
             ],
             "support": {
                 "issues": "https://github.com/easy-swoole/http-annotation/issues",
-                "source": "https://github.com/easy-swoole/http-annotation/tree/4.1.7"
+                "source": "https://github.com/easy-swoole/http-annotation/tree/4.2.2"
             },
-            "time": "2026-10-21T05:49:25+00:00"
+            "time": "2026-10-21T14:28:53+00:00"
         },
         {
             "name": "easyswoole/parsedown",
@@ -677,16 +677,16 @@
         },
         {
             "name": "easyswoole/spl",
-            "version": "2.1.7",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/easy-swoole/spl.git",
-                "reference": "cdfddfee82586fd08fe74140907e8d1e57509cf5"
+                "reference": "2f90af9ad9e9c66e1cf6ff066b6ce0a4089d79a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/easy-swoole/spl/zipball/cdfddfee82586fd08fe74140907e8d1e57509cf5",
-                "reference": "cdfddfee82586fd08fe74140907e8d1e57509cf5",
+                "url": "https://api.github.com/repos/easy-swoole/spl/zipball/2f90af9ad9e9c66e1cf6ff066b6ce0a4089d79a1",
+                "reference": "2f90af9ad9e9c66e1cf6ff066b6ce0a4089d79a1",
                 "shasum": ""
             },
             "require": {
@@ -696,8 +696,8 @@
                 "php": ">=8.1.0"
             },
             "require-dev": {
-                "easyswoole/phpunit": "^1.0",
-                "easyswoole/swoole-ide-helper": "^1.0"
+                "easyswoole/swoole-ide-helper": "^1.0",
+                "phpunit/phpunit": "^10.5"
             },
             "type": "library",
             "autoload": {
@@ -726,9 +726,9 @@
             ],
             "support": {
                 "issues": "https://github.com/easy-swoole/spl/issues",
-                "source": "https://github.com/easy-swoole/spl/tree/2.1.7"
+                "source": "https://github.com/easy-swoole/spl/tree/2.2.1"
             },
-            "time": "2026-08-23T07:02:05+00:00"
+            "time": "2026-10-21T13:41:56+00:00"
         },
         {
             "name": "easyswoole/task",
@@ -1012,16 +1012,16 @@
         },
         {
             "name": "nette/schema",
-            "version": "v1.3.7",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/schema.git",
-                "reference": "c1162897273bf9499ca57924c4688a19d82c9310"
+                "reference": "af9fa8a86bfca9b02b10346220db26e62ef942ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/schema/zipball/c1162897273bf9499ca57924c4688a19d82c9310",
-                "reference": "c1162897273bf9499ca57924c4688a19d82c9310",
+                "url": "https://api.github.com/repos/nette/schema/zipball/af9fa8a86bfca9b02b10346220db26e62ef942ec",
+                "reference": "af9fa8a86bfca9b02b10346220db26e62ef942ec",
                 "shasum": ""
             },
             "require": {
@@ -1029,16 +1029,16 @@
                 "php": "8.1 - 8.6"
             },
             "require-dev": {
-                "nette/phpstan-rules": "^1.0",
+                "nette/phpstan-rules": "^1.0.7",
                 "nette/tester": "^2.6",
                 "phpstan/extension-installer": "^1.4@stable",
-                "phpstan/phpstan": "^2.1.39@stable",
+                "phpstan/phpstan": "^2.3@stable",
                 "tracy/tracy": "^2.8"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3-dev"
+                    "dev-master": "1.4-dev"
                 }
             },
             "autoload": {
@@ -1059,23 +1059,23 @@
                 {
                     "name": "David Grudl",
                     "homepage": "https://davidgrudl.com"
-                },
-                {
-                    "name": "Nette Community",
-                    "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "📐 Nette Schema: validating data structures against a given Schema.",
-            "homepage": "https://nette.org",
+            "description": "📐 Nette Schema: validates and normalizes data such as configuration or API input against a schema described in a few readable lines of PHP, with precise error messages.",
+            "homepage": "https://doc.nette.org/schema",
             "keywords": [
-                "config",
-                "nette"
+                "configuration",
+                "data validation",
+                "nette",
+                "normalization",
+                "schema",
+                "validation"
             ],
             "support": {
                 "issues": "https://github.com/nette/schema/issues",
-                "source": "https://github.com/nette/schema/tree/v1.3.7"
+                "source": "https://github.com/nette/schema/tree/v1.4.0"
             },
-            "time": "2026-10-20T15:46:50+00:00"
+            "time": "2026-10-22T02:12:50+00:00"
         },
         {
             "name": "nette/utils",

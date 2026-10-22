@@ -8,7 +8,7 @@ Component 在 Swoole 协程基础上提供了 `ChannelLock`、`WaitGroup`、`Csp
 | `WaitGroup` | 预先登记，或由外部协程手动完成 | 不限制 | 完成数量 | 等待一组已知任务全部结束 |
 | `Csp` | 预先按名称登记 | 每个任务一个协程 | 按名称保存结果 | 同时查询用户、订单、配置等多个数据源 |
 | `CoroutineRunner` | 提前或在循环中加入 `Task` | 固定并发数 | 每个 Task 保存结果 | 有限任务队列、批量处理 |
-| `ParallelJob` | 通过回调持续拉取任务 | 指定消费者协程数 | 完成数量 | 持续取任务并并行消费 |
+| `ParallelJob` | 通过回调持续拉取任务 | 指定消费者协程数 | 是否结束 | 持续取任务并并行消费 |
 | `ReadyScheduler` | 预先登记就绪项 | 等待全部或任意项目就绪 | 布尔值 | 等待数据库、缓存等依赖准备完成 |
 
 ## 运行环境
@@ -90,8 +90,8 @@ $runner->start(30);
 任务不是一次性全部提供，而是需要不断从队列或其他来源拉取时，使用 `ParallelJob`：
 
 ```php
-$parallel->setAddTask($fetchNextJob);
-$parallel->setOnTask($handleJob);
+$parallel->setTaskProducer($fetchNextJob); // 返回 null 表示本次没有任务。
+$parallel->setTaskHandler($handleJob);      // 非 null 值（包括 0、false）均会传入。
 $parallel->sync(coroutineNum: 8, maxJobTry: 3, timeOut: 30);
 ```
 
