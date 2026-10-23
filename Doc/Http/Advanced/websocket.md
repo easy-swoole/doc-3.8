@@ -114,6 +114,7 @@ class EasySwooleEvent implements Event
                     return;
                 }
 
+                // 握手已由 Swoole 完成（HTTP 101）；这里发送的是 WebSocket 消息帧。
                 $server->push($fd, json_encode([
                     'type' => 'connected',
                     'fd' => $fd,
@@ -165,11 +166,15 @@ class EasySwooleEvent implements Event
 
 这里使用 `$register->add()`，允许框架或其他组件继续追加同类事件。`set()` 会替换该事件已有回调，除非明确需要覆盖，否则优先使用 `add()`。
 
-## 三个事件分别做什么
+## WebSocket 事件分别做什么
 
 ### `onOpen`
 
-WebSocket 握手成功后触发，适合检查连接路径、Origin、Token，并建立用户与 fd 的映射。
+WebSocket 握手成功后才触发。默认握手由 Swoole 完成，客户端已经收到 HTTP `101 Switching Protocols`；`onOpen` 不需要、也不能再返回一次 101。上例的 `$server->push()` 发送的是连接建立后的第一条 WebSocket 消息，不是握手响应，因此可以在这里直接调用。若不需要欢迎消息，删掉这次 `push()` 即可，不影响连接建立。
+
+执行顺序为：客户端发送 HTTP Upgrade 请求 → Swoole 完成握手并返回 101 → 触发 `onOpen` → 可调用 `push()` 发送消息。`onOpen` 回调的 `void` 返回值也不决定握手是否通过。
+
+`onOpen` 适合读取连接路径、Origin、Token，并建立用户与 fd 的映射；但此时检查失败只能通过 `disconnect()` 关闭已经升级的连接，不能再把握手响应改成 401 或 403。要在升级前拒绝请求，应在握手阶段处理。
 
 示例为了便于测试，从 Query 读取 Token。生产环境需要避免 Token 长期出现在 URL 和代理日志中，可使用：
 
@@ -177,7 +182,80 @@ WebSocket 握手成功后触发，适合检查连接路径、Origin、Token，�
 - 安全 Cookie，并配合严格 Origin 检查。
 - 客户端连接后发送认证消息，在认证完成前禁止业务操作。
 
-在 `onOpen` 中拒绝连接意味着握手已经完成后再断开。若必须在 HTTP Upgrade 阶段直接拒绝，需要注册 `EventRegister::onHandShake` 并自行完成 WebSocket 握手协议；自定义握手容易遗漏协议细节，通常应封装为经过测试的独立处理器。
+在 `onOpen` 中拒绝连接意味着握手已经完成后再断开。若必须在 HTTP Upgrade 阶段直接拒绝，使用下面的 `onHandShake`。
+
+### `onHandShake`：升级前拒绝连接
+
+只有需要在握手阶段返回 HTTP 错误状态（例如无效 Token 返回 403）时，才需要自定义握手。`onHandShake` 的回调参数是 `Swoole\Http\Request` 和 `Swoole\Http\Response`，与 `onOpen` 的 `Server`、`Request` 不同。
+
+在 `EasySwooleEvent.php` 的 `mainServerCreate()` 中，用下面的注册代码**替换**前文整个 `onOpen` 注册块；保留 `onMessage` 和 `onClose`。文件顶部另加 `use Swoole\Http\Response;`：
+
+```php
+$register->add(
+    EventRegister::onHandShake,
+    function (Request $request, Response $response): void {
+        $path = $request->server['request_uri'] ?? '/';
+        $origin = $request->header['origin'] ?? '';
+        $token = $request->get['token'] ?? '';
+
+        if ($path !== '/ws') {
+            $response->status(404);
+            $response->end('Not Found');
+            return;
+        }
+
+        $allowedOrigins = [
+            'http://localhost:3000',
+            'https://admin.example.com',
+        ];
+        if ($origin !== '' && !in_array($origin, $allowedOrigins, true)) {
+            $response->status(403);
+            $response->end('Forbidden');
+            return;
+        }
+
+        // 演示用固定 Token；生产项目应验证短期连接票据。
+        if (!is_string($token) || !hash_equals('demo-token', $token)) {
+            $response->status(403);
+            $response->end('Forbidden');
+            return;
+        }
+
+        // 接管默认握手后，必须自行检查请求并生成协议要求的响应头。
+        $key = $request->header['sec-websocket-key'] ?? '';
+        $version = $request->header['sec-websocket-version'] ?? '';
+        $upgrade = $request->header['upgrade'] ?? '';
+        $connection = $request->header['connection'] ?? '';
+        $decodedKey = is_string($key) ? base64_decode($key, true) : false;
+
+        if ($version !== '13'
+            || !is_string($upgrade) || strcasecmp($upgrade, 'websocket') !== 0
+            || !is_string($connection)
+            || !preg_match('/(?:^|,)\s*upgrade\s*(?:,|$)/i', $connection)
+            || $decodedKey === false || strlen($decodedKey) !== 16
+            || base64_encode($decodedKey) !== $key
+        ) {
+            $response->status(400);
+            $response->end('Bad WebSocket handshake');
+            return;
+        }
+
+        $accept = base64_encode(sha1(
+            $key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11',
+            true
+        ));
+        $response->header('Upgrade', 'websocket');
+        $response->header('Connection', 'Upgrade');
+        $response->header('Sec-WebSocket-Accept', $accept);
+        $response->status(101);
+        $response->end();
+    }
+);
+```
+
+失败分支以 4xx 响应结束 HTTP 请求，连接不会升级；成功分支发送握手头及 `101 Switching Protocols`，随后才能收发 WebSocket 消息。这里不要调用 `push()`：此时握手尚未结束。自定义 `onHandShake` 后，Swoole 不会自动触发 `onOpen`，所以前文的欢迎消息也不会发送；如需欢迎消息，应在成功握手后另行安排发送，而不是继续依赖原来的 `onOpen`。框架的 `EventRegister` 会依次调用同名事件回调并忽略其返回值，因此务必通过 `$response->status()` 和 `$response->end()` 完成响应，不要仅靠回调 `return true/false` 决定握手结果。一个握手事件也应只注册一个实际负责响应的处理器，避免重复输出。
+
+此示例未协商 WebSocket 子协议或扩展。如果业务需要 `Sec-WebSocket-Protocol` 等能力，必须按客户端请求和协议规则补齐协商，不能直接回显任意请求头。浏览器 WebSocket API 无法随意设置 `Authorization` 请求头；示例用 Query Token 仅为便于测试，生产中宜使用短期票据或结合 Origin 检查的安全 Cookie。
 
 ### `onMessage`
 
