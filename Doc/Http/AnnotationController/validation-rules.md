@@ -114,7 +114,7 @@ curl -i -X POST http://127.0.0.1:9501/validation-demo \
 | `RequiredWith` | `new RequiredWith(['password'])` | 列表中任一字段已传且非空时必填 |
 | `RequiredWithout` | `new RequiredWithout(['email'])` | 列表中任一字段未传或为空时必填 |
 | `Optional` | `new Optional()` | 未传且值严格为 `null` 时跳过该参数的全部规则 |
-| `IgnoreValidatorWhenEmpty` | `new IgnoreValidatorWhenEmpty()` | 未传或 PHP `empty()` 时跳过规则，包括 `0`、`false` |
+| `IgnoreValidatorWhenEmpty` | `new IgnoreValidatorWhenEmpty()` | 未传，或解析后的值严格为 `null`、`''`、`[]` 时跳过规则；`0`、`false` 不会跳过 |
 | `OptionalIfParamMiss` | `new OptionalIfParamMiss('account')` | 当前字段与目标字段都未传时跳过 |
 | `OptionalIfParamSet` | `new OptionalIfParamSet('account')` | 当前字段未传、目标字段已传时跳过 |
 | `OptionalIfParamValInArray` | `new OptionalIfParamValInArray('mode', ['guest'])` | 目标值在列表中时，允许当前字段不传 |
@@ -151,6 +151,39 @@ new Param(
 ```
 
 `type: null` 保留未传入时的 `null`，使 `Optional` 可以准确跳过后续规则。`Optional*`、`IgnoreValidatorWhenEmpty` 不能与 `Required*`、`NotEmpty` 用在同一个 Param 中；当前版本会把这种配置直接判为冲突。
+
+### `IgnoreValidatorWhenEmpty`：空值跳过验证
+
+它与 `Optional` 不同：除了未传的参数，显式传入的空字符串、空数组，以及解析后为 `null` 的值也会跳过该参数的验证规则；`0`、`'0'`、`0.0`、`false` 和仅包含空格的字符串都不是这里的空值，仍会执行验证。是否跳过与 `IgnoreValidatorWhenEmpty` 在 `validate` 数组中的位置无关。
+
+例如，可选的查询参数 `limit` 留空时不验证，有值时要求至少为 1。下表假设 Action 使用单个 `array` 形参接收参数：
+
+```php
+use EasySwoole\HttpAnnotation\Attributes\Param;
+use EasySwoole\HttpAnnotation\Enum\ParamFrom;
+use EasySwoole\HttpAnnotation\Enum\ParamType;
+use EasySwoole\HttpAnnotation\Validator\IgnoreValidatorWhenEmpty;
+use EasySwoole\HttpAnnotation\Validator\Integer;
+use EasySwoole\HttpAnnotation\Validator\Min;
+
+new Param(
+    name: 'limit',
+    from: [ParamFrom::GET],
+    type: ParamType::NULL_WHILE_EMPTY,
+    validate: [new IgnoreValidatorWhenEmpty(), new Integer(), new Min(1)],
+    ignorePassArgWhenNotSet: true,
+)
+```
+
+| 请求值 | 解析结果 | 验证结果 |
+| --- | --- | --- |
+| 未传 `limit` | 保持默认值 `null` | 跳过；`ignorePassArgWhenNotSet` 使其不进入传给 Action 的参数数组 |
+| `?limit=` | 空字符串转成 `null` | 跳过；参数已传，仍以 `null` 进入参数数组 |
+| `?limit=0` | `'0'` | 执行验证，未达到 `Min(1)` |
+| `?limit=10` | `'10'` | 验证通过 |
+| `?limit=abc` | `'abc'` | `Integer` 验证失败 |
+
+`ParamType::NULL_WHILE_EMPTY` 只负责把显式传入的 `null`、空字符串或空数组转换为 `null`，不会自行跳过验证；需要搭配 `IgnoreValidatorWhenEmpty`。在 `ObjectShape` 的子字段中使用该规则时，空值判断也相同。
 
 ### 条件必填示例
 
