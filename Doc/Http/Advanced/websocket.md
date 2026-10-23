@@ -184,7 +184,7 @@ WebSocket 握手成功后才触发。默认握手由 Swoole 完成，客户端�
 
 在 `onOpen` 中拒绝连接意味着握手已经完成后再断开。若必须在 HTTP Upgrade 阶段直接拒绝，使用下面的 `onHandShake`。
 
-### `onHandShake`：升级前拒绝连接
+### `onHandShake`：允许或拒绝握手
 
 只有需要在握手阶段返回 HTTP 错误状态（例如无效 Token 返回 403）时，才需要自定义握手。`onHandShake` 的回调参数是 `Swoole\Http\Request` 和 `Swoole\Http\Response`，与 `onOpen` 的 `Server`、`Request` 不同。
 
@@ -251,6 +251,53 @@ $register->add(
         $response->end();
     }
 );
+```
+
+上面回调中，允许与拒绝是两条不同的分支：
+
+#### 拒绝握手：返回 HTTP 错误响应
+
+例如 Token 不正确时，在 `onHandShake` 内响应 403 并立即结束回调：
+
+```php
+if (!is_string($token) || !hash_equals('demo-token', $token)) {
+    $response->status(403);
+    $response->end('Forbidden');
+    return;
+}
+```
+
+`$response->end()` 完成的是普通 HTTP 响应，没有发生协议升级。不能只写 `return false`，也不要在这时调用 `$server->disconnect()`：后者是关闭已建立的 WebSocket 连接。路径不对可同样返回 404，握手头无效可返回 400。
+
+#### 允许握手：返回 101 和升级响应头
+
+业务校验和握手头校验都通过后，使用客户端提供的 `Sec-WebSocket-Key` 计算 `Sec-WebSocket-Accept`，然后发送 101：
+
+```php
+$accept = base64_encode(sha1(
+    $key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11',
+    true
+));
+
+$response->header('Upgrade', 'websocket');
+$response->header('Connection', 'Upgrade');
+$response->header('Sec-WebSocket-Accept', $accept);
+$response->status(101);
+$response->end();
+```
+
+这里的 `$key` 必须先按上面的完整示例校验，不能信任任意字符串。单独 `return true` 或只设置状态码、不调用 `$response->end()`，都不能代替完整握手响应。成功升级后，后续消息由已保留的 `onMessage` 处理。
+
+可用前文的 `wscat` 测试两种结果：
+
+```bash
+# 允许：连接成功，随后可以输入 JSON 消息。
+wscat -c 'ws://127.0.0.1:9501/ws?token=demo-token' \
+  -H 'Origin: http://localhost:3000'
+
+# 拒绝：Token 错误，客户端报告 HTTP 403，无法发送 WebSocket 消息。
+wscat -c 'ws://127.0.0.1:9501/ws?token=wrong' \
+  -H 'Origin: http://localhost:3000'
 ```
 
 失败分支以 4xx 响应结束 HTTP 请求，连接不会升级；成功分支发送握手头及 `101 Switching Protocols`，随后才能收发 WebSocket 消息。这里不要调用 `push()`：此时握手尚未结束。自定义 `onHandShake` 后，Swoole 不会自动触发 `onOpen`，所以前文的欢迎消息也不会发送；如需欢迎消息，应在成功握手后另行安排发送，而不是继续依赖原来的 `onOpen`。框架的 `EventRegister` 会依次调用同名事件回调并忽略其返回值，因此务必通过 `$response->status()` 和 `$response->end()` 完成响应，不要仅靠回调 `return true/false` 决定握手结果。一个握手事件也应只注册一个实际负责响应的处理器，避免重复输出。
