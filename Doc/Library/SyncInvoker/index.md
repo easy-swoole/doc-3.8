@@ -1,40 +1,35 @@
 # 同步调用：安装、原理与快速开始
 
-`easyswoole/sync-invoker` 用于从协程中的 HTTP Worker 调用**没有协程支持的同步阻塞代码**，例如只能使用阻塞式 PHP 扩展的第三方 SDK。它不是把同步代码变成非阻塞代码：阻塞工作仍然发生，只是转移到独立进程，使 HTTP Worker 可以继续处理其他协程。本章以已发布的 2.2.2 代码为准。
+`easyswoole/sync-invoker` 适合在 Swoole 协程服务中调用没有协程支持的阻塞式 SDK。阻塞代码并没有消失，而是在独立的同步进程中运行；发起调用的协程通过 Unix Socket 等待结果，HTTP Worker 可以继续调度其他协程。以下用法以组件 `2.2.3` 为准。
 
-## 先理解调用路径
+## 先理解结构
 
 ```text
-HTTP 请求所在的 Worker 协程
-    → Unix Socket 发送方法名和参数
-    → Sync Invoker 独立进程执行阻塞方法
-    → 把结果返回给原协程
+HTTP Worker 中的协程
+    → invoke(超时秒数)->方法名(参数)
+    → 抢占一个空闲同步进程，通过 Unix Socket 发送命令
+    → 该进程调用 AbstractDriver 子类中的 public 方法
+    → Driver 使用 response(结果) 设置返回值
+    → 结果通过 Unix Socket 返回原协程
 ```
 
-这里有三个主要对象：
+`workerNum` 决定最多同时执行多少个阻塞调用；每个同步进程一次只执行一个调用。共享的 `Swoole\Table` 记录各进程的 PID 和是否空闲。如果已经有协程版客户端，优先直接使用它，避免额外的进程与序列化开销。
 
-| 对象 | 做什么 |
-| --- | --- |
-| `SyncInvoker` | 管理同步进程，并提供 `invoke()` 调用入口 |
-| `AbstractDriver` 子类 | 定义允许调用的业务方法；通过 `$this->response()` 返回结果 |
-| 同步 Worker | 实际执行阻塞方法的独立进程，不是 HTTP Worker |
-
-如果已有可用的协程客户端（例如协程 MySQL/Redis/HTTP 客户端），应优先直接使用它。Sync Invoker 适合无法改造的阻塞 SDK；它会增加进程、Unix Socket 通信和序列化开销。
-
-## 安装
+## 安装与环境
 
 在项目根目录执行：
 
 ```bash
 composer require 'easyswoole/sync-invoker:^2.2'
 composer show easyswoole/sync-invoker
+php --ri swoole
 ```
 
-2.2.2 要求 PHP 8.1+、Swoole 5.1+，还需要 `pcntl` 和 Unix 信号支持，因此应在 Linux/macOS 等环境运行。以下例子先用独立脚本认识 API，下一节再接入 EasySwoole 框架。
+组件要求 PHP 8.1+、Swoole 5.1+，以及可使用 Unix Socket 和进程信号的系统。调用参数与结果要能序列化，不能直接跨进程传递数据库连接或 Socket 资源。
 
-## 最小可运行脚本
+## 单脚本测试
 
-在项目根目录新建 `sync-invoker-demo.php`：
+先用独立脚本认识 API。新建项目根目录的 `sync-invoker-demo.php`：
 
 ```php
 <?php
@@ -42,42 +37,56 @@ composer show easyswoole/sync-invoker
 require __DIR__ . '/vendor/autoload.php';
 
 use EasySwoole\SyncInvoker\AbstractDriver;
+use EasySwoole\SyncInvoker\Config;
 use EasySwoole\SyncInvoker\SyncInvoker;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 
-class DemoDriver extends AbstractDriver
+final class DemoDriver extends AbstractDriver
 {
     public function plus(int $a, int $b): void
     {
-        sleep(1); // 模拟阻塞式 SDK；实际业务换成 SDK 方法。
+        sleep(1); // 模拟阻塞式 SDK；这段代码在同步进程中执行。
         $this->response($a + $b);
     }
 }
 
-$invoker = new SyncInvoker();
-$invoker->getConfig()->setDriver(new DemoDriver());
-$invoker->getConfig()->setWorkerNum(2);
+$config = new Config();
+$config->setWorkerNum(2);
+$config->setDriver(new DemoDriver());
 
+$invoker = new SyncInvoker($config); // 构造时创建共享 Swoole\Table。
 $server = new Server('127.0.0.1', 9502);
-$invoker->attachServer($server); // 必须在 start() 前添加同步进程。
+$invoker->attachServer($server); // 必须在 Server::start() 前执行，且只执行一次。
 
-$server->on('request', function (Request $request, Response $response) use ($invoker): void {
-    $result = $invoker->invoke()->plus(1, 2);
+$server->on('request', static function (
+    Request $request,
+    Response $response
+) use ($invoker): void {
+    $result = $invoker->invoke(3.0)->plus(1, 2);
     $response->end((string) $result);
 });
 
 $server->start();
 ```
 
-在终端运行 `php sync-invoker-demo.php`，再用另一终端运行 `curl http://127.0.0.1:9502/`，约一秒后预期响应为 `3`。这一秒的阻塞发生在 Sync Invoker 进程中，不在处理 HTTP 请求的 Worker 中。用 Ctrl+C 停止服务。这个脚本会启动自己的 Swoole HTTP Server，**不要**与已有的 EasySwoole 服务使用同一个端口；它只是帮助理解组件调用链。
+打开两个终端，分别执行：
 
-注意 `plus()` 没有通过 PHP 的 `return` 返回给调用方，而是调用 `$this->response()`。`$invoker->invoke()->plus(1, 2)` 看上去像本地方法，实际会跨进程执行，参数和结果应使用可序列化的数据，不应传递数据库连接、Socket 或其他进程内资源。
+```bash
+php sync-invoker-demo.php
+```
 
-下一章：[在 EasySwoole 中接入](/Library/SyncInvoker/integration.md)。
+```bash
+curl http://127.0.0.1:9502/
+# 约一秒后输出：3
+```
+
+用 Ctrl+C 停止脚本。它会启动自己的 Swoole HTTP Server，不能与已有服务占用同一端口。`plus()` 的 PHP 返回类型是 `void`：跨进程返回值要通过 `$this->response()` 设置，而不是 `return $a + $b`。每次调用都要显式设置响应，包括业务失败分支；Driver 会在同一同步进程中复用，漏设响应可能返回前一次调用留下的值。`invoke(3.0)` 的超时单位是秒，指这一次调用从等待空闲进程到接收结果的总预算；默认是 15 秒。
+
+接下来把相同结构放进框架项目：[在 EasySwoole 中接入](/Library/SyncInvoker/integration.md)。
 
 ## 源码依据
 
-- [组件 README（2.2.2）](https://github.com/easy-swoole/sync-invoker/blob/2.2.2/README.md)
-- [SyncInvoker（2.2.2）](https://github.com/easy-swoole/sync-invoker/blob/2.2.2/src/SyncInvoker.php)
+- [组件 README（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/README.md)
+- [SyncInvoker（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/src/SyncInvoker.php)
