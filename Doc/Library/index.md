@@ -13,6 +13,7 @@
 | 按 IP 或端口限制访问 | [IpAccess](/Library/IpAccess/index.md) | 不需要 |
 | 按资源路径判断权限 | [AccessPolicy](/Library/AccessPolicy/index.md) | 不需要；用户和角色数据由应用提供 |
 | 在 HTTP 控制器中渲染 HTML 模板 | [模板引擎](/Library/Template/index.md) | 不需要外部服务；会启动独立渲染进程 |
+| 查看 CPU、内存、磁盘和网络等系统指标 | [运维指标](/Library/LinuxDash/index.md) | 不需要；读取当前进程可见的系统信息 |
 | 生成图片验证码 | [图片验证码](/Library/VerifyCode/index.md) | 不需要 |
 
 IP 来源限制与业务权限不是一回事。IpAccess 判断“请求来自哪里”，AccessPolicy 判断“这个身份能访问什么”。连接池管理可复用对象的数量和生命周期；可信队列管理待执行任务；同步调用则把阻塞代码交给独立进程运行。

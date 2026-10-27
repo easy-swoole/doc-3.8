@@ -212,5 +212,8 @@
         - [安装与工作原理](/Library/Template/index.md)
         - [在框架中渲染页面](/Library/Template/integration.md)
         - [配置、超时与排查](/Library/Template/config.md)
+    - 运维指标
+        - [安装与快速开始](/Library/LinuxDash/index.md)
+        - [指标与返回数据](/Library/LinuxDash/metrics.md)
 - 杂项问题
     - [CVE-2026-109618](/Misc/CVE-2026-109618.md)
