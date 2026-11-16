@@ -1,5 +1,7 @@
 # 管理命令：服务管理
 
+本页以 EasySwoole 3.8.2 为准。可运行 `php easyswoole.php server --help` 查看操作和参数。
+
 EasySwoole 在项目根目录提供 `easyswoole.php` 命令入口。`server` 命令负责启动、停止、重载和查看当前服务状态。
 
 ```text
@@ -49,7 +51,7 @@ Environment
   reload_async          : true           max_wait_time         : 3
   daemonize             : true           user                  : www
   swoole version        : 6.2.2          php version           : 8.4.23
-  easyswoole version    : 3.8.1          run mode              : produce
+  easyswoole version    : 3.8.2          run mode              : produce
   pid_file              : /var/www/project/Temp/produce.pid
   log_file              : /var/www/project/Log/produce.swoole.log
   temp dir              : /var/www/project/Temp
@@ -88,7 +90,7 @@ Environment
   main server           : SWOOLE_WEB     listen address        : 0.0.0.0
   listen port           : 9501           worker_num            : 8
   daemonize             : true           swoole version        : 6.2.2
-  php version           : 8.4.23         easyswoole version    : 3.8.1
+  php version           : 8.4.23         easyswoole version    : 3.8.2
   run mode              : dev
   pid_file              : /var/www/project/Temp/dev.pid
   log_file              : /var/www/project/Log/dev.swoole.log
@@ -183,7 +185,7 @@ PID 和时间只是示例，应以本机输出为准。
 
 ## 源码依据
 
-- [Server 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
-- [Watch 终端刷新](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/Console/Watch.php)
+- [Server 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [命令执行与终端刷新](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
 
 下一章：[进程管理](/Advanced/ManagementCommand/process.md)。

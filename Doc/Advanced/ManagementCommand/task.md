@@ -1,5 +1,7 @@
 # 管理命令：异步管理
 
+本页以 EasySwoole 3.8.2 为准。可运行 `php easyswoole.php task --help` 查看操作和参数。
+
 `task` 命令管理 `easyswoole/task` 2.2.1 创建的自定义 Task Worker。它可以查看每个 Task Worker 的运行状态，也可以同时或逐个重载 Task Worker。
 
 ```text
@@ -115,7 +117,7 @@ php easyswoole.php task reload \
 继续处理下一个 Worker
 ```
 
-`--timeout` 是每个 Worker 的等待上限，默认 30 秒，必须是大于 0 的数字。某个 Worker 超时、PID 被外部替换、没有其他可用 Worker 或发送信号失败时，滚动流程会停止，并保留已经完成的重载结果。
+`--timeout` 仅与 `--rolling` 一起使用，是每个 Worker 的等待上限，默认 30 秒，必须是大于 0 的数字。某个 Worker 超时、PID 被外部替换、没有其他可用 Worker 或发送信号失败时，滚动流程会停止，并保留已经完成的重载结果。
 
 只有一个 Task Worker 时，滚动重载无法提供真正的无空窗切换。高可用异步处理至少应配置两个 Worker，并确保任务投递方能够处理暂时繁忙或连接失败。
 
@@ -175,7 +177,7 @@ php easyswoole.php task show --mode=produce
 
 ## 源码依据
 
-- [Task 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Task.php)
+- [Task 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/TaskCommand.php)
 - [TaskReloader](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/TaskReloader.php)
 - [Task 2.2.1](https://github.com/easy-swoole/task)
 

@@ -1,5 +1,7 @@
 # 管理命令：Crontab 管理
 
+本页以 EasySwoole 3.8.2 为准。可运行 `php easyswoole.php crontab --help` 查看操作和参数。
+
 `crontab` 命令通过框架 Bridge 管理当前运行实例中已经注册的 Crontab 任务。
 
 ```text
@@ -50,7 +52,7 @@ Crontab tasks (total: 1, running: 1, stopped: 0)
 php easyswoole.php crontab show --mode=produce --watch=2
 ```
 
-按 `q`、`Esc` 或 `Ctrl+C` 退出。`--watch` 只支持交互式终端。
+没有注册任务时会显示空列表，启用 `--watch` 后可继续刷新。按 `q`、`Esc` 或 `Ctrl+C` 退出。`--watch` 只支持交互式终端。
 
 ## 暂停任务
 
@@ -312,6 +314,6 @@ php easyswoole.php
 
 ## 源码依据
 
-- [Crontab 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Crontab.php)
+- [Crontab 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/CrontabCommand.php)
 - [CrontabSelector](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/Selector/CrontabSelector.php)
-- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Process.php)
+- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ProcessCommand.php)

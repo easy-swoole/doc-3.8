@@ -1,89 +1,22 @@
 # 命令解析
 
-EasySwoole 的启动不是直接在入口脚本中创建 HTTP Server，而是先进入通用命令系统。下面以命令为例逐项追踪：
+EasySwoole 3.8.2 使用 `easyswoole/command` 3.x 处理命令定义、输入绑定、帮助和执行。以 `php easyswoole.php server start -d --mode=produce` 为例，`server` 是 Command，`start` 是 Action，`-d` 和 `--mode=produce` 是这个 Action 的选项。
 
-```bash
-php easyswoole.php server start -d --mode=produce
-```
+## 入口脚本与命令注册
 
-## 入口脚本做了什么
-
-项目根目录的 `easyswoole.php` 依次执行：
-
-1. 在几个候选位置查找 `vendor/autoload.php`。
-2. 定义 `IN_PHAR`、`RUNNING_ROOT`、`EASYSWOOLE_ROOT`。
-3. 如果项目根目录存在 `bootstrap.php`，则加载它。
-4. 使用 `Utility::parseArgv($argv)` 解析命令行。
-5. 取出命令名和 Action，构造 `Caller`。
-6. 交给 `CommandRunner::exec()` 执行。
-7. 输出成功消息，或把错误结果转换成帮助文本。
-
-命令参数可以理解为：
-
-```text
-php easyswoole.php server start -d --mode=produce
-                     │      │    │       │
-                     │      │    │       └─ option: mode=produce
-                     │      │    └───────── option: d
-                     │      └────────────── action: start
-                     └───────────────────── command: server
-```
-
-最终形成的调用信息近似于：
+项目根目录的 `easyswoole.php` 加载 Composer 自动加载文件，定义 `IN_PHAR`、`RUNNING_ROOT` 和 `EASYSWOOLE_ROOT`，再加载项目的 `bootstrap.php`。脚本最后将命令行参数交给 Runner，并以返回值作为进程退出码。
 
 ```php
-$caller = new Caller('server', 'start', $commandLine);
-$result = CommandRunner::getInstance()->exec($caller);
+exit(CommandRunner::getInstance()->run(array_slice($argv, 1)));
 ```
 
-## CommandRunner 如何找到命令
+`CommandRunner` 继承 `EasySwoole\Command\Application`，构造时通过 `DefaultCommandProvider` 注册 `install`、`server`、`process`、`task` 和 `crontab` 的定义与工厂。项目可在 `bootstrap.php` 中注册[自定义命令](/Advanced/command.md)。
 
-`CommandRunner` 构造时注册框架内置命令：
+## 从输入到 Action
 
-```php
-$this->addCommand(new Install());
-$this->addCommand(new Server());
-$this->addCommand(new Process());
-$this->addCommand(new Crontab());
-```
-
-实例化每个 Command 时，其父类构造方法会调用 `init()`。以 `Server` 为例，`init()` 创建 `start`、`stop`、`reload`、`status` 等 Action，并为每个 Action 注册 option 和回调。
-
-因此命令系统内部是三层结构：
-
-```text
-CommandRunner
-└─ server                         Command
-   ├─ start                      Action
-   │  ├─ -d                     Option
-   │  └─ --mode=produce         Option
-   ├─ stop
-   ├─ reload
-   └─ status
-```
-
-如果命令或 Action 不存在，命令管理器不会进入服务器启动流程，而是返回对应错误状态，并由入口脚本显示帮助信息。
-
-## `server start` 的执行顺序
-
-命令管理器找到 Action 后，不会立刻执行启动回调。顺序是：
-
-```text
-CommandRunner::exec()
-  → Command Manager 查找 command/action
-  → Server::beforeExecute()
-  → Action 参数和 option 校验
-  → start Action callback
-```
-
-`Server::beforeExecute()` 会先执行：
-
-```php
-$mode = $caller->commandLine->getOption('mode');
-Core::getInstance()->initialize($mode);
-```
-
-这意味着配置加载、目录初始化和 `EasySwooleEvent::initialize()` 都发生在 `start` Action 回调之前。`server stop`、`reload` 和 `status` 也会经过这个初始化步骤，因为它们需要得到对应运行模式的 PID、临时目录等配置。
+1. 根据注册表定位命令和 Action，再绑定并校验输入。`-d` 绑定为布尔值，`--mode=produce` 绑定为字符串。只查看帮助或输入有误时，流程在此结束。
+2. 执行中间件读取 Action 的 `runtime` 元数据，必要时回退到命令定义。启用后，以解析后的 `mode` 调用 `Core::initialize()`。支持 `--watch` 的 Action 也在这一层接入终端刷新。
+3. `ServerCommand` 根据 `Input::action()` 分发给 `ServerStartAction`。执行结果以 `CommandResult` 表达，由应用输出消息并返回退出码。
 
 ## 运行模式如何传递
 
@@ -118,7 +51,7 @@ php easyswoole.php server stop --mode=produce
 
 ## start Action 做了什么
 
-通过前置初始化和参数校验后，`start` 回调主要执行：
+输入校验和运行环境初始化完成后，`ServerStartAction` 主要执行：
 
 ```php
 defined('EASYSWOOLE_RUNNING') or define('EASYSWOOLE_RUNNING', true);
@@ -174,6 +107,6 @@ php easyswoole.php server start --mode=produce
 
 ## 源码依据
 
-- [CLI 入口模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/easyswoole)
-- [CommandRunner](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/CommandRunner.php)
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
+- [CLI 入口模板](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
+- [CommandRunner](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
+- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)

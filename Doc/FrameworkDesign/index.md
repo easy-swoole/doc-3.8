@@ -28,12 +28,10 @@ easyswoole.php
 ├─ 查找并加载 vendor/autoload.php
 ├─ 定义 EASYSWOOLE_ROOT 等常量
 ├─ 加载 bootstrap.php（如果存在）
-├─ Utility::parseArgv($argv)
-├─ 构造 Caller(command=server, action=start)
-└─ CommandRunner::exec($caller)
+└─ CommandRunner::run(array_slice($argv, 1))
    │
-   ├─ 找到 Server 命令和 start Action
-   ├─ Server::beforeExecute()
+   ├─ 查找 server start 的定义并校验输入
+   ├─ 读取 runtime 元数据
    │  └─ Core::initialize('produce')
    │     ├─ 加载 produce.php
    │     ├─ 初始化 Temp、Log 和 PID 文件路径
@@ -112,7 +110,7 @@ public static function mainServerCreate(EventRegister $register)
 
 ## 源码依据
 
-- [CLI 入口模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/easyswoole)
+- [CLI 入口模板](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
 - [Core](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
+- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
 - [ServerManager](https://github.com/easy-swoole/easyswoole/blob/3.x/src/ServerManager.php)

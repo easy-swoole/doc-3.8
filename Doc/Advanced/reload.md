@@ -466,8 +466,8 @@ tail -f Log/produce.log_$(date +%Y%m).log
 
 ## 源码依据
 
-- [EasySwoole Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
-- [EasySwoole Task 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Task.php)
+- [EasySwoole Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [EasySwoole Task 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/TaskCommand.php)
 - [TaskReloader](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/TaskReloader.php)
 - [EasySwoole Core Worker 事件](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
 - [Component AbstractProcess](https://github.com/easy-swoole/component/blob/master/src/Process/AbstractProcess.php)

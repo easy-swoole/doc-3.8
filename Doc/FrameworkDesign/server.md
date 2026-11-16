@@ -220,4 +220,4 @@ tail -f Log/produce.swoole.log
 - [Core](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
 - [ServerManager](https://github.com/easy-swoole/easyswoole/blob/3.x/src/ServerManager.php)
 - [EventRegister](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Swoole/EventRegister.php)
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
+- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)

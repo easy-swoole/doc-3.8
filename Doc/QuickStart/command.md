@@ -1,6 +1,6 @@
 # 基础管理命令
 
-EasySwoole 的项目命令入口是根目录下的 `easyswoole.php`。
+EasySwoole 3.8.2 的项目命令入口是根目录下的 `easyswoole.php`。
 
 > **守护模式的路径提醒：** `server start -d` 会让 Swoole 以守护进程运行，进程的当前工作目录可能变化。`-d` **不会自动执行 `chroot`**；`chroot` 是另一个独立的 Swoole 配置。业务代码不要依赖 `getcwd()` 或 `./Storage` 这样的相对路径：项目文件以 `EASYSWOOLE_ROOT` 为基准，运行时临时文件以 `EASYSWOOLE_TEMP_DIR` 为基准。框架没有 `EASYSWOOLE_TMP_DIR` 这个常量。
 
@@ -56,7 +56,11 @@ Temp/produce.pid
 ```bash
 php easyswoole.php
 php easyswoole.php server
+php easyswoole.php server start --help
+php easyswoole.php help server start
 ```
+
+帮助和参数校验都在框架运行环境初始化前完成。退出码 `0` 表示成功，`1` 表示执行失败，`2` 表示参数错误。布尔开关可显式传 `=false`，例如 `--force=false`。
 
 框架还注册了 `install`、`process`、`task` 和 `crontab` 等命令。服务、进程、异步任务和 Crontab 的完整管理方法参见[管理命令](/Advanced/ManagementCommand/server.md)。具体可用 Action 和 Option 应以当前命令输出为准。
 
@@ -85,6 +89,6 @@ php easyswoole.php process kill --mode=produce --pid=12345
 
 ## 源码依据
 
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Server.php)
-- [命令入口模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/easyswoole)
+- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [命令入口模板](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
 - [Swoole Server 配置：daemonize 与 chroot](https://openswoole.com/docs/modules/swoole-server/configuration)

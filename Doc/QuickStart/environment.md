@@ -2,11 +2,12 @@
 
 ## 必需环境
 
-根据 EasySwoole `3.8.1` 正式版的 `composer.json`：
+根据 EasySwoole `3.8.2` 正式版的 `composer.json`：
 
 - PHP `8.1` 或更高版本。
 - Swoole 扩展 `5.1` 或更高版本。
 - JSON 扩展。
+- mbstring 扩展，由命令组件 `easyswoole/command` 3.x 要求。
 - Composer 2。
 - Linux、macOS 或适合运行 Swoole 的容器环境。
 
@@ -24,7 +25,7 @@ php --ri json
 php --ri mbstring
 ```
 
-`php -v` 应显示 PHP 8.1 或更高；`php --ri swoole` 应能打印 Swoole 扩展信息且版本不低于 5.1。如果看到 `Extension 'swoole' not present`，先按[安装 Swoole](/QuickStart/installSw.md)处理，暂时不要继续 `composer require`。`php --ri json` 用于确认必需的 JSON 扩展；`mbstring` 是后续 Annotation 功能的推荐依赖，缺失时应先安装扩展再尝试对应章节。
+`php -v` 应显示 PHP 8.1 或更高；`php --ri swoole` 应能打印 Swoole 扩展信息且版本不低于 5.1。如果看到 `Extension 'swoole' not present`，先按[安装 Swoole](/QuickStart/installSw.md)处理，暂时不要继续 `composer require`。`php --ri json` 用于确认必需的 JSON 扩展；`php --ri mbstring` 用于确认命令组件所需的扩展已加载。
 
 ## 推荐扩展
 
@@ -54,6 +55,6 @@ lsof -iTCP:9501 -sTCP:LISTEN
 
 ## 源码依据
 
-- [EasySwoole 3.8.1 composer.json](https://github.com/easy-swoole/easyswoole/blob/3.8.1/composer.json)
+- [EasySwoole 3.8.2 composer.json](https://github.com/easy-swoole/easyswoole/blob/3.8.2/composer.json)
 - [Swoole 源码与安装说明](https://github.com/swoole/swoole-src)
 - [HTTP Annotation 4.x](https://github.com/easy-swoole/http-annotation/tree/4.x)

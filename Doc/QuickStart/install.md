@@ -8,7 +8,7 @@
 mkdir my-easyswoole-app
 cd my-easyswoole-app
 composer init --no-interaction --name=demo/my-easyswoole-app
-composer require 'easyswoole/easyswoole:^3.8.1'
+composer require 'easyswoole/easyswoole:^3.8.2'
 php vendor/bin/easyswoole.php install
 ```
 
@@ -16,18 +16,15 @@ php vendor/bin/easyswoole.php install
 
 ## 回答安装器的文件释放提示
 
-最后一条 `php vendor/bin/easyswoole.php install` 是交互命令。它会依次询问是否释放 `Index.php` 和 `Router.php`，例如：
+在交互终端中，安装器会询问是否生成 `App/HttpController/Index.php` 和 `App/HttpController/Router.php`。新项目要体验欢迎页时，对两个问题都输入 `y`。也可以直接执行以下命令生成缺失的 HTTP 示例文件。
 
-```text
-do you want to release Index.php? [ Y / N (default) ] :
-do you want to release Router.php? [ Y / N (default) ] :
+```bash
+php vendor/bin/easyswoole.php install --with-examples
 ```
 
-在新项目中，两次都输入 `y` 并按回车。这样安装器才会从框架自带模板生成 `App/HttpController/Index.php`（欢迎页控制器）和 `App/HttpController/Router.php`（路由定义文件）。直接按回车相当于选择默认的 `N`，对应文件不会生成；即使最后出现 `install EasySwoole Success`，也不能据此判断这两个文件已释放。`dev.php`、`produce.php`、`bootstrap.php` 和 `EasySwooleEvent.php` 则由安装器自动释放。
+安装器会自动生成缺失的配置、引导和事件文件。已有文件出现替换提示时，选择保留即可继续使用项目原有配置。
 
-如果目标文件已经存在，安装器还会先询问是否替换。已有项目不要直接输入 `y` 覆盖自己修改过的文件；先检查内容并做好备份。新建空项目一般不会遇到替换提示。
-
-本文档使用 EasySwoole `3.8.1` 起的 3.x 正式版；`^3.8.1` 允许安装兼容的后续 3.x 更新。团队部署时应提交 `composer.lock`，使各环境使用经过验证的同一组依赖。
+本文档使用 EasySwoole `3.8.2` 起的 3.x 正式版；`^3.8.2` 允许安装兼容的后续 3.x 更新。团队部署时应提交 `composer.lock`，使各环境使用经过验证的同一组依赖。
 
 ## 安装命令生成的文件
 
@@ -53,11 +50,21 @@ easyswoole.php
 }
 ```
 
-安装完成后应看到 `install EasySwoole Success`。执行 `ls App/HttpController EasySwooleEvent.php easyswoole.php`，确认 `Index.php`、`Router.php` 和入口文件确实存在。如果误选了 `N`，可以重新运行安装命令，对缺失文件选择 `y`；对已经存在的文件选择默认 `N`，避免覆盖。若服务器禁用了 `exec()`，安装器可能无法自动执行自动加载刷新，此时手动运行：
+安装完成后应看到 `install EasySwoole Success`。执行 `ls App/HttpController EasySwooleEvent.php easyswoole.php`，确认 `Index.php`、`Router.php` 和入口文件确实存在。缺少示例文件时，可以重新运行安装命令并加上 `--with-examples`。若服务器禁用了 `exec()`，安装器可能无法自动执行自动加载刷新，此时手动运行：
 
 ```bash
 composer dump-autoload
 ```
+
+## 升级后刷新项目管理脚本
+
+升级至 EasySwoole 3.8.2 后，如果运行项目根目录的 `easyswoole.php` 报错，在项目根目录执行：
+
+```bash
+php vendor/bin/easyswoole.php install
+```
+
+安装器会用当前框架版本的模板覆盖根目录的 `easyswoole.php`。如果提示替换其他已有项目文件，选择保留即可。
 
 ## 启动并验证欢迎页
 
@@ -94,5 +101,5 @@ php easyswoole.php server start -d --mode=produce
 
 ## 源码依据
 
-- [安装命令实现](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Install.php)
-- [框架 3.8.1](https://github.com/easy-swoole/easyswoole/tree/3.8.1)
+- [安装命令实现](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/InstallAction.php)
+- [框架 3.8.2](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

@@ -71,7 +71,7 @@ php easyswoole.php server start
 set -e
 
 ulimit -n 200000
-exec php /var/www/app/easyswoole server start
+exec php /var/www/app/easyswoole.php server start
 ```
 
 `exec` 会让 PHP 进程替换当前脚本进程，便于服务管理器正确跟踪 PID 和退出状态。

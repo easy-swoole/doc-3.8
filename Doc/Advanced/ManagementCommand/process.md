@@ -1,5 +1,7 @@
 # 管理命令：进程管理
 
+本页以 EasySwoole 3.8.2 为准。可运行 `php easyswoole.php process --help` 查看操作和参数。
+
 `process` 命令用于查看 EasySwoole 运行实例中的 Worker、自定义进程和组件进程，并可以按 PID、进程组或进程名发送终止信号。
 
 ```text
@@ -168,7 +170,7 @@ not any process match
 
 ## 源码依据
 
-- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/DefaultCommand/Process.php)
+- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ProcessCommand.php)
 - [ProcessSelector](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/Selector/ProcessSelector.php)
 
 下一章：[异步管理](/Advanced/ManagementCommand/task.md)。

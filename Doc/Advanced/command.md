@@ -1,340 +1,155 @@
 # 自定义命令
 
-EasySwoole 的命令系统支持注册自己的 Command、Action 和 Option。例如，我们可以实现下面的调用：
+EasySwoole 3.8.2 使用 `easyswoole/command` 3.x。自定义命令实现 `CommandInterface`，用 `CommandDefinition` 声明命令及操作，用 `execute()` 读取已解析的输入并返回 `CommandResult`。
 
-```bash
-php easyswoole.php myCommand run --name=EasySwoole --times=2 --force
-```
+## 定义命令
 
-这条命令可以拆成：
-
-```text
-php easyswoole.php myCommand run --name=EasySwoole --times=2 --force
-                     │       │         │              │       │
-                     │       │         │              │       └─ 无值 Option
-                     │       │         │              └───────── 有值 Option
-                     │       │         └──────────────────────── 有值 Option
-                     │       └─────────────────────────────────── Action
-                     └─────────────────────────────────────────── Command
-```
-
-项目入口文件如果命名为 `easyswoole`，对应命令就是：
-
-```bash
-php easyswoole.php myCommand run --name=EasySwoole --times=2 --force
-```
-
-## 创建命令类
-
-新建 `App/Command/MyCommand.php`：
+新建 `App/Command/GreetCommand.php`。示例提供 `run` 和 `status` 两个 Action。`run` 接收一个位置参数、一个整数选项和一个布尔开关。
 
 ```php
 <?php
 
 namespace App\Command;
 
-use EasySwoole\Command\AbstractInterface\AbstractCommand;
-use EasySwoole\Command\Bean\Action;
-use EasySwoole\Command\Bean\Caller;
-use EasySwoole\Command\Bean\Option;
-use EasySwoole\Command\Bean\Result;
+use EasySwoole\Command\Console\Console;
+use EasySwoole\Command\Contracts\CommandInterface;
+use EasySwoole\Command\Definition\ActionDefinition;
+use EasySwoole\Command\Definition\Argument;
+use EasySwoole\Command\Definition\CommandDefinition;
+use EasySwoole\Command\Definition\Option;
+use EasySwoole\Command\Input\Input;
+use EasySwoole\Command\Result\CommandResult;
+use EasySwoole\Command\Validation\Rules;
 
-class MyCommand extends AbstractCommand
+final class GreetCommand implements CommandInterface
 {
-    public function name(): string
+    public static function createDefinition(): CommandDefinition
     {
-        // 调用命令中的第一个名称：myCommand
-        return 'myCommand';
+        return CommandDefinition::create('greet')
+            ->description('输出问候语')
+            ->action(
+                ActionDefinition::create('run')
+                    ->description('按指定次数输出问候语')
+                    ->argument(
+                        Argument::string('name', '称呼', required: true)
+                            ->validate(Rules::notBlank('称呼不能为空'))
+                    )
+                    ->option(
+                        Option::integer('times', '输出次数', default: 1)
+                            ->validate(Rules::range(1, 10, '输出次数必须在 1 到 10 之间'))
+                    )
+                    ->option(Option::flag('numbered', '显示行号'))
+            )
+            ->action(ActionDefinition::create('status')->description('查看命令状态'));
     }
 
-    public function description(): string
+    public function definition(): CommandDefinition
     {
-        return '项目自定义示例命令';
+        return self::createDefinition();
     }
 
-    protected function init(): void
+    public function execute(Input $input, Console $console): CommandResult
     {
-        $action = new Action('run', '执行自定义任务');
+        return match ($input->action()) {
+            'run' => $this->greet($input),
+            'status' => CommandResult::success('命令已就绪'),
+            default => throw new \LogicException('未知操作'),
+        };
+    }
 
-        $action->addOption(new class('name', '要输出的名称，例如 --name=EasySwoole') extends Option {
-            public static function validate(mixed $value, Caller $caller): bool|string
-            {
-                if (!is_string($value) || trim($value) === '') {
-                    return '请使用 --name=名称 指定非空名称';
-                }
+    private function greet(Input $input): CommandResult
+    {
+        $name = $input->argument('name');
+        $times = $input->option('times');
+        $numbered = $input->option('numbered');
+        $lines = [];
 
-                return true;
-            }
-        });
+        for ($index = 1; $index <= $times; $index++) {
+            $prefix = $numbered ? "{$index}. " : '';
+            $lines[] = "{$prefix}Hello {$name}";
+        }
 
-        $action->addOption(new class('times', '输出次数，例如 --times=2') extends Option {
-            public static function validate(mixed $value, Caller $caller): bool|string
-            {
-                if (
-                    filter_var($value, FILTER_VALIDATE_INT) === false
-                    || (int) $value < 1
-                    || (int) $value > 10
-                ) {
-                    return '--times 必须是 1 到 10 之间的整数';
-                }
-
-                return true;
-            }
-        });
-
-        // force 是无值开关，使用 --force 即表示开启。
-        $action->addOption(new Option('force', '是否强制执行'));
-
-        $action->setCallback(function (Caller $caller, Result $result): void {
-            $name = (string) $caller->commandLine->getOption('name');
-            $times = (int) $caller->commandLine->getOption('times');
-            $force = $caller->commandLine->hasOption('force');
-
-            $lines = [];
-
-            for ($index = 1; $index <= $times; $index++) {
-                $lines[] = "{$index}. Hello {$name}";
-            }
-
-            if ($force) {
-                $lines[] = 'force option enabled';
-            }
-
-            // 入口文件会在命令成功时输出 Result::$msg。
-            $result->result = [
-                'name' => $name,
-                'times' => $times,
-                'force' => $force,
-            ];
-            $result->msg = implode(PHP_EOL, $lines);
-        });
-
-        $this->registerAction($action);
+        return CommandResult::success(implode(PHP_EOL, $lines));
     }
 }
 ```
 
-`init()` 在命令对象创建时执行，用于注册 Action、参数、Option 和最终回调。回调中的 `$result->result` 可以保存结构化结果，`$result->msg` 用于向终端输出文本。
+有 Action 的命令把输入定义放在各自的 `ActionDefinition` 上。`install` 一类独立命令直接在 `CommandDefinition` 上声明输入，此时 `$input->action()` 返回 `null`。参数类型转换和校验在 `execute()` 之前完成。
 
-## 注册自定义命令
+## 在 bootstrap.php 中注册
 
-项目根目录的 `easyswoole.php` 会在运行命令前自动加载 `bootstrap.php`。编辑项目根目录的 `bootstrap.php`：
+在项目根目录的 `bootstrap.php` 中注册命令。管理脚本会先加载这个文件，然后才解析和执行命令。
+
+```php
+use App\Command\GreetCommand;
+use EasySwoole\EasySwoole\Command\CommandRunner;
+
+CommandRunner::getInstance()->addCommand(new GreetCommand());
+```
+
+命令名称必须唯一。注册同名命令会报错，框架内置名称包括 `install`、`server`、`process`、`task` 和 `crontab`。
+
+## 执行与查看帮助
+
+```bash
+php easyswoole.php greet run EasySwoole --times=2 --numbered
+php easyswoole.php greet status
+php easyswoole.php greet run --help
+```
+
+第一条命令输出两行带行号的问候语。`EasySwoole` 是位置参数 `name`，`--times=2` 是整数选项，`--numbered` 是布尔开关。也可以写成 `--numbered=true` 或 `--numbered=false`。
+
+执行成功使用 `CommandResult::success($message)`。业务失败可返回 `CommandResult::failure($message)`。管理脚本以退出码 `0` 表示成功，`1` 表示执行失败，`2` 表示参数错误。失败消息输出到 stderr。
+
+## 按需加载框架配置
+
+命令需要框架环境时，在对应的 Action 定义上添加以下设置。独立命令可以直接在 `CommandDefinition` 上设置。
+
+```php
+$action
+    ->option(Option::string('mode', '运行模式，例如 --mode=produce'))
+    ->metadata('runtime', true);
+```
+
+例如，将这两项加到上面 `run` 的定义末尾，即可用 `php easyswoole.php greet run EasySwoole --mode=produce` 加载 `produce.php` 后再执行。框架在输入校验通过后初始化 Core。命令在当前 CLI 进程中执行。
+
+## 通过 Provider 注册
+
+组件可以实现 `CommandProviderInterface`，将命令定义和实例工厂交给注册表。工厂在执行时才创建命令对象，适合有业务依赖的命令。
 
 ```php
 <?php
 
-use App\Command\MyCommand;
-use EasySwoole\EasySwoole\Command\CommandRunner;
+namespace App\Command;
 
-CommandRunner::getInstance()->addCommand(new MyCommand());
-```
+use EasySwoole\Command\CommandRegistry;
+use EasySwoole\Command\Contracts\CommandProviderInterface;
 
-不要在 `EasySwooleEvent::initialize()` 或 `mainServerCreate()` 中注册命令。自定义命令的解析发生在服务器启动流程之前，而 `bootstrap.php` 会在创建 `CommandRunner` 前被入口加载。
-
-命令名称必须唯一。如果自定义命令和内置命令同名，后注册的命令会覆盖已有命令，因此不要使用 `server`、`process`、`crontab` 或 `install` 等内置名称。
-
-## 执行命令
-
-在项目根目录运行：
-
-```bash
-php easyswoole.php myCommand run --name=EasySwoole --times=2
-```
-
-输出示例：
-
-```text
-1. Hello EasySwoole
-2. Hello EasySwoole
-```
-
-增加无值开关：
-
-```bash
-php easyswoole.php myCommand run --name=EasySwoole --times=2 --force
-```
-
-也可以按照单横线形式调用：
-
-```bash
-php easyswoole.php myCommand run -name=EasySwoole -times=2 -force
-```
-
-框架解析 Option 时会去除开头的 `-`，因此 `-force` 和 `--force` 都能被解析。为了和常见 CLI 规范保持一致，文档和脚本建议统一使用双横线：
-
-```bash
---force
---name=EasySwoole
-```
-
-Option 的值必须写在同一个参数中：
-
-```bash
-# 正确
---name=EasySwoole
-
-# 错误：EasySwoole 会被当成无法识别的普通参数
---name EasySwoole
-```
-
-## Command、Action 和 Option
-
-一个 Command 可以注册多个 Action：
-
-```text
-myCommand
-├── run
-│   ├── --name=EasySwoole
-│   ├── --times=2
-│   └── --force
-├── status
-└── clear
-```
-
-例如，在同一个 `init()` 中继续注册 `status`：
-
-```php
-$status = new Action('status', '查看执行状态');
-
-$status->setCallback(function (Caller $caller, Result $result): void {
-    $result->msg = 'command is ready';
-});
-
-$this->registerAction($status);
-```
-
-对应调用为：
-
-```bash
-php easyswoole.php myCommand status
-```
-
-直接运行 Command 而不指定有效 Action 时，框架会列出它支持的 Action 和 Option：
-
-```bash
-php easyswoole.php myCommand
-```
-
-## 有值 Option 和无值 Option
-
-有值 Option 使用 `getOption()` 读取：
-
-```php
-$name = $caller->commandLine->getOption('name');
-```
-
-无值开关使用 `hasOption()` 判断是否出现：
-
-```php
-$force = $caller->commandLine->hasOption('force');
-```
-
-未提供 `--force` 时，`getOption('force')` 和 `hasOption('force')` 的结果分别是 `null` 和 `false`；提供 `--force` 后，结果分别是 `null` 和 `true`。因此无值开关不能只依靠 `getOption()` 判断。
-
-同一个 Option 重复出现时，后面的值会覆盖前面的值：
-
-```bash
-php easyswoole.php myCommand run --name=first --name=second --times=1
-```
-
-最终读取到的 `name` 是 `second`。
-
-## 普通命名参数
-
-除了以 `-` 开头的 Option，命令系统还支持 `参数名=值` 形式的 Param。先在 Action 中注册：
-
-```php
-use EasySwoole\Command\Bean\Param;
-
-$action->addParam(new class('target', '处理目标，例如 target=users') extends Param {
-    public static function validate(mixed $value, Caller $caller): bool|string
-    {
-        return in_array($value, ['users', 'orders'], true)
-            ? true
-            : 'target 只允许 users 或 orders';
-    }
-});
-```
-
-在回调中读取：
-
-```php
-$target = $caller->commandLine->getParam('target');
-```
-
-调用方式：
-
-```bash
-php easyswoole.php myCommand run target=users --name=EasySwoole --times=1
-```
-
-`target=users` 是 Param，`--name=EasySwoole` 是 Option，两者不要混淆。
-
-## 返回执行失败
-
-参数校验失败时，Option 或 Param 的 `validate()` 返回错误文本即可。如果回调已经开始执行，但业务处理失败，应设置失败状态：
-
-```php
-use EasySwoole\Command\Bean\ExecStatusEnum;
-
-$action->setCallback(function (Caller $caller, Result $result): void {
-    try {
-        // 执行业务操作。
-    } catch (\Throwable $throwable) {
-        $result->status = ExecStatusEnum::COMMAND_ACTION_EXEC_FAIL;
-        $result->msg = $throwable->getMessage();
-    }
-});
-```
-
-入口会根据执行状态生成失败提示。命令会直接操作数据库、文件或远程服务时，应该把异常转换为明确的错误状态，部署脚本也应检查进程退出结果和业务输出。
-
-## 在命令中加载框架配置
-
-普通自定义命令不会自动加载 `dev.php` 或 `produce.php`。命令需要读取 EasySwoole 配置时，可以注册 `--mode`，并在 `beforeExecute()` 中初始化框架：
-
-```php
-use EasySwoole\Command\Bean\Caller;
-use EasySwoole\Command\Bean\Result;
-use EasySwoole\EasySwoole\Core;
-
-public function beforeExecute(Caller $caller, Result $result): bool
+final class AppCommandProvider implements CommandProviderInterface
 {
-    $mode = $caller->commandLine->getOption('mode');
-    Core::getInstance()->initialize($mode);
-
-    return true;
+    public function register(CommandRegistry $registry): void
+    {
+        $registry->register(
+            GreetCommand::createDefinition(),
+            static fn () => new GreetCommand()
+        );
+    }
 }
 ```
 
-还要为每个需要运行模式的 Action 添加 Option：
+将类保存为 `App/Command/AppCommandProvider.php`。在 `bootstrap.php` 中通过 `addProvider()` 注册这个 Provider。
 
 ```php
-$action->addOption(new Option('mode', '运行模式，例如 --mode=produce'));
+use App\Command\AppCommandProvider;
+use EasySwoole\EasySwoole\Command\CommandRunner;
+
+CommandRunner::getInstance()->addProvider(new AppCommandProvider());
 ```
 
-然后执行：
-
-```bash
-php easyswoole.php myCommand run \
-    --name=EasySwoole \
-    --times=1 \
-    --mode=produce
-```
-
-如果命令不需要框架配置、日志目录或运行模式，不要为了一个简单脚本初始化整个 EasySwoole Core。
-
-## 使用注意事项
-
-- 自定义命令在 CLI 进程中执行，不是在 HTTP Worker 中执行。
-- 命令执行结束后进程退出，内存状态不会保留到下一次调用。
-- 长时间运行的命令应输出进度并处理 `SIGTERM`，不要让部署脚本无限等待。
-- 破坏性操作应增加明确的 `--force` 或确认参数，并在执行前再次校验目标。
-- 密码、Token 等敏感信息不应直接放在命令行中，因为它们可能出现在 Shell 历史和系统进程列表中。
-- 需要周期执行命令时，可以由 systemd timer、Linux crontab 或 CI 调度；需要跟随 EasySwoole 服务运行的任务可使用框架 [Crontab](/Advanced/crontab.md)。
+同一个命令只注册一次。执行此 Provider 示例时，移除上面的 `addCommand(new GreetCommand())`。
 
 ## 源码依据
 
-- [EasySwoole Command](https://github.com/easy-swoole/command)
-- [CommandRunner](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/CommandRunner.php)
-- [命令入口](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/easyswoole)
+- [框架命令接入说明](https://github.com/easy-swoole/easyswoole/blob/3.8.2/docs/command-3.x.md)
+- [CommandRunner](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
+- [Command 3.x](https://github.com/easy-swoole/command/tree/3.0.1)
