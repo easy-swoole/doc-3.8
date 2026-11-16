@@ -1,6 +1,6 @@
 # 转换与关联
 
-本章以 FastDb `3.0.8` 为准。先按[实体与字段映射](/FastDb/entity.md)创建 `users` 表、`App\Model\User`，并按[连接配置](/FastDb/connection.md)注册连接。下面的字段示例需要在原有 `User` 类中**替换或新增**对应属性，不是创建多个同名实体类。代码块中的 `use` 导入语句应放在 PHP 文件的 `namespace` 后、类声明前；属性和方法放在类的大括号内。
+本章以 FastDb `3.1.1` 为准。先按[实体与字段映射](/FastDb/entity.md)创建 `users` 表、`App\Model\User`，并按[连接配置](/FastDb/connection.md)注册连接。下面的字段示例需要在原有 `User` 类中**替换或新增**对应属性，不是创建多个同名实体类。代码块中的 `use` 导入语句应放在 PHP 文件的 `namespace` 后、类声明前；属性和方法放在类的大括号内。
 
 ## 转换在什么时候发生
 
@@ -9,9 +9,8 @@
 | 方式 | 实体属性 | 输入时 | `toArray()`、插入、更新时 |
 | --- | --- | --- | --- |
 | `convertObject` | 实现 `ConvertObjectInterface` 的对象 | 调用 `toObject()` | 调用对象的 `toValue()` |
-| `assignCall` + `toValue` | 数组等普通 PHP 值 | 调用输入回调 | 调用输出回调 |
 
-同一属性不能同时设置 `convertObject` 和回调。数据库查询结果、构造函数中的数据和 `setData()` 都会经过输入转换；直接赋值属性不会调用 `assignCall`。实体的 `toArray()` 使用**输出转换值**，不等于转换对象自己的 `toArray()`。`update()` 比较转换后的数据库值，因此对象内部修改也能被识别，成功保存后不会反复更新未变化字段。
+数据库查询结果、构造函数中的数据和 `setData()` 都会经过输入转换。实体的 `toArray()` 使用**输出转换值**，不等于转换对象自己的 `toArray()`。`update()` 比较转换后的数据库值，因此对象内部修改也能被识别，成功保存后不会反复更新未变化字段。
 
 ## JSON 数组：ConvertList
 
@@ -121,7 +120,7 @@ var_dump($user->toArray()['profile']); // JSON 字符串。
 
 ## JSON 对象数组：类型化 ConvertList
 
-FastDb `3.0.8` 的 `ConvertList` 可以通过 `itemClass()` 指定列表元素的 Bean 类型。先增加列：
+FastDb `3.1.1` 的 `ConvertList` 可以通过 `itemClass()` 指定列表元素的 Bean 类型。先增加列：
 
 ```sql
 ALTER TABLE users ADD COLUMN contacts JSON DEFAULT NULL;
@@ -321,65 +320,39 @@ var_dump($user->sex === SexEnum::MALE); // true
 
 `toObject()` 必须返回对象，通常与属性声明类型一致；`toValue()` 返回可写入数据库的值。非可空转换属性初始化时可能把默认值或 `null` 传给转换器，应明确处理。上例把未知值转成 `UNKNOWN`；若需严格拒绝非法数据库值，可抛异常。`setData()` 收到已是目标类型的对象时不重复转换。
 
-## 不创建对象：assignCall 与 toValue
+## JSON 转换失败
 
-如果希望 JSON 列在 PHP 中直接使用数组，可配对两个回调。上面的 `tags` 已用于 `ConvertList`，这里另加 `meta` 列，避免在同一属性上混用方式：
+`ConvertBean` 和 `ConvertList` 的 JSON 解析使用 `JSON_THROW_ON_ERROR`。空字符串、损坏文本、非法 UTF-8 和超出解析深度的 JSON 都会抛出 `JsonException`。合法 JSON 的 `null`、布尔值、数字或字符串不符合这两个转换器的数据结构要求，会抛出 `InvalidArgumentException`；JSON 对象和数组仍解码为 PHP 数组。PHP `null` 与 JSON 文本 `'null'` 分别按上述默认值和结构规则处理。
 
-```sql
-ALTER TABLE users ADD COLUMN meta JSON DEFAULT NULL;
-```
+实体构造、`setData()` 和查询结果转换会向调用方传播这些异常。实体可空属性接收 PHP `null` 时仍保留 null，不调用转换器；非空属性使用转换器定义的默认对象或空列表约定。
 
-在 `User` 类中增加属性和方法：
+需要“解析失败时返回空列表”等降级行为时，由业务继承转换器并在属性上显式选择：
 
 ```php
-use EasySwoole\FastDb\Attributes\Hook\Call;
+use EasySwoole\FastDb\AbstractInterface\ConvertList;
+use EasySwoole\FastDb\Attributes\Property;
 
-#[Property(
-    assignCall: new Call([User::class, 'decodeMeta']),
-    toValue: new Call([User::class, 'encodeMeta'])
-)]
-public ?array $meta;
-
-public static function decodeMeta(string|array|null $value): ?array
+class TolerantTags extends ConvertList
 {
-    if ($value === null || is_array($value)) {
-        return $value;
+    public static function toObject(mixed $data): static
+    {
+        try {
+            return parent::toObject($data);
+        } catch (\JsonException $exception) {
+            // 业务可在这里记录原始数据和异常，再选择返回空列表。
+            return new static([]);
+        }
     }
-    return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
 }
 
-public static function encodeMeta(?array $value): ?string
-{
-    return $value === null ? null : json_encode($value, JSON_THROW_ON_ERROR);
-}
+// 放在实体类中，以该业务转换器替代内置 ConvertList。
+#[Property(convertObject: TolerantTags::class)]
+public TolerantTags $tags;
 ```
 
-```php
-$user = User::findRecord(1);
-if ($user === null) {
-    throw new \RuntimeException('User not found');
-}
+`ConvertBean` 同样可以通过子类覆盖 `toObject()`，捕获 `JsonException` 后 `return new static([])`，使用子类定义的默认字段初始化。默认对象仍需满足业务 Bean 自身的必填字段约束。
 
-$user->setData(['meta' => '{"theme":"dark"}']);
-var_dump($user->meta);              // ['theme' => 'dark']
-$user->meta['theme'] = 'light';
-$user->update();
-var_dump($user->toArray()['meta']);  // '{"theme":"light"}'
-
-$user->meta = ['theme' => 'blue'];   // 已是数组时可直接赋值。
-$user->update();                    // 输出回调仍会编码成 JSON。
-```
-
-默认情况下，属性回调只收到当前字段值。若还需要当前实体，可显式传参：
-
-```php
-toValue: new Call(
-    [User::class, 'encodeMetaWithContext'],
-    [Call::PARAM_PROPERTY_VALUE, Call::PARAM_CURRENT_ENTITY]
-)
-```
-
-相应方法签名可写成 `encodeMetaWithContext(?array $value, User $entity): ?string`。`PARAM_PROPERTY_VALUE` 替换为当前值，`PARAM_CURRENT_ENTITY` 替换为当前实体，其他参数按字面传入。直接赋值不执行 `assignCall`，因此需确保赋入值符合属性声明类型。
+示例仅降级 JSON 解析错误；结构错误、类型化列表元素校验和 Bean 初始化异常继续抛出。若业务也要处理结构错误，可在子类中明确增加对应的处理规则。FastDb 不统一吞掉转换异常，也不提供全局自动降级策略。
 
 ## 关联查询
 
@@ -409,11 +382,15 @@ $orders = $user?->orders();
 
 遍历大量用户后逐个调用 `orders()` 会产生 N+1 查询。列表接口应收集用户 ID 后用 `IN` 批量查询，再由业务代码分组。
 
+## 批量预加载关联
+
+使用 `queryLimit()->withRelations(['profile', 'orders'])` 为当前列表批量加载关联。实体模式通过关联方法读取预加载结果，数组模式会把结果放进同名键。父查询需要选出关联使用的键。
+
 ## 源码依据
 
-- [FastDb 3.0.8 README：属性转换](https://github.com/easy-swoole/fast-db/blob/3.0.8/README.md#属性转换)
-- [ConvertList](https://github.com/easy-swoole/fast-db/blob/3.0.8/src/AbstractInterface/ConvertList.php)
-- [ConvertDateTime](https://github.com/easy-swoole/fast-db/blob/3.0.8/src/AbstractInterface/ConvertDateTime.php)
-- [ConvertBean](https://github.com/easy-swoole/fast-db/blob/3.0.8/src/AbstractInterface/ConvertBean.php)
-- [FieldCodec](https://github.com/easy-swoole/fast-db/blob/3.0.8/src/Internal/FieldCodec.php)
-- [Property](https://github.com/easy-swoole/fast-db/blob/3.0.8/src/Attributes/Property.php)
+- [FastDb 3.1.1 README：属性转换](https://github.com/easy-swoole/fast-db/blob/3.1.1/README.md#属性转换)
+- [ConvertList](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/ConvertList.php)
+- [ConvertDateTime](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/ConvertDateTime.php)
+- [ConvertBean](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/ConvertBean.php)
+- [FieldCodec](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Internal/FieldCodec.php)
+- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Attributes/Property.php)

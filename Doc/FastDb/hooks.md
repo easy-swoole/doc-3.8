@@ -25,6 +25,8 @@ use EasySwoole\FastDb\Attributes\Hook\OnDelete;
 use EasySwoole\FastDb\Attributes\Hook\OnInitialize;
 use EasySwoole\FastDb\Attributes\Hook\OnInsert;
 use EasySwoole\FastDb\Attributes\Hook\OnUpdate;
+use EasySwoole\FastDb\Attributes\AutoIncrement;
+use EasySwoole\FastDb\Attributes\PrimaryKey;
 use EasySwoole\FastDb\Attributes\Property;
 
 #[OnInitialize('initializeEntity')]
@@ -33,7 +35,9 @@ use EasySwoole\FastDb\Attributes\Property;
 #[OnDelete('beforeDelete')]
 class User extends AbstractEntity
 {
-    #[Property(isPrimaryKey: true)]
+    #[Property]
+    #[PrimaryKey]
+    #[AutoIncrement]
     public int $id;
 
     #[Property]
@@ -241,6 +245,6 @@ final class UserHook
 
 ## 源码依据
 
-- [AbstractEntity 钩子调用](https://github.com/easy-swoole/fast-db/blob/3.x/src/AbstractInterface/AbstractEntity.php)
-- [Hook Attributes](https://github.com/easy-swoole/fast-db/tree/3.x/src/Attributes/Hook)
-- [ReflectionCache](https://github.com/easy-swoole/fast-db/blob/3.x/src/Utility/ReflectionCache.php)
+- [AbstractEntity 钩子调用](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/AbstractEntity.php)
+- [Hook Attributes](https://github.com/easy-swoole/fast-db/tree/3.1.1/src/Attributes/Hook)
+- [ReflectionCache](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Utility/ReflectionCache.php)

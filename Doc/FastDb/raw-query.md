@@ -140,43 +140,82 @@ $result = FastDb::getInstance()->query(
     }
 );
 
-$connection = $result->getConnection();
-$affectedRows = $connection->getLastAffectRows();
-$insertId = $connection->getLastInsertId();
+$affectedRows = $result->getAffectedRows();
+$insertId = $result->getInsertId();
 ```
 
-## 批量插入
+## 批量插入与更新
 
-FastDb 实体当前没有 `insertAll()`，可以使用底层构建器：
+`fastInsertAll(iterable $rows, ?string $tableName = null, ?callable $onQuery = null, int $batchSize = 500): int|string` 把数据库格式的关联数组分批插入：
 
 ```php
-$result = FastDb::getInstance()->query(
-    function (QueryBuilder $query): void {
-        $query->insertAll('users', [
-            [
-                'name' => 'Alice',
-                'email' => 'alice@example.com',
-                'status' => 1,
-                'score' => 10,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-                'name' => 'Bob',
-                'email' => 'bob@example.com',
-                'status' => 1,
-                'score' => 20,
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-        ]);
-    }
-);
-
-$affectedRows = $result->getConnection()->getLastAffectRows();
+$affected = User::fastInsertAll([
+    ['name' => 'Alice', 'status' => 1, 'score' => 10],
+    ['score' => 20, 'name' => 'Bob', 'status' => 1], // 字段顺序可以不同。
+], batchSize: 500);
 ```
 
-底层写入不会执行实体的字段转换和生命周期钩子，数据必须已经符合数据库格式。
+输入可以是数组、Generator 或其他 iterable。每行必须是非空的数据库字段关联数组，同一批内必须使用相同的字段集合，由 mysqli 构建 SQL 时校验；只重排键顺序可以，不会自动补 null。各批独立执行，允许不同批次使用不同字段集合。每行按迭代读取时的标量值进入缓冲，后续修改行内标量引用不会改写已读取的行。JSON 等属性应先转成数据库可写的值；不会对每行应用实体转换器或插入钩子，也不回填自增 ID 或实体比较基准。
+
+#### 使用生成器控制批次内存
+
+```php
+function userRows(): \Generator
+{
+    for ($i = 1; $i <= 2000; $i++) {
+        yield ['name' => 'User-' . $i, 'status' => 1, 'score' => $i];
+    }
+}
+
+$affected = User::fastInsertAll(userRows(), tableName: 'users', batchSize: 500);
+```
+
+框架只缓冲当前批次，不会先把整个生成器转成数组，也不逐行创建模型。`batchSize` 按行数控制，默认 500；小于或等于 0 会抛出 `InvalidArgumentException`。空输入在 batchSize 有效时返回 0，不构造模型、不执行 SQL，也不校验未使用的更新列。非空有效输入省略表名时，在首次写入前仅初始化一个模型来取得表名，这个模型自身的默认初始化与 `OnInitialize` 仍会执行；显式给出有效表名则不构造模型。
+
+#### 主键或唯一键冲突时更新
+
+`fastUpsert(iterable $rows, array $updateColumns, ?string $tableName = null, ?callable $onQuery = null, int $batchSize = 500): int|string` 使用同样的分批规则。冲突由数据库已有的主键或唯一索引决定，不会自行选择业务字段作为唯一键：
+
+```php
+$affected = User::fastUpsert([
+    ['id' => 1, 'name' => 'Alice', 'score' => 10],
+    ['id' => 2, 'name' => 'Bob', 'score' => 20],
+], ['name', 'score'], batchSize: 500);
+
+// 列表项使用本次输入的对应列；关联项使用固定值或 mysqli Expression。
+$affected = User::fastUpsert([
+    ['id' => 1, 'name' => 'Alice', 'score' => 10],
+], [
+    'name',
+    'status' => 1,
+    'score' => QueryBuilder::rawExpression('`users`.`score` + ?', [5]),
+], tableName: 'users', batchSize: 500);
+```
+
+`$updateColumns` 沿用 mysqli 的 `upsert()` 规则；列表列名需存在于每条输入行中。非空输入的空更新列由 mysqli 抛出 `InvalidArgumentException`；`$rows` 为空时直接返回 0。固定值及表达式应用于发生冲突的行，插入新行仍使用输入值或数据库默认值。需要逐实体转换、钩子和主键回填时，继续使用实体 `insert($updateDuplicateCols)`。
+
+返回值是各批数据库 `affectedRows` 的合计，不是输入行数或自增 ID 列表。upsert 的插入、实际更新和未改变值可能产生不同的影响行数，应按数据库语义理解；合计超出 PHP 整数范围时返回十进制字符串，保留精度。
+
+#### 回调、连接与失败处理
+
+每批使用 FastDb 统一执行入口，触发全局查询日志及传入的 `$onQuery`；该回调收到本批的 `QueryResult`，不是整次批量操作的累计结果。整次操作固定入口选中的连接；默认表名需要模型初始化时，以该初始化和表名求值后选中的连接为准。生成器可以自行切换选库，后续批次仍写入原定数据库。
+
+方法不自动开启事务，也不自动重试。后续批次的字段校验、生成器、SQL 或回调发生异常时，前面的批次可能已经成功；查询成功后的回调异常也不代表该批 SQL 已回滚。需要整次原子性时，使用同一连接的显式事务，例如：
+
+```php
+$db = FastDb::getInstance();
+$db->begin();
+$connection = $db->currentConnection();
+try {
+    $affected = User::fastInsertAll(userRows(), tableName: 'users', batchSize: 500);
+    $db->commit($connection);
+} catch (\Throwable $error) {
+    $db->rollback($connection);
+    throw $error;
+}
+```
+
+显式保存连接可以保证生成器改变当前选库后，仍对实际写入连接提交或回滚；提交结果不明时仍需按事务章节说明核实。若调用前已有事务，应由该事务的拥有者决定提交或回滚。需要更多 SQL 构建选项时，仍可通过 `FastDb::query()` 使用底层 `QueryBuilder::insertAll()` / `upsert()`。
 
 ## 更新和删除
 
@@ -191,7 +230,7 @@ $updateResult = FastDb::getInstance()->query(
     }
 );
 
-$updated = $updateResult->getConnection()->getLastAffectRows();
+$updated = $updateResult->getAffectedRows();
 ```
 
 ```php
@@ -202,34 +241,50 @@ $deleteResult = FastDb::getInstance()->query(
     }
 );
 
-$deleted = $deleteResult->getConnection()->getLastAffectRows();
+$deleted = $deleteResult->getAffectedRows();
 ```
 
 调用更新和删除前，应确认构建器确实包含 WHERE 条件。底层 QueryBuilder 不会替业务判断是否允许全表操作。
 
 ## QueryResult
 
-`query()` 和 `rawQuery()` 都返回 `EasySwoole\FastDb\Mysql\QueryResult`：
-
-| 方法 | 内容 |
+| 方法 | 返回内容 |
 | --- | --- |
-| `getResult()` | 查询行数组；写入或 DDL 通常是布尔结果 |
-| `getResultOne()` | 查询结果第一行，没有时返回 `null` |
-| `getException()` | 执行失败时的异常对象 |
-| `getConnection()` | 本次查询实际使用的连接 |
-| `getQueryBuilder()` | QueryBuilder 的快照，rawQuery 时为 `null` |
-| `getRawSql()` | rawQuery 的 SQL，构建器查询通常为 `null` |
-| `getDuration()` | 本次执行耗时，单位为秒 |
+| `getResult()` | SELECT 等返回行数组，写入/DDL 通常返回 bool；查询失败回调中为 null |
+| `getResultOne()` | 数组结果的第一行，否则 null |
+| `getException(): ?Throwable` | 执行失败时的异常对象；成功或未设置时为 null |
+| `getConnectionName()` | 本次查询的执行连接名快照（string），供慢日志和异常定位使用 |
+| `getAffectedRows()` | 本次成功查询的影响行数快照；未取得结果或查询失败时为 null |
+| `getInsertId()` | 本次成功查询的自增 ID 快照；未取得结果或查询失败时为 null |
+| `getLastQuery(): ?string` | 按需展开绑定参数生成日志 SQL |
+| `getLastPrepareQuery(): ?string` | 保留占位符的 SQL |
+| `getLastBindParams(): array` | 按占位符顺序排列的绑定参数 |
+| `getRawSql()` | 原始 SQL 文本；构建器查询时通常 null |
+| `getDuration(): float` | 查询执行阶段耗时，秒；不含获取连接及日志回调 |
+| `getStartTime()` / `getEndTime()` | Unix 时间戳，用于日志定位；查询执行耗时使用 getDuration() |
 
-影响行数和自增 ID 保存在 Connection 上：
+查询回调接收只读 `QueryResult`。`QueryResult`、`QueryStack` 和 `TimeoutException` 使用相同的日志读取方法。原始 SQL 和事务操作的 SQL getter 返回执行文本，绑定参数为 `[]`。构建器查询的日志快照保存 mysqli 的只读编译结果，调用 `getLastQuery()` 时才按编译时的引号规则展开参数。自定义构建器应在构建阶段设置最终 SQL 和绑定参数。
+
+写入结果的影响行数和 insert id 从 `QueryResult` 快照读取。
 
 ```php
-$connection = $result->getConnection();
-$affectedRows = $connection->getLastAffectRows();
-$insertId = $connection->getLastInsertId();
+$affected = $result->getAffectedRows();
+$insertId = $result->getInsertId();
 ```
 
-这些值会被该连接的下一条 SQL 更新，应在当前调用返回后立即读取。
+查询结果和查询栈记录实际执行连接的名称。SQL 执行失败时也会记录该名称。
+
+FastDb 的 `query()` 和 `rawQuery()` 每次执行一条 SQL。Connection 返回后立即保存结果行、影响行数、自增 ID、SQL、参数和耗时。查询结果只反映本次执行，读取新数据需要再次查询。
+
+Connection 的 `getLastAffectRows()` / `getLastInsertId()` 始终表示最后一条实际执行 SQL 的元数据，包括分页总数查询。通过 FastDb 执行时，使用返回的 `QueryResult` 获取该次操作的影响行数和自增 ID。
+
+影响行数和自增 ID 类型为 `int|string|null`，超大无符号值保留为字符串，未查询或查询失败时为 null。影响行数与自增 ID 在查询成功后、日志回调执行前记录为快照，不会被后续 SQL 覆盖。`query()` 和 `rawQuery()` 的可选 `$timeout` 控制本次查询超时。
+
+直接使用 `FastDb::query()` 执行带 `SQL_CALC_FOUND_ROWS` 的查询时，如需总数，应紧接着调用 `rawQuery()` 执行 `SELECT FOUND_ROWS()`，并把主查询的 `getConnectionName()` 传给 `connection:`。实体分页入口会执行这一步，总数通过 `ListResult::totalCount()` 读取。
+
+`getDuration()` 只记录驱动执行阶段，排除 SQL 构建、获取连接、池连接淘汰和查询观察回调。
+
+连接获取耗时通过查询栈的独立 `connectionAcquire` 事件读取，不分摊给某条 SQL 或 QueryResult。计时覆盖连接池 `getObj()` 阶段，包含排队、按需新建连接、健康检查及重试；它不是纯粹的队列等待时间。业务端到端耗时还包含进入查询执行阶段前的构建和业务代码等阶段，需要另行计时。
 
 ## 在事务中执行
 
@@ -258,35 +313,41 @@ try {
 
 ## 查询超时
 
-`query()` 和 `rawQuery()` 的第二个参数控制本次 SQL 执行超时：
+`FastDb::query()`、`rawQuery()` 及 `begin()` / `commit()` / `rollback()` 的执行超时抛出 `EasySwoole\FastDb\Exception\TimeoutException`。异常创建时保存只读 SQL 上下文。message 保持底层错误消息，不拼接 SQL 或参数。
+
+| 方法 | 返回内容 |
+| --- | --- |
+| `getRawSql(): ?string` | 对应 SQL；预处理查询保留占位符，事务 SQL 包含 flags |
+| `getLastQuery(): ?string` | 按需展开绑定参数的日志 SQL |
+| `getLastPrepareQuery(): ?string` | 保留占位符的 SQL |
+| `getLastBindParams(): array` | 按占位符顺序排列的绑定参数 |
+| `getPrevious()` | 原始 mysqli 超时异常；错误码和 message 保持一致 |
 
 ```php
 use EasySwoole\FastDb\Exception\TimeoutException;
 
+$query = new QueryBuilder();
+$query->raw('SELECT SLEEP(?)', [1]);
 try {
-    $result = FastDb::getInstance()->query($query, timeout: 0.5);
+    $db->query($query, timeout: 0.05);
 } catch (TimeoutException $error) {
-    $sql = $error->getRawSql();
-    $builder = $error->getQueryBuilder();
-    $params = $builder ? $builder->getLastBindParams() : [];
-
-    // 记录脱敏后的 SQL、参数和异常信息
+    $sql = $error->getLastPrepareQuery(); // SELECT SLEEP(?)
+    $params = $error->getLastBindParams(); // [1]
+    $message = $error->getMessage(); // 原始超时消息。
+    $cause = $error->getPrevious();
+    // 将 message、sql、params 按需交给日志系统。
     throw $error;
 }
 ```
 
-三个超时控制的阶段不同：
+原始查询及事务超时可直接使用 `getRawSql()` 定位，例如 `COMMIT AND NO CHAIN NO RELEASE`。预处理查询使用 `getLastPrepareQuery()` 和 `getLastBindParams()` 获取 SQL 模板及参数。
 
-```text
-getObjectTimeout  → 等待连接池对象
-maxConnectTime    → 建立数据库连接
-query timeout     → 执行本次 SQL
-```
+FastDb 的超时异常继承 `EasySwoole\FastDb\Exception\Exception`。调用方可捕获 `EasySwoole\FastDb\Exception\TimeoutException`，或 FastDb 通用 `Exception`；它不继承 mysqli 异常，原始 mysqli 超时实例保存在 `getPrevious()` 中。
 
-查询超时不代表整个业务从开始到结束的总耗时上限。提交事务超时时还可能出现服务端已提交、客户端没有及时收到响应的情况，不能直接重复业务操作。
+这里覆盖 FastDb Connection 的 query/rawQuery 执行路径；获取连接前的连接池等待或建连失败、直接使用依赖 Client/prepare 的异常遵循各自入口。记录绑定参数时应按业务需要保护敏感数据。提交超时的结果需要核实，不能据此直接认定回滚。
 
 ## 源码依据
 
-- [FastDb query/rawQuery](https://github.com/easy-swoole/fast-db/blob/3.x/src/FastDb.php)
-- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.x/src/Mysql/QueryResult.php)
+- [FastDb query/rawQuery](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
+- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/QueryResult.php)
 - [EasySwoole Mysqli QueryBuilder](https://github.com/easy-swoole/mysqli/blob/5.x/src/QueryBuilder.php)

@@ -182,6 +182,8 @@
         - [RabbitMQ 驱动](/Library/Queue/rabbitmq.md)
         - [生产、消费与延迟任务](/Library/Queue/usage.md)
         - [可信任务与框架接入](/Library/Queue/reliable.md)
+    - 轻量缓存
+        - [安装、框架接入与用法](/Library/FastCache/index.md)
     - 同步调用
         - [安装、原理与快速开始](/Library/SyncInvoker/index.md)
         - [在 EasySwoole 中接入](/Library/SyncInvoker/integration.md)

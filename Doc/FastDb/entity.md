@@ -40,11 +40,15 @@ CREATE TABLE users (
 namespace App\Model;
 
 use EasySwoole\FastDb\AbstractInterface\AbstractEntity;
+use EasySwoole\FastDb\Attributes\AutoIncrement;
+use EasySwoole\FastDb\Attributes\PrimaryKey;
 use EasySwoole\FastDb\Attributes\Property;
 
 class User extends AbstractEntity
 {
-    #[Property(isPrimaryKey: true)]
+    #[Property]
+    #[PrimaryKey]
+    #[AutoIncrement]
     public int $id;
 
     #[Property]
@@ -75,17 +79,16 @@ class User extends AbstractEntity
 }
 ```
 
-只有带 `#[Property]` 的 public、非 static 属性参与输入、查询结果映射、写入和序列化。属性名就是数据库字段名，FastDb 3.x 的 `Property` 没有单独的列名映射参数。
+只有带 `#[Property]` 的 public、非 static 属性参与输入、查询结果映射、写入和序列化。属性名就是数据库字段名，FastDb 3.1.1 的 `Property` 没有单独的列名映射参数。
 
 ## Property 常用参数
 
 | 参数 | 作用 |
 | --- | --- |
-| `isPrimaryKey: true` | 声明主键，每个实体最多一个 |
 | `defaultValue` | 实体初始化默认值 |
 | `convertObject` | 指定实现 `ConvertObjectInterface` 的转换类型 |
-| `assignCall` | 数据赋给属性时执行的转换回调 |
-| `toValue` | 序列化、插入和更新前执行的转换回调 |
+
+在映射属性上单独添加 `#[PrimaryKey]` 声明主键，每个实体最多一个。数据库自增列额外添加 `#[AutoIncrement]`。从旧版升级时参见[安装页的迁移说明](/FastDb/install.md#从旧版本迁移)。
 
 主键用于 `findRecord(1)`、实体 `update()` 和 `delete()` 等操作。没有主键的实体仍可使用条件查询，但不能使用依赖主键的快捷行为。
 
@@ -191,6 +194,6 @@ $user = new User([
 
 ## 源码依据
 
-- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.x/src/AbstractInterface/AbstractEntity.php)
-- [Property](https://github.com/easy-swoole/fast-db/blob/3.x/src/Attributes/Property.php)
-- [EntityReflection](https://github.com/easy-swoole/fast-db/blob/3.x/src/Beans/EntityReflection.php)
+- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/AbstractEntity.php)
+- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Attributes/Property.php)
+- [EntityReflection](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/EntityReflection.php)

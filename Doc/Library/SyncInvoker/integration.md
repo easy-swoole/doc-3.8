@@ -1,6 +1,6 @@
 # 同步调用：在 EasySwoole 中接入
 
-框架项目需要做三件事：定义 Driver，在服务启动前附加同步进程，然后在控制器或业务服务中调用。不要在每次 HTTP 请求中创建 `SyncInvoker` 或调用 `attachServer()`；组件会在构造时创建共享表，调用 `attachServer()` 时把同步进程加入主服务。
+以下示例适用于 Sync Invoker `2.2.4`。框架项目需要做三件事：定义 Driver，在服务启动前附加同步进程，然后在控制器或业务服务中调用。不要在每次 HTTP 请求中创建 `SyncInvoker` 或调用 `attachServer()`；组件会在构造时创建共享表，调用 `attachServer()` 时把同步进程加入主服务。
 
 ## 第一步：定义要执行的方法
 
@@ -11,7 +11,7 @@
 
 namespace App\Sync;
 
-use EasySwoole\SyncInvoker\AbstractDriver;
+use EasySwoole\SyncInvoker\Driver\AbstractDriver;
 
 class LegacyDriver extends AbstractDriver
 {
@@ -23,7 +23,7 @@ class LegacyDriver extends AbstractDriver
 }
 ```
 
-客户端能调用的是 Driver 的 public 方法。将真正的阻塞代码放在这些方法中；调用完成后使用 `$this->response($value)` 指定返回数据。不要通过方法的 `return` 传递结果。Driver 在同一同步进程中会复用，如果某次调用没有设置响应值，可能拿到前一次调用留下的值；业务成功和失败分支都必须明确设置响应。
+客户端能调用的是 Driver 的 public 方法。将真正的阻塞代码放在这些方法中；调用完成后使用 `$this->response($value)` 指定返回数据。不要通过方法的 `return` 传递结果。Driver 在同一同步进程中会复用，每次调用前会清空上次响应。
 
 ## 第二步：定义单例并在启动前挂载进程
 
@@ -50,7 +50,7 @@ use App\Sync\InvokerHolder;
 use App\Sync\LegacyDriver;
 use EasySwoole\EasySwoole\ServerManager;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
-use EasySwoole\SyncInvoker\Worker;
+use EasySwoole\SyncInvoker\Process\Worker;
 
 public static function mainServerCreate(EventRegister $register): void
 {
@@ -60,7 +60,7 @@ public static function mainServerCreate(EventRegister $register): void
     $invoker->getConfig()->setTempDir(EASYSWOOLE_TEMP_DIR);
     $invoker->getConfig()->setOnWorkerStart(static function (Worker $worker): void {
         // 在同步进程启动后创建本进程独享的 SDK/数据库连接。
-        // 进程因调用超时被强杀并重新拉起时，也会重新执行此回调。
+        // 同步进程退出并由 Swoole 重新拉起时，也会重新执行此回调。
     });
 
     $server = ServerManager::getInstance()->getSwooleServer();
@@ -82,6 +82,7 @@ public static function mainServerCreate(EventRegister $register): void
 namespace App\HttpController;
 
 use App\Sync\InvokerHolder;
+use EasySwoole\SyncInvoker\Client\ResponseStatus;
 use EasySwoole\Http\AbstractInterface\Controller;
 
 class SyncDemo extends Controller
@@ -90,21 +91,21 @@ class SyncDemo extends Controller
     {
         // 2.0 表示本次调用的总时间预算，单位为秒；默认 15.0 秒。
         $result = InvokerHolder::getInstance()->invoke(2.0)->calculate(1, 2);
-        if ($result === null) {
-            $this->response()->withStatus(503);
-            $this->response()->write('同步调用没有返回结果');
+        if ($result->status !== ResponseStatus::Ok) {
+            $this->response()->withStatus($result->status === ResponseStatus::Timeout ? 504 : 503);
+            $this->response()->write('同步调用失败');
             return;
         }
-        $this->response()->write((string) $result);
+        $this->response()->write((string) $result->result);
     }
 }
 ```
 
-启动 EasySwoole 服务后，按项目的控制器映射规则访问该控制器，预期正文为 `3`。`invoke()` 通过 Unix Socket 等待独立进程返回结果；同步 Worker 内部执行 `calculate()`，不会把阻塞代码放回 HTTP Worker。这里把 `null` 当作“没有结果”的失败信号，所以业务方法不要正常返回 `null`；更完整的错误处理见下一章。
+启动 EasySwoole 服务后，按项目的控制器映射规则访问该控制器，预期正文为 `3`。`invoke()` 通过 Unix Socket 等待独立进程返回结果；同步 Worker 内部执行 `calculate()`，不会把阻塞代码放回 HTTP Worker。通过 `ResponseStatus::Ok` 判断调用是否成功，业务结果可以是 `null`。
 
 下一章：[超时、并发与使用边界](/Library/SyncInvoker/practice.md)。
 
 ## 源码依据
 
-- [组件 README（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/README.md)
-- [SyncInvoker（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/src/SyncInvoker.php)
+- [组件 README（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/README.md)
+- [SyncInvoker（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/SyncInvoker.php)

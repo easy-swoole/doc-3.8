@@ -7,6 +7,7 @@
 | 想实现什么 | 从哪里开始 | 是否需要外部服务 |
 | --- | --- | --- |
 | 复用数据库、Redis 等连接 | [连接池](/Library/Pool/index.md) | 演示对象不需要；真实连接需要对应服务 |
+| 在同一服务的 Worker 之间共享临时数据 | [轻量缓存](/Library/FastCache/index.md) | 不需要，会启动独立缓存进程 |
 | 异步投递并可靠消费任务 | [可信队列](/Library/Queue/index.md) | 需要 Redis 或 RabbitMQ |
 | 在协程服务中调用阻塞 SDK | [同步调用](/Library/SyncInvoker/index.md) | 不需要；会启动独立同步进程 |
 | 记录一次请求的调用链和耗时 | [链路追踪](/Library/Trace/index.md) | 单脚本示例不需要；持久化按需选择 |

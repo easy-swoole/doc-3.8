@@ -140,6 +140,6 @@ FastDb::getInstance()->reset();             // 重置所有已创建连接池
 
 ## 源码依据
 
-- [FastDb](https://github.com/easy-swoole/fast-db/blob/3.x/src/FastDb.php)
-- [Config](https://github.com/easy-swoole/fast-db/blob/3.x/src/Config.php)
-- [MySQL Pool](https://github.com/easy-swoole/fast-db/blob/3.x/src/Mysql/Pool.php)
+- [FastDb](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
+- [Config](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Config.php)
+- [MySQL Pool](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/Pool.php)

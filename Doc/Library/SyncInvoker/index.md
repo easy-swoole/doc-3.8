@@ -1,16 +1,16 @@
 # 同步调用：安装、原理与快速开始
 
-`easyswoole/sync-invoker` 适合在 Swoole 协程服务中调用没有协程支持的阻塞式 SDK。阻塞代码并没有消失，而是在独立的同步进程中运行；发起调用的协程通过 Unix Socket 等待结果，HTTP Worker 可以继续调度其他协程。以下用法以组件 `2.2.3` 为准。
+`easyswoole/sync-invoker` 适合在 Swoole 协程服务中调用没有协程支持的阻塞式 SDK。阻塞代码并没有消失，而是在独立的同步进程中运行；发起调用的协程通过 Unix Socket 等待结果，HTTP Worker 可以继续调度其他协程。以下用法以组件 `2.2.4` 为准。
 
 ## 先理解结构
 
 ```text
 HTTP Worker 中的协程
     → invoke(超时秒数)->方法名(参数)
-    → 抢占一个空闲同步进程，通过 Unix Socket 发送命令
+    → 优先选择空闲进程。全部繁忙时，向一个已启动进程的 Unix Socket 投递
     → 该进程调用 AbstractDriver 子类中的 public 方法
     → Driver 使用 response(结果) 设置返回值
-    → 结果通过 Unix Socket 返回原协程
+    → 客户端收到包含 status、result、msg 的 Response
 ```
 
 `workerNum` 决定最多同时执行多少个阻塞调用；每个同步进程一次只执行一个调用。共享的 `Swoole\Table` 记录各进程的 PID 和是否空闲。如果已经有协程版客户端，优先直接使用它，避免额外的进程与序列化开销。
@@ -20,7 +20,7 @@ HTTP Worker 中的协程
 在项目根目录执行：
 
 ```bash
-composer require 'easyswoole/sync-invoker:^2.2'
+composer require 'easyswoole/sync-invoker:^2.2.4'
 composer show easyswoole/sync-invoker
 php --ri swoole
 ```
@@ -36,8 +36,9 @@ php --ri swoole
 
 require __DIR__ . '/vendor/autoload.php';
 
-use EasySwoole\SyncInvoker\AbstractDriver;
+use EasySwoole\SyncInvoker\Driver\AbstractDriver;
 use EasySwoole\SyncInvoker\Config;
+use EasySwoole\SyncInvoker\Client\ResponseStatus;
 use EasySwoole\SyncInvoker\SyncInvoker;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -65,7 +66,12 @@ $server->on('request', static function (
     Response $response
 ) use ($invoker): void {
     $result = $invoker->invoke(3.0)->plus(1, 2);
-    $response->end((string) $result);
+    if ($result->status !== ResponseStatus::Ok) {
+        $response->status($result->status === ResponseStatus::Timeout ? 504 : 503);
+        $response->end('同步调用失败');
+        return;
+    }
+    $response->end((string) $result->result);
 });
 
 $server->start();
@@ -82,11 +88,27 @@ curl http://127.0.0.1:9502/
 # 约一秒后输出：3
 ```
 
-用 Ctrl+C 停止脚本。它会启动自己的 Swoole HTTP Server，不能与已有服务占用同一端口。`plus()` 的 PHP 返回类型是 `void`：跨进程返回值要通过 `$this->response()` 设置，而不是 `return $a + $b`。每次调用都要显式设置响应，包括业务失败分支；Driver 会在同一同步进程中复用，漏设响应可能返回前一次调用留下的值。`invoke(3.0)` 的超时单位是秒，指这一次调用从等待空闲进程到接收结果的总预算；默认是 15 秒。
+用 Ctrl+C 停止脚本。它会启动自己的 Swoole HTTP Server，不能与已有服务占用同一端口。`plus()` 的 PHP 返回类型是 `void`：跨进程返回值要通过 `$this->response()` 设置，而不是 `return $a + $b`。
+
+## 调用响应
+
+`$invoker->invoke()->plus(1, 2)` 返回 `EasySwoole\SyncInvoker\Client\Response`，包含三个只读字段。
+
+| 字段 | 含义 |
+| --- | --- |
+| `status` | `Ok`（`ok`）、`Timeout`（`timeout`）、`TransportError`（`transport_error`）或 `PackageTooLarge`（`package_too_large`），均为 `ResponseStatus` 枚举值。 |
+| `result` | `Ok` 时是 Driver 设置的业务结果，可以是 `null` 或 `false`。其他状态下为 `null`。 |
+| `msg` | 用于诊断的消息，成功时为空字符串。调用方根据 `status` 分支。 |
+
+Driver 继续用 `$this->response($value)` 设置业务结果。
+
+`maxPackageSize` 按字节限制请求和响应的完整数据包，包含 4 字节包头和序列化后的包体。等于上限可以通过。
+客户端在发送前检查请求，worker 在读取包体前再次检查。超大的请求会被拒绝，Driver 不会执行。
+超大的响应会改发 `PackageTooLarge`，此时 Driver 已经执行。
 
 接下来把相同结构放进框架项目：[在 EasySwoole 中接入](/Library/SyncInvoker/integration.md)。
 
 ## 源码依据
 
-- [组件 README（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/README.md)
-- [SyncInvoker（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/src/SyncInvoker.php)
+- [组件 README（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/README.md)
+- [SyncInvoker（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/SyncInvoker.php)

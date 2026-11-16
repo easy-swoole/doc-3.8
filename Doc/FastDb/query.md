@@ -121,8 +121,23 @@ try {
 - 当前实现使用 OFFSET 分页，应设置稳定且尽量唯一的排序，例如按主键 `id ASC`。
 - 回调每次接收单条实体；`chunkSize` 控制每次数据库读取数量，不控制回调参数数量。
 - 遍历期间如果删除记录，或者修改了查询所依赖的 `status` 等字段，后续 OFFSET 可能发生偏移，导致跳过或重复处理。
-- `chunk()` 适合报表导出、通知发送等一般批处理；需要严格不漏数据的迁移任务，更适合自行实现基于主键游标的 `WHERE id > last_id ORDER BY id LIMIT n`。
+- 处理过程中会删除记录或修改筛选字段时，可以使用 `chunkById()` 按稳定唯一列分批。
 - 批量处理仍在当前请求或任务中同步执行。耗时任务不要长期占用 HTTP 请求，应放入 TaskWorker、队列消费者或独立命令进程。
+
+## 按主键分批
+
+```php
+$entity = new User();
+$entity->queryLimit()->where('status', 1)->orderBy('id', 'ASC');
+$entity->chunk(function (User $user): void {
+    // 逐条处理。
+    echo $user->id;
+}, 100);
+```
+
+`chunk($callback, $chunkSize = 10)` 按 OFFSET 分页读取，每次回调接收一条记录，不是一个数组块。各页沿用入口处从发起实体取得的查询配置，并使用首个查询的表和连接。回调可以另选连接执行自己的查询，之后的分页仍使用首个查询的数据源。请提供稳定排序；遍历中删除记录或修改筛选条件可能改变后续页的偏移，不适合需要稳定游标的迁移任务。 `chunk()` 不主动请求总数统计，按原始页条数判断是否继续；调用前显式开启的总数统计选项仍保留。
+
+`$chunkSize` 必须大于 0。回调返回严格的 `false` 时立即停止，不再交付本批剩余记录或查询后续批次；没有返回值或返回其他值时继续。`chunk()` 本身不返回累计处理条数。
 
 ## 插入
 
@@ -188,7 +203,7 @@ $affected = User::fastUpdate(
 );
 ```
 
-`fastUpdate()` 不执行实体转换、变更比较和更新钩子。空条件数组可能生成没有 WHERE 的更新，调用前必须自行保证条件安全。
+`fastUpdate()` 不执行实体转换、变更比较和更新钩子。快捷更新和删除都要求提供有效的 WHERE 条件，空条件会抛出异常。
 
 ## 删除
 
@@ -240,6 +255,6 @@ class Users extends Controller
 
 ## 源码依据
 
-- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.x/src/AbstractInterface/AbstractEntity.php)
-- [Query](https://github.com/easy-swoole/fast-db/blob/3.x/src/Beans/Query.php)
-- [ListResult](https://github.com/easy-swoole/fast-db/blob/3.x/src/Beans/ListResult.php)
+- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/AbstractEntity.php)
+- [Query](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/Query.php)
+- [ListResult](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/ListResult.php)

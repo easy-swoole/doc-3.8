@@ -114,6 +114,98 @@ $result = $entity->all(true);
 
 查询、更新和提交必须保持在同一协程、同一 FastDb 连接名内。
 
+## 回调事务
+
+`transaction(callable $callback, TransactionStartFlags $flags = TransactionStartFlags::None, ?float $timeout = null): mixed` 在入口选中的实际连接上管理回调事务。回调接收当前 `FastDb` 实例，也可使用无参数闭包；正常完成时返回回调的原始返回值，包括 false、null 或对象。
+
+```php
+$db = FastDb::getInstance();
+$updated = $db->transaction(function (FastDb $db): bool {
+    $user = User::findRecord(1, selectForUpdate: true);
+    if ($user === null) {
+        throw new RuntimeException('User not found');
+    }
+    $user->score += 10;
+    if (!$user->update()) {
+        throw new RuntimeException('Update failed');
+    }
+    return true;
+}, flags: TransactionStartFlags::ReadWrite, timeout: 1.0);
+```
+
+`transaction()` 使用自身的事务生命周期。子类覆写 `begin()`、`commit()` 或 `rollback()` 时，覆写只作用于显式调用这些入口。入口连接没有事务时，本层先开始事务，回调正常返回后提交；开始或业务回调抛异常时，入口连接仍有活动事务才尝试回滚，随后抛出原异常。开始失败不会执行回调。返回严格的 `false` 也是正常返回，会提交；需要让拥有层回滚时应抛出异常。
+
+#### 同连接嵌套与已有手动事务
+
+入口连接已经有事务时，本层只执行回调，不发送 BEGIN、COMMIT 或 ROLLBACK。`flags` 和 `timeout` 仅用于本层实际发送的事务 SQL。
+
+同连接的内层异常被外层业务捕获后，外层可以正常提交，包括内层在异常前已经执行的写入。内层异常若继续逃出最外层拥有者，才由该拥有者回滚：
+
+```php
+$db->transaction(function (FastDb $db): void {
+    try {
+        $db->transaction(function (FastDb $db): void {
+            // 与外层使用同一个数据库事务。
+            throw new RuntimeException('Inner operation failed');
+        });
+    } catch (RuntimeException $error) {
+        // 已捕获异常；外层正常返回时仍会提交。
+    }
+});
+```
+
+事务原本由手工 `begin()` 开启时，`transaction()` 同样只加入并执行回调。无论回调返回还是抛异常，都由手工事务的调用方决定何时提交或回滚；框架不额外标记该事务。
+
+#### 连接选择与 A → B → A
+
+拥有层固定入口的实际 Connection，结束时始终操作该连接；回调改变选库，不会让 helper 提交其他连接。方法本身不恢复选库，也不会把回调中的全部 SQL 强制路由到入口连接。需要退出时恢复连接名，可配合 `withConnection()`。
+
+A → B → A 时，A、B 各自尚无事务的外层分别开始一个事务，重新进入 A 的内层只加入 A。
+
+假设已通过 `addDb()` 注册名为 `A`、`B` 的连接，进入示例前两者都没有事务。下面在 A 写入、切到 B 读取，再回到 A 写入：
+
+```php
+$db = FastDb::getInstance();
+$db->withConnection('A', function (FastDb $db): void {
+    $db->transaction(function (FastDb $db): void {
+        // 开始 A 的事务。
+        User::fastUpdate(1, ['status' => 1]);
+
+        $db->withConnection('B', function (FastDb $db): void {
+            $db->transaction(function (FastDb $db): void {
+                // 开始 B 的独立事务，当前查询使用 B。
+                User::findRecord(1);
+
+                $db->withConnection('A', function (FastDb $db): void {
+                    $db->transaction(function (FastDb $db): void {
+                        // 复用外层 A 的连接和事务，不重复 BEGIN。
+                        User::fastUpdate(1, ['score' => 20]);
+                    }); // 只退出内层回调，不提交 A。
+                }); // 恢复选择 B。
+
+                User::findRecord(2); // 继续使用 B。
+            }); // 正常返回，提交 B。
+        }); // 恢复选择 A。
+
+        User::fastUpdate(1, ['status' => 2]); // 仍在最外层 A 的事务中。
+    }); // 正常返回，提交 A，包括内层 A 的写入。
+}); // 恢复进入示例前的连接名。
+```
+
+发生异常时：
+
+- 内层 A 的异常被业务捕获后，A、B 都可以继续正常提交；没有自动的局部回滚。
+- 异常逐层逃出时，各个拥有层分别回滚自己的连接。
+- B 已经提交后，A 随后回滚不会撤销 B；两个连接没有分布式事务协调。
+
+#### flags、超时和提交失败
+
+拥有层使用 flags 开始事务，timeout 分别传给本层实际发送的 BEGIN、COMMIT、ROLLBACK。每条控制 SQL 都有独立的单次预算；这不是 PHP 回调或整个事务的累计期限，业务 SQL 仍使用各自查询参数或连接配置。连接池等待也不包含在控制 SQL 超时内。
+
+开始或业务回调抛出的异常优先于回滚清理异常，回滚失败不会替换原异常。提交发生在业务回调正常返回之后：提交返回 false 会抛出 `RuntimeError`，提交本身或其日志回调抛出的异常直接向外传播，不自动重试，也不自动追加 ROLLBACK。尤其 COMMIT 已成功后的日志异常不能视为数据库未提交；提交超时、断线等结果不明时，由业务核实最终状态并处理。
+
+helper 不解析 SQL 白名单，不管理 savepoint，不跟踪事务代次，也不阻止回调手工开始、提交、回滚或执行会隐式提交的 SQL。这些操作对事务边界及业务原子性的影响由调用方负责。
+
 ## 多数据库事务
 
 切换连接后开始的事务只属于该连接：
@@ -155,6 +247,6 @@ InnoDB 死锁错误 1213 会使整个事务回滚，组件清理事务标记，�
 
 ## 源码依据
 
-- [FastDb 事务实现](https://github.com/easy-swoole/fast-db/blob/3.x/src/FastDb.php)
-- [TransactionTest](https://github.com/easy-swoole/fast-db/blob/3.x/tests/TransactionTest.php)
-- [MySQL Connection](https://github.com/easy-swoole/fast-db/blob/3.x/src/Mysql/Connection.php)
+- [FastDb 事务实现](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
+- [TransactionTest](https://github.com/easy-swoole/fast-db/blob/3.1.1/tests/TransactionTest.php)
+- [MySQL Connection](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/Connection.php)

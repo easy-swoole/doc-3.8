@@ -11,29 +11,20 @@ FastDb 可以通过全局查询回调记录 SQL、绑定参数、执行耗时和
 
 ## QueryResult 提供的信息
 
-查询回调接收 `EasySwoole\FastDb\Mysql\QueryResult`：
-
-| 方法 | 内容 |
+| 方法 | 返回内容 |
 | --- | --- |
-| `getDuration()` | SQL 执行耗时，单位为秒 |
-| `getStartTime()` | 开始执行的 Unix 时间戳 |
-| `getEndTime()` | 结束执行的 Unix 时间戳 |
-| `getQueryBuilder()` | QueryBuilder 查询的快照 |
-| `getRawSql()` | `rawQuery()` 或事务使用的原始 SQL |
-| `getException()` | 查询失败时的异常对象 |
-| `getResult()` | 查询执行结果，失败时通常为 `null` |
-| `getConnection()` | 本次查询实际使用的连接 |
-
-QueryBuilder 查询应分别记录预处理 SQL 和绑定参数：
-
-```php
-$builder = $result->getQueryBuilder();
-$sql = $result->getRawSql()
-    ?? ($builder ? $builder->getLastPrepareQuery() : null);
-$params = $builder ? $builder->getLastBindParams() : [];
-```
-
-优先使用 `getLastPrepareQuery()` 和 `getLastBindParams()`，不要把用于调试展示的占位符替换文本当成数据库实际执行形式。
+| `getResult()` | SELECT 等返回行数组，写入/DDL 通常返回 bool；查询失败回调中为 null |
+| `getResultOne()` | 数组结果的第一行，否则 null |
+| `getException(): ?Throwable` | 执行失败时的异常对象；成功或未设置时为 null |
+| `getConnectionName()` | 本次查询的执行连接名快照（string），供慢日志和异常定位使用 |
+| `getAffectedRows()` | 本次成功查询的影响行数快照；未取得结果或查询失败时为 null |
+| `getInsertId()` | 本次成功查询的自增 ID 快照；未取得结果或查询失败时为 null |
+| `getLastQuery(): ?string` | 按需展开绑定参数生成日志 SQL |
+| `getLastPrepareQuery(): ?string` | 保留占位符的 SQL |
+| `getLastBindParams(): array` | 按占位符顺序排列的绑定参数 |
+| `getRawSql()` | 原始 SQL 文本；构建器查询时通常 null |
+| `getDuration(): float` | 查询执行阶段耗时，秒；不含获取连接及日志回调 |
+| `getStartTime()` / `getEndTime()` | Unix 时间戳，用于日志定位；查询执行耗时使用 getDuration() |
 
 ## 注册全局查询日志
 
@@ -79,13 +70,11 @@ final class FastDbQueryLogger
     public static function record(QueryResult $result): void
     {
         try {
-            $builder = $result->getQueryBuilder();
             $exception = $result->getException();
             $durationMs = round($result->getDuration() * 1000, 2);
 
-            $sql = $result->getRawSql()
-                ?? ($builder ? $builder->getLastPrepareQuery() : null);
-            $params = $builder ? $builder->getLastBindParams() : [];
+            $sql = $result->getLastPrepareQuery();
+            $params = $result->getLastBindParams();
 
             $isSlow = $durationMs >= self::SLOW_QUERY_MS;
             $isFailed = $exception !== null;
@@ -253,30 +242,61 @@ $entity->setOnQuery(null);
 
 ## 使用查询栈排查重复查询
 
-FastDb 可以在当前协程中暂存查询记录：
-
 ```php
-$db = FastDb::getInstance();
-$db->isEnableQueryStack(true);
+$db->configureQueryStack(true, maxStackSize: 2);
+$db->rawQuery('SELECT 11'); // 首次借连接时先记 connectionAcquire，再记 query，共占两条。
+$db->rawQuery('SELECT 22');
+$db->rawQuery('SELECT 33');
 
-// 执行业务查询
-
-$all = $db->getQueryStack();
-$last = $db->getQueryStack(-1);
-$previous = $db->getQueryStack(-2);
-
-$db->isEnableQueryStack(false);
+$stack = $db->getQueryStack(); // 当前协程记录数组，未记录时 null。
+$first = $db->getQueryStack(0); // SELECT 22，SELECT 11 已淘汰。
+$last = $db->getQueryStack(-1); // SELECT 33。
+$previous = $db->getQueryStack(-2); // SELECT 22。
+$missing = $db->getQueryStack(100); // null。
+$db->configureQueryStack(false, maxStackSize: 2); // 停止追加，保持相同容量下的已有记录。
 ```
 
-每条 `QueryStack` 包含：
+`configureQueryStack(bool $enabled, int $maxStackSize = 256): static` 的容量必须是正整数，配置属于该 FastDb 实例；每个协程分别保留最近 N 条事件，包含 `query` 和 `connectionAcquire`，达到容量时淘汰最旧项。返回数组始终按保留记录的先后顺序排列；正索引 0 表示当前保留的最旧项，-1 表示最新项，越界返回 null。首次查询若需要借连接会产生两条事件，复用连接的后续查询只有 `query` 事件。
 
-- `connectionName`
-- `query`：QueryBuilder 快照
-- `rawQuery`：原始 SQL
-- `startTime`、`endTime`
-- `duration`：秒
+每次启停调用都会应用 `maxStackSize`，缩小容量会立即裁剪该实例所有已有协程栈，包括关闭时。关闭只停止追加，不主动清空，但 `configureQueryStack(false)` 也会应用默认容量 256：此前容量大于 256 时，已有记录会缩到最近 256 条。需要保留更大容量下的现有记录，可显式传原容量，例如 `configureQueryStack(false, maxStackSize: 1024)`。协程退出或回收上下文时清理其记录。
 
-查询栈按协程保存，并在协程退出或回收上下文时清理。开启后会持续积累记录，不建议在长生命周期协程中永久启用；更适合开发、测试或针对特定问题临时开启。
+每项 `QueryStack` 的公共字段均为只读。
+
+| 字段 | 含义 |
+| --- | --- |
+| `type` | 普通 SQL 为 `query`，独立连接获取事件为 `connectionAcquire` |
+| `connectionName` | 本次操作的连接名快照，失败时也可定位尝试借用的连接 |
+| `rawQuery` | 原始 SQL 文本，构建器查询和连接获取事件为 null |
+| `duration` | 当前事件耗时，秒；query 为驱动执行阶段，connectionAcquire 为本次 getObj() 的获取总耗时 |
+| `exception` | SQL 执行异常，或连接获取事件中实际向外抛出的借用异常；成功时为 null |
+| `startTime` / `endTime` | 记录的起止 Unix 时间戳，用于日志定位；耗时字段使用单调时钟 |
+
+主查询与 `SELECT FOUND_ROWS() as count` 各有一条 trace，各自触发全局 `onQuery`。FastDb 对每条 SQL 先记录 trace，再通知回调。主查询或其回调抛异常时，列表停止执行，总数 SQL 不会发出。总数 SQL 的回调抛异常时，异常直接传播，已记录的 trace 保留。查询栈和查询结果共享同一份 SQL 快照。
+
+普通 SQL 记录的异常来自该 SQL 执行结果，不把 SQL 成功后日志回调再抛出的错误改记为 SQL 失败。获取连接失败时，栈中的 `exception` 则保留实际向调用方抛出的那个异常。
+
+#### 连接获取的独立事件
+
+通过 FastDb 真正执行一次 `getObj()` 新借连接，无论由 `query()`、`rawQuery()`、直接 `begin()`，还是 `invoke()`、`transaction()` 触发，都生成一条独立的 `type = 'connectionAcquire'` 事件。复用已有连接不生成获取事件；向 `begin()` 显式传入已有 Connection 也不借连接。连接池内部的创建、健康检查与重试包含在这一条事件里，不拆成多条。配置校验、`testDb()` 和 `preConnect()` 不属于这段借用计时。
+
+借用失败同样记录独立获取事件。`duration` 是获取历时，连接名及实际向外抛出的异常可见。连接获取事件的两个 SQL getter 返回 null，绑定参数返回 `[]`。没有执行 SQL 时，不生成 `query` 事件，也不调用全局 `onQuery`。
+
+仅在借用入口已启用查询栈时启动获取计时，记录完成时若已关闭则丢弃事件；入口关闭、借用过程中才开启时，该次借用不补记获取事件，之后的查询执行可正常入栈。`query(callable)` 的构建阶段可以开启查询栈，之后执行的 SQL 会按当时的配置记录。
+
+```php
+$db->configureQueryStack(true, maxStackSize: 256);
+try {
+    $db->rawQuery('SELECT 1');
+} catch (Throwable $error) {
+    $event = $db->getQueryStack(-1);
+    if ($event !== null && $event->type === 'connectionAcquire') {
+        $acquireMs = $event->duration * 1000;
+        $connectionName = $event->connectionName;
+        $sameException = $event->exception === $error;
+    }
+    throw $error;
+}
+```
 
 ## 回调的异常边界
 
@@ -288,6 +308,6 @@ $db->isEnableQueryStack(false);
 
 ## 源码依据
 
-- [FastDb 查询回调与查询栈](https://github.com/easy-swoole/fast-db/blob/3.x/src/FastDb.php)
-- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.x/src/Mysql/QueryResult.php)
-- [QueryStack](https://github.com/easy-swoole/fast-db/blob/3.x/src/Beans/QueryStack.php)
+- [FastDb 查询回调与查询栈](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
+- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/QueryResult.php)
+- [QueryStack](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/QueryStack.php)

@@ -1,128 +1,125 @@
 # 同步调用：超时、并发与使用边界
 
-同步进程替 HTTP Worker 执行阻塞方法，但一次调用仍要等待结果。下面按 `sync-invoker` 2.2.3 的执行流程说明容量、失败与恢复。
+本文适用于 Sync Invoker `2.2.4`。
 
-## 一次调用的超时预算
+## Timeout 语义
+
+调用入口为：
 
 ```php
-$result = InvokerHolder::getInstance()->invoke(2.0)->calculate(1, 2);
+public function invoke(float $timeout = 15.0): Client
 ```
 
-`invoke(float $timeout = 15.0)` 的单位为秒，支持小数，必须大于 0，不接受 `null`。计时从本次方法调用开始，覆盖等待空闲同步进程、Unix Socket 通信和 Driver 方法执行，不是只限制方法本身。
+- 单位为秒，支持小数。
+- 默认值为 15 秒。
+- 不接受 `null`。
+- 必须是大于 `0` 的有限数值，否则抛出 `InvalidArgumentException`。
+- timeout 是单次调用的总预算。客户端从开始调用计算同一个 `expireTime`，连接、发送和接收都使用剩余时间。
+- `expireTime` 使用同一台主机上的单调时钟。任务排队期间耗尽预算时，worker 关闭连接并跳过 Driver 调用。
+- 客户端超时或 Socket 通信失败时关闭连接，分别返回 `Timeout` 或 `TransportError` 状态。
+- 任务一旦开始便继续执行。执行完已经过期，或发送响应时连接断开，worker 会丢弃响应并处理下一个连接。
+- 如果任务一直阻塞，所在 worker 会持续繁忙，排在它后面的任务要等它恢复后才能处理。
 
-| 情况 | 调用方看到什么 | 同步进程如何处理 |
-| --- | --- | --- |
-| 所有同步进程都忙，超过预算 | `null` | 尚未分配进程，不会强杀任何进程 |
-| 连接或发送失败 | 可能返回 `null`；部分底层异常会继续抛出 | 释放已抢占的进程；不把它当成执行超时 |
-| Socket 接收明确报 `SOCKET_ETIMEDOUT` | `null` | 向本次调用记录的进程 PID 发送 `SIGKILL`，等待 Swoole 自动拉起替代进程 |
-| Driver 正常完成并调用 `response()` | `response()` 设置的值 | 进程恢复空闲，继续接收下一次调用 |
+### Callback、事务与幂等性
 
-只有明确的 Socket 接收超时才触发强杀；不要把所有 `null` 都解释为 Driver 执行超时。`null` 也可能是业务主动设置的正常结果。更危险的是 Driver 不会在每次调用前自动清空上一次的响应：如果本次漏写 `response()`，同一同步进程可能返回上一次调用的值。建议约定业务成功与业务错误都返回明确结构，例如 `['ok' => true, 'data' => ...]` 和 `['ok' => false, 'error' => ...]`，并确保每条分支都设置响应，把没有收到结果的 `null` 单独处理。
+**任务投递后，客户端收到 `Timeout`，不能据此判断任务是否执行。**
+在截止时间附近，worker 可能刚通过过期检查并开始执行，客户端随即超时断开。任务也可能已经执行完成，
+但响应没能在截止时间前送达。只有 worker 在开始执行前发现任务已过期时，才会跳过该任务。
+对于事务、HTTP 请求、消息发送和文件写入等有副作用的任务，调用方重试时应使用业务唯一键或幂等 token 去重。
 
-## 超时后为何会看到 `signal=9`
+## 异常处理
 
-2.2.3 使用进程级 `SIGKILL` 终止明确超时的同步进程。日志可能出现：
-
-```text
-worker(pid=12345, id=2) abnormal exit, status=0, signal=9
-```
-
-若它与 Sync Invoker 超时同时出现，这是预期的进程重建过程：旧进程不再接收请求，Swoole 拉起新进程，新进程登记新的 PID 并重新变为可用。组件在强杀前核对记录的 PID，避免误杀已经重启的替代进程。不要无条件忽略所有 `signal=9`：手工 `kill -9`、OOM 等故障也会出现同样的信号，应结合调用超时、PID 和时间判断。
-
-`SIGKILL` 无法被 PHP 捕获。因此被杀进程不会执行 Driver 的 `onException()`、`finally`、析构函数或 shutdown callback。进程独享的 SDK/数据库连接应在 `setOnWorkerStart()` 配置的回调中创建，以便替代进程启动后重建；不要依赖清理钩子完成重要的业务回滚。
-
-## 业务异常与钩子
-
-Driver 方法抛出的异常会传给该 Driver 的 `onException(\Throwable $throwable)`。默认实现会重新抛出；如果要向调用方返回结构化业务错误，在 `App/Sync/LegacyDriver.php` 中覆盖它：
+`AbstractDriver::onException()` 默认会重新抛出异常。如果希望业务异常不再
+传播到 worker 进程边界，应在 Driver 中覆盖此方法，并且不要再次抛出：
 
 ```php
 protected function onException(\Throwable $throwable): void
 {
-    error_log((string) $throwable);
     $this->response([
-        'ok' => false,
+        'success' => false,
         'error' => $throwable->getMessage(),
     ]);
 }
 ```
 
-这个回调收到的是 Driver 方法抛出的原始异常，不是“超时异常”。它自身不应再次抛出，否则异常继续传播到同步进程入口。`onRequest(Command $command): bool` 可在调用方法前拦截；返回 `false` 时应先在本次回调中调用 `response()` 设置拦截结果，否则可能返回上一次的响应。成功执行方法后会调用 `afterRequest()`。这些方法是 Driver 生命周期钩子，不是客户端可远程调用的业务方法。
+Driver callback 抛出的原始异常会直接传给 `onException()`。客户端 timeout 只会关闭连接。
 
-## 进程数量与状态
+`onException()` 自身也不应抛出新的异常，否则异常会继续传播到自定义进程入口。
 
-在 `mainServerCreate()` 中、`attachServer()` 之前配置：
+## Driver 必须无状态
+
+Driver 实例不会为每次调用 clone。每个 worker 进程拥有自己独立的 Driver 实例，并且
+请求可分配到任一已启动的 worker。因此不要在 Driver 属性中保存以下状态：
+
+- 当前请求的数据
+- 调用次数或任务进度
+- 需要跨请求读取的临时结果
+- 需要在多个 worker 间保持一致的数据
+
+需要共享状态时，应使用数据库、Redis、Swoole Table 或其他进程间共享机制。
+
+Driver 方法应通过 `$this->response()` 设置返回值：
 
 ```php
-$invoker->getConfig()->setWorkerNum(4);
-$invoker->getConfig()->setMaxPackageSize(2 * 1024 * 1024);
+public function findUser(int $id): void
+{
+    $user = $this->syncClient->find($id);
+    $this->response($user);
+}
 ```
 
-`workerNum` 是同步进程数，不是 HTTP Worker 数；每个同步进程同一时刻只执行一个任务，因此最多同时运行 `workerNum` 个阻塞调用。进程数增加也会增加内存和第三方服务连接数。共享表固定创建 256 行，不要把 `workerNum` 设置得超过 256。组件固定以串行方式处理每个进程的任务，不需要开启进程内的异步并发。
+只有 public 方法能够被客户端调用。private、protected 方法以及 Driver 内部生命周期
+方法不会作为远程调用入口。
 
-服务启动后可观察进程状态：
+## Worker 并发和超时模型
+
+同一个 worker 只允许串行执行一个同步任务：
+
+- async accept 固定关闭，不提供配置开关。
+- 每个 worker 同一时间只执行一个同步任务。
+- 需要提高并行度时，应增加 `workerNum`，而不是开启 worker 内协程并发。
+- 空闲标记由 worker 更新，客户端用它优先选择空闲进程。同一个 worker 可以收到多个客户端的投递。
+- Socket 队列按各 worker 独立维护。投递到繁忙 worker 的请求留在该 worker 的队列里。
+
+### Worker 异常退出
+
+例如，worker 正在执行任务 A，任务 B 已经连接并在该 worker 的 Unix Socket 监听队列中等待。
+如果 A 触发 `pcntl_alarm()` 导致 worker 退出，旧连接随之关闭，B 不会执行。
+B 的客户端在发送或等待响应时检测到连接失败，会收到 `ResponseStatus::TransportError`。
+如果客户端的调用预算先耗尽，则会收到 `ResponseStatus::Timeout`。
+
+Swoole 拉起的新 worker 只接收新建立的连接。旧 worker 队列里的请求不会转移，Sync Invoker 也不会自动重投。
+
+### Worker 定期回收
+
+`maxExecuteNum` 是单个 worker 进程执行的任务数上限，默认 `0` 表示不限。只有进入 Driver 的请求才计数，
+排队过期或包长超限而被拒绝的请求不计数。达到上限后，worker 会先完成当前任务并尝试发送响应，
+关闭连接后直接退出。Swoole 拉起的新 worker 从零开始计数。旧 Socket 上已排队的请求不会转移或自动重投。
+
+## 主要配置
 
 ```php
-$workers = InvokerHolder::getInstance()->workerInfo();
-// 示例：
-// [
-//     ['isAvailable' => 1, 'pId' => 12345],
-//     ['isAvailable' => 0, 'pId' => 12346],
-// ]
+$config = new Config();
+$config->setServerName('EasySwoole');
+$config->setWorkerNum(3);
+$config->setMaxExecuteNum(1000);
+$config->setTempDir(sys_get_temp_dir());
+$config->setMaxPackageSize(2 * 1024 * 1024);
+$config->setDriver(new Driver());
+$config->setOnWorkerStart(static function (Worker $worker): void {
+    // 初始化当前 worker 独享的同步客户端连接。
+});
 ```
 
-`1` 表示空闲，`0` 表示正在执行；超时强杀后、替代进程启动前可能短暂看到 `-1`。`pId` 是同步进程 PID，重建后会变化。尚未启动的进程不会出现在返回列表中。列表下标不是稳定的进程编号，不要用它作为业务 ID。
+Socket 文件名为 `SyncInvoker.<serverName>.<workerIndex>.sock`。
+`serverName` 只接受非空的 ASCII 字母和数字。在同一个 `tempDir` 中运行多个 Invoker 时，
+请在挂载 Server 前为它们设置不同的名称。在不区分大小写的文件系统上，名称需要有大小写之外的区别。
 
-## 重试、事务与幂等
-
-收到 `null` 并不能证明同步方法没有执行。可能已经向外部服务发起请求，或数据库事务已经提交，只是返回结果时超时或通信中断。立即重试扣款、发消息、创建订单等操作可能产生重复副作用。
-
-- 为有副作用的调用传入业务唯一键，并在 Driver 或下游服务做幂等校验。
-- 超时后先查业务状态，再决定是否重试；不要把 `null` 直接当成“操作失败”。
-- 尽量缩短事务范围，不要在数据库事务中等待耗时外部接口。
-- 被强杀的进程不会执行 PHP 清理代码；未提交事务及其锁何时释放，要看 MySQL 何时确认对应会话已经断开。
-
-### 强杀时 MySQL 事务何时释放
-
-假设同步进程已开启普通 InnoDB 事务，执行了 `UPDATE`，却在 `COMMIT` 前被 `SIGKILL`：
-
-```text
-同步进程被强杀
-    → PHP 的 finally / rollback() 不执行
-    → 进程持有的 MySQL Socket 由操作系统关闭
-    → MySQL 检测到该连接断开
-    → 回滚未提交事务，并在事务终止后释放其锁
-```
-
-本章的接入方式是在同步 Worker 中创建并独占 MySQL 连接。Worker 被强杀后，操作系统会关闭它持有的 Socket；直接连接 MySQL 时，服务端检测到断线后会结束会话、回滚普通未提交事务，事务终止时释放锁，**通常不需要等到 `wait_timeout`**。不过“Worker 已退出”不等于“MySQL 已完成回滚”：MySQL 可能仍在执行语句、检测断线或回滚大量修改，期间其他事务仍可能等锁。若中间还有数据库代理，实际释放时机也取决于代理如何处理它到 MySQL 的后端连接；`wait_timeout` 只是在连接一直未被识别为断开时才可能涉及的兜底机制，不应当成正常回滚流程。
-
-因此，连接应在 `setOnWorkerStart()` 中为每个同步 Worker 分别建立，并在 Worker 重建后重新建立。不要把它提前放在父进程创建；这既不符合进程隔离，也会让连接所有权和断线行为难以判断。
-
-排查锁迟迟未释放时，可在 MySQL 侧查看仍在运行或回滚的事务及其会话 ID：
-
-```sql
-SELECT trx_id, trx_state, trx_started, trx_mysql_thread_id, trx_query
-FROM information_schema.innodb_trx;
-
-SHOW PROCESSLIST;
-SHOW GLOBAL VARIABLES LIKE 'wait_timeout';
-```
-
-把 `trx_mysql_thread_id` 与 `SHOW PROCESSLIST` 的 `Id` 对照，并结合强杀时间和数据库日志判断会话是否仍存在。不要仅凭 Sync Invoker 已拉起新进程就断定旧事务及锁已经释放。已经 `COMMIT` 的事务不会因断线而撤销；`XA PREPARE` 等特殊事务也不适用普通“断线即回滚”的判断。
-
-MySQL 的[异常断线说明](https://dev.mysql.com/doc/refman/8.4/en/communication-errors.html)、[InnoDB 锁释放规则](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)和 [`wait_timeout` 定义](https://dev.mysql.com/doc/refman/8.4/en/server-system-variables.html)可用于核对线上实际行为。
-
-## 参数、状态与部署边界
-
-参数和结果经过序列化与 Unix Socket 传输，不要传数据库连接、Socket、闭包或超大文件；大数据可传记录 ID 或文件路径，让同步进程自行读取。`setMaxPackageSize()` 限制通信包大小。
-
-Driver 实例不会为每次调用克隆，而且调用可能落到任意空闲进程。不要把当前请求的数据、调用次数或跨请求共享状态保存在 Driver 的普通属性中；跨进程状态应放在数据库、Redis 或其他共享介质。同步进程需要的连接应在进程启动后建立。
-
-在同一机器部署多个服务实例时，为每个实例配置独立且可写的 `tempDir`，避免它们争用 `SyncInvoker.Worker.*.sock`。修改进程数量或目录后需要完整重启服务。
-
-Sync Invoker 不适合很长的后台任务：它仍会占用一个同步进程，并让请求等待。长任务应使用异步任务或队列消费者。
+`onWorkerStart` 在同步 worker 进程内执行，适合创建只能在当前进程使用的数据库或第三方
+客户端连接。不要在父进程创建连接后再依赖 fork 复制到 worker。
 
 ## 源码依据
 
-- [组件 README（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/README.md)
-- [Client（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/src/Client.php)
-- [Worker（2.2.3）](https://github.com/easy-swoole/sync-invoker/blob/2.2.3/src/Worker.php)
+- [组件 README](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/README.md)
+- [调用客户端](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/Client/Client.php)
+- [同步进程](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/Process/Worker.php)
