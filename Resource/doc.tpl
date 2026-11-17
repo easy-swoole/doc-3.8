@@ -256,6 +256,8 @@
         .document code { padding: 2px 5px; border-radius: 4px; background: #eef2f7; }
         .document pre { max-width: 100%; overflow-x: auto; padding: 18px; border-radius: 10px; color: #e5e7eb; background: var(--code); }
         .document pre code { padding: 0; color: inherit; background: transparent; }
+        .document .mermaid-diagram { margin: 1em 0; overflow-x: auto; }
+        .document .mermaid-diagram svg { display: block; margin: 0 auto; }
         .table-scroll { max-width: 100%; overflow-x: auto; }
 
         .mobile-menu-toggle, .menu-backdrop { display: none; }
@@ -728,6 +730,31 @@
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.search-wrap')) searchResults.hidden = true;
     });
+</script>
+<script type="module">
+    const diagrams = document.querySelectorAll('#document-content pre > code.language-mermaid');
+    if (diagrams.length > 0) {
+        try {
+            const { default: mermaid } = await import(
+                'https://cdn.jsdelivr.net/npm/mermaid@11.12.2/dist/mermaid.esm.min.mjs'
+            );
+            mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', suppressErrorRendering: true });
+
+            for (const [index, code] of diagrams.entries()) {
+                try {
+                    const { svg } = await mermaid.render(`doc-mermaid-${index}`, code.textContent);
+                    const diagram = document.createElement('div');
+                    diagram.className = 'mermaid-diagram';
+                    diagram.innerHTML = svg;
+                    code.parentElement.replaceWith(diagram);
+                } catch (error) {
+                    console.warn('Mermaid diagram could not be rendered.', error);
+                }
+            }
+        } catch (error) {
+            console.warn('Mermaid could not be loaded.', error);
+        }
+    }
 </script>
 </body>
 </html>
