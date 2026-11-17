@@ -160,6 +160,7 @@
     - [定义与发布 RPC 服务](/Microservice/Rpc/server.md)
     - [发起 RPC 调用](/Microservice/Rpc/client.md)
     - [服务发现与部署](/Microservice/Rpc/discovery.md)
+    - [集中式注册与自定义节点管理器](/Microservice/Rpc/node-manager.md)
 - 厂商 SDK
     - Pay 支付
         - [安装与配置](/VendorSdk/Pay/index.md)

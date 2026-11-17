@@ -54,3 +54,19 @@ public static function mainServerCreate(EventRegister $register): void
 - 超时后服务端可能已执行 Action。给写操作启用重试前，使用业务单号或幂等键防止重复写入。
 
 具体配置、节点接口与异常类型见 [RPC 6.0.1 文档](https://github.com/easy-swoole/rpc/blob/6.0.1/README.md)。
+
+## 节点上线与下线
+
+UDP 模式由各实例直接向配置的收件地址发送心跳，没有中心注册服务。网关的 UDP 监听可以独立启用，提供方的通告也可以独立启用。每个网关维护自己的节点视图。提供方正常停止时会发送下线通知；如果通知丢失，网关会按节点 TTL 淘汰记录。
+
+默认的 Swoole Table 同时支持同一宿主内的共享节点表，即使 UDP 关闭也可以使用。可以在调用方的协程中查看当前列表：
+
+```php
+use App\Rpc\MyRpc;
+
+$nodes = MyRpc::getInstance()->getNodeManager()->getNodes('User');
+```
+
+空数组表示查询成功、当前没有可用节点。返回 `false` 表示查询失败。排查时先检查路径第一段与节点的服务名是否一致，再核对 UDP 端口、密钥和 TCP 通告地址。
+
+多个服务和网关需要共享一个注册中心时，参考[集中式注册与自定义节点管理器](/Microservice/Rpc/node-manager.md)。
