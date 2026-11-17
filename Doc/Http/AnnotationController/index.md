@@ -20,7 +20,7 @@ composer show easyswoole/http-annotation
 组件需要 PHP 8.1 及以上、JSON、mbstring、DOM、SimpleXML、libxml；如果当前项目没有安装，在项目根目录运行：
 
 ```bash
-composer require 'easyswoole/http-annotation:^4.0'
+composer require 'easyswoole/http-annotation:^4.2.4'
 ```
 
 EasySwoole 3.8 项目通常已通过框架依赖安装该组件，先用 `composer show` 确认，已有就不必重复安装。检查其他扩展时同样使用 `php --ri 扩展名`。

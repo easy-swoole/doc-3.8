@@ -2,6 +2,14 @@
 
 参数的 `validate` 接受规则对象数组。组件先从声明来源取值、按 `type` 转换，再执行规则；验证失败时不会调用目标 Action。本章用一个完整控制器演示必填、最小值和邮箱格式。
 
+## 按需求选规则
+
+| 要验证什么 | 对应章节 |
+| --- | --- |
+| 参数可以不传，或传空值也跳过校验 | [Optional 与 IgnoreValidatorWhenEmpty](/Http/AnnotationController/validation-rules.md#必填与可选规则) |
+| 对象内有更多字段，或列表要逐项验证 | [ObjectShape 与 Each](/Http/AnnotationController/nested-validation.md) |
+| 预约时间必须在一天以后，或限制查询开始和结束的跨度 | [日期与时间规则](/Http/AnnotationController/validation-rules.md#日期与时间规则) |
+
 ## 定义接口和规则
 
 在应用项目根目录新建 `App/HttpController/Member.php`：

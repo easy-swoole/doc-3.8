@@ -1,6 +1,6 @@
 # Attribute 验证规则
 
-EasySwoole HTTP Annotation 4.x 当前提供 63 个内置 Validator。它们都放在：
+本章以 EasySwoole HTTP Annotation 4.2.4 为准。内置 Validator 位于：
 
 ```php
 EasySwoole\HttpAnnotation\Validator
@@ -150,7 +150,7 @@ new Param(
 )
 ```
 
-`type: null` 保留未传入时的 `null`，使 `Optional` 可以准确跳过后续规则。`Optional*`、`IgnoreValidatorWhenEmpty` 不能与 `Required*`、`NotEmpty` 用在同一个 Param 中；当前版本会把这种配置直接判为冲突。
+`type: null` 保留未传入时的 `null`，使 `Optional` 可以准确跳过后续规则。`Optional*`、`IgnoreValidatorWhenEmpty` 不能与 `Required*`、`NotEmpty` 用在同一个 Param 中；4.2.4 会把这种配置直接判为冲突。
 
 ### `IgnoreValidatorWhenEmpty`：空值跳过验证
 
@@ -376,7 +376,93 @@ new Param('endDate', from: ParamFrom::JSON, validate: [
 ])
 ```
 
-日期和时间戳规则使用服务器时区。生产项目应统一配置时区，并在 API 文档中说明时间格式和时区。
+### 使用相对时间字符串
+
+`Date`、`DateAfter`、`DateBefore`、`TimestampAfter` 和 `TimestampBefore` 的比较基准支持 PHP `strtotime()` 可解析的时间字符串。例如：
+
+```php
+new Date('tomorrow');                 // 日期必须是明天，忽略时分秒。
+new DateAfter('+1 day');              // 日期时间必须严格晚于校验时刻往后一天。
+new DateBefore('tomorrow');           // 日期时间必须严格早于明天零点。
+new TimestampAfter('-1 day');        // 秒级时间戳必须严格晚于校验时刻往前一天。
+new TimestampBefore('+1 day');       // 秒级时间戳必须严格早于校验时刻往后一天。
+```
+
+例如，预约时间必须晚于一天后，且请求值必须是完整的日期时间：
+
+```php
+use EasySwoole\HttpAnnotation\Attributes\Param;
+use EasySwoole\HttpAnnotation\Enum\ParamFrom;
+use EasySwoole\HttpAnnotation\Validator\DateAfter;
+use EasySwoole\HttpAnnotation\Validator\DateFormat;
+use EasySwoole\HttpAnnotation\Validator\Required;
+
+$appointment = new Param(
+    name: 'appointmentAt',
+    from: ParamFrom::JSON,
+    validate: [
+        new Required(),
+        new DateFormat('Y-m-d H:i:s'),
+        new DateAfter('+1 day'),
+    ],
+);
+```
+
+将该定义加入接口的 `Api::requestParam`，客户端提交 `Y-m-d H:i:s` 格式的 `appointmentAt`。相对字符串写在规则配置中，框架在校验时计算它。`+1 day` 与 `tomorrow` 的基准不同，前者保留当前时分秒，后者取明天零点。日期时间没有显式时区时使用服务器默认时区。时间戳规则的请求值仍应传秒级整数，可配合 `Timestamp` 校验。
+
+### 限制两个时间字段的跨度
+
+4.2.4 的上游说明列出了 `DateDiffWithColumn`，同一发布标签的源码缺少该 Validator 类。在 4.2.4 中直接实例化会报类找不到。只要求结束时间严格晚于开始时间时，可使用上面的 `DateAfterColumn`。如果还要限制跨度，使用 `Func` 加静态方法。 [4.2.4 规则说明](https://github.com/easy-swoole/http-annotation/blob/4.2.4/Validate.md#datediffwithcolumn) · [4.2.4 验证器目录](https://github.com/easy-swoole/http-annotation/tree/4.2.4/src/Validator)
+
+新建 `App/Validator/TimeRangeValidator.php`。这里允许起止相等，上限为 36 小时且不包含边界。
+
+```php
+<?php
+
+namespace App\Validator;
+
+use EasySwoole\HttpAnnotation\Validator\Bean\ValidateRequest;
+
+final class TimeRangeValidator
+{
+    public static function under36Hours(ValidateRequest $context): bool
+    {
+        $start = ($context->allDefineParams['startAt'] ?? null)?->parsedValue();
+        $end = $context->validateParam->parsedValue();
+        if (!is_string($start) || !is_string($end)) {
+            return false;
+        }
+
+        $startTime = strtotime($start);
+        $endTime = strtotime($end);
+        if ($startTime === false || $endTime === false) {
+            return false;
+        }
+
+        $seconds = $endTime - $startTime;
+        return $seconds >= 0 && $seconds < 36 * 3600;
+    }
+}
+```
+
+在控制器顶部导入 `App\Validator\TimeRangeValidator` 和 `EasySwoole\HttpAnnotation\Validator\Func`。将下面两项按顺序放入同一个 `Api::requestParam`，两个字段先校验格式，结束时间再检查跨度。
+
+```php
+new Param('startAt', from: ParamFrom::JSON, validate: [
+    new Required(),
+    new DateFormat('Y-m-d H:i:s'),
+]),
+new Param('endAt', from: ParamFrom::JSON, validate: [
+    new Required(),
+    new DateFormat('Y-m-d H:i:s'),
+    new Func(
+        func: [TimeRangeValidator::class, 'under36Hours'],
+        errorMsg: '结束时间必须不早于开始时间，且跨度小于 36 小时',
+    ),
+]),
+```
+
+例如两者都是 `2026-11-17 09:00:00` 时通过。结束时间为 `2026-11-18 21:00:00` 时恰好相差 36 小时，在这段时间没有时区偏移变化的情况下会被拒绝。
 
 ## 文件规则
 

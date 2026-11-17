@@ -1,6 +1,6 @@
 # 嵌套与多级验证
 
-普通 `Param` 校验一个顶层字段；当 JSON 请求中还有对象、列表或更深层对象时，可以递归组合两个验证器：
+HTTP-Annotation 4.2.2 起提供 `ObjectShape` 和 `Each`。普通 `Param` 校验一个顶层字段；当 JSON 请求中还有对象、列表或更深层对象时，可以递归组合两个验证器：
 
 | 验证器 | 作用 | 适合的数据 |
 | --- | --- | --- |
@@ -9,7 +9,7 @@
 
 例如包裹列表中的每个包裹都有一个危险品详情对象，结构是 `box_list[] → dangerous_detail → id`。在 `Param` 的 `validate` 中写 `Each → ObjectShape → ObjectShape`，即可逐层验证，失败时拿到 `box_list[1].dangerous_detail.id` 这样的完整字段路径。
 
-## 完整 Example：校验运单请求
+## 完整示例：校验运单请求
 
 在应用项目根目录新建 `App/HttpController/ShippingValidation.php`：
 
