@@ -21,6 +21,8 @@ EasySwoole 是一款基于 Swoole Server 开发的常驻内存型的分布式 PH
 EasySwoole 高度封装了 Swoole Server 而依旧维持 Swoole Server 原有特性，支持同时混合监听 HTTP、自定义 TCP、UDP 协议，让开发者以最低的学习成本和精力编写出多进程、可异步、高可用的应用服务。
 
 
+首次安装或遇到报错，可从[新手路线与问题速查](/QuickStart/index.md)进入。
+
 ## 生产可用
 EasySwoole 从最早的前身 EasyPHP-Swoole，到更名为 EasySwoole，再到现如今的 EasySwoole 3.x 版本，多年时间在众多社区小伙伴的共同努力下，EasySwoole 的稳定与可靠已经经历了非常多的大企业检验。
 

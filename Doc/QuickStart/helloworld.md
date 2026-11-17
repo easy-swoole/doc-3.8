@@ -1,6 +1,6 @@
 # 第一个 HTTP 接口
 
-安装器已经创建 `App/HttpController/Index.php` 和 `Router.php`。本章新建一个独立控制器，不覆盖它们：访问 `/hello` 返回文本，再访问 `/hello/greet?name=Swoole` 返回 JSON。开始前请先完成[安装框架](/QuickStart/install.md)。
+本章新建 `Hello` 控制器。访问 `/hello` 返回文本，再访问 `/hello/greet?name=Swoole` 返回 JSON。开始前请先完成[安装框架](/QuickStart/install.md)。
 
 ## 创建控制器文件
 
@@ -58,7 +58,7 @@ Hello EasySwoole
 {"code":200,"result":{"message":"Hello Swoole"},"msg":null}
 ```
 
-这里没有修改 `Router.php`：默认情况下，框架会把 `/hello` 映射到 `Hello::index()`，把 `/hello/greet` 映射到 `Hello::greet()`。如果出现 404，先确认文件名和命名空间；如果服务此前已启动、修改了 PHP 文件却未生效，执行：
+这里没有修改 `Router.php`：默认情况下，框架会把 `/hello` 映射到 `Hello::index()`，把 `/hello/greet` 映射到 `Hello::greet()`。如果出现 404，按[访问接口返回 404](/QuickStart/problem.md#访问接口返回-404)逐项检查。如果服务此前已启动、修改了 PHP 文件却未生效，执行：
 
 ```bash
 php easyswoole.php server reload

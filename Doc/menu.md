@@ -1,5 +1,6 @@
 - [项目介绍](/intro.md)
 - 快速开始
+    - [新手路线与问题速查](/QuickStart/index.md)
     - [环境要求](/QuickStart/environment.md)
     - [安装 Swoole](/QuickStart/installSw.md)
     - [安装框架](/QuickStart/install.md)
@@ -7,7 +8,7 @@
     - [配置文件](/QuickStart/config.md)
     - [基础管理命令](/QuickStart/command.md)
     - [开发者必读](/QuickStart/notice.md)
-    - [常见问题](/QuickStart/problem.md)
+    - [安装、启动与访问排错](/QuickStart/problem.md)
     - [使用 systemd 管理服务](/QuickStart/systemd.md)
 - HTTP 服务
     - 服务基础

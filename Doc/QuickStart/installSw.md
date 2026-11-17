@@ -24,16 +24,18 @@ php --ri swoole
 
 ## 从源码编译
 
-需要 PHP 开发工具、C/C++ 编译器和 `phpize`：
+需要 PHP 开发工具、C/C++ 编译器和 `phpize`。先从 [Swoole Releases](https://github.com/swoole/swoole-src/releases) 选一个与当前 CLI PHP 兼容的稳定版本。执行下面的命令，出现提示时输入选定的标签。
 
 ```bash
 git clone https://github.com/swoole/swoole-src.git
 cd swoole-src
-git checkout <稳定版本标签>
-phpize
-./configure
-make -j"$(getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu)"
-sudo make install
+echo "输入选定的 Swoole 标签，然后按回车"
+read -r swoole_tag
+git checkout --detach "refs/tags/${swoole_tag}" &&
+  phpize &&
+  ./configure &&
+  make -j"$(getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu)" &&
+  sudo make install
 ```
 
 需要额外能力时先执行 `./configure --help`。常用选项包括：

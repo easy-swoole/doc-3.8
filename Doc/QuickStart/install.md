@@ -9,18 +9,14 @@ mkdir my-easyswoole-app
 cd my-easyswoole-app
 composer init --no-interaction --name=demo/my-easyswoole-app
 composer require 'easyswoole/easyswoole:^3.8.2'
-php vendor/bin/easyswoole.php install
+php vendor/bin/easyswoole.php install --with-examples
 ```
 
 `composer init --no-interaction` 会创建 `composer.json`，这一步不需回答问题；项目名 `demo/my-easyswoole-app` 只是示例，可改为自己的 `vendor/project`。安装框架时 Composer 会创建 `vendor/` 和 `composer.lock`。若依赖安装失败，先运行 `php --ri swoole` 核对当前 CLI PHP 是否加载了扩展，再重试 Composer 命令。
 
-## 回答安装器的文件释放提示
+## HTTP 示例文件
 
-在交互终端中，安装器会询问是否生成 `App/HttpController/Index.php` 和 `App/HttpController/Router.php`。新项目要体验欢迎页时，对两个问题都输入 `y`。也可以直接执行以下命令生成缺失的 HTTP 示例文件。
-
-```bash
-php vendor/bin/easyswoole.php install --with-examples
-```
+上面的 `--with-examples` 会生成缺失的 `App/HttpController/Index.php` 和 `App/HttpController/Router.php`，便于验证欢迎页。省略该选项时，交互终端会询问是否生成示例文件。
 
 安装器会自动生成缺失的配置、引导和事件文件。已有文件出现替换提示时，选择保留即可继续使用项目原有配置。
 
@@ -80,7 +76,7 @@ php easyswoole.php server start
 curl -i http://127.0.0.1:9501/
 ```
 
-预期状态为 `HTTP/1.1 200 OK`，正文是安装器自带的欢迎页面。若提示连接失败，先看第一个终端是否报错，再确认 9501 端口未被占用。测试结束后在第一个终端按 `Ctrl+C` 停止服务。
+预期状态为 `HTTP/1.1 200 OK`，正文是安装器自带的欢迎页面。若提示连接失败，按[服务启动后连不上](/QuickStart/problem.md#服务启动后连不上)检查启动输出、运行模式和端口。测试结束后在第一个终端按 `Ctrl+C` 停止服务。
 
 接下来按[第一个 HTTP 接口](/QuickStart/helloworld.md)创建自己的控制器，不必修改安装器提供的 `Index.php`。
 

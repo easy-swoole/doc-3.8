@@ -26,7 +26,7 @@
             <p class="eyebrow">EASYSWOOLE · PHP COROUTINE FRAMEWORK</p>
             <h1>一种愉悦的开发方式</h1>
             <p class="hero-lead">为高并发应用而生，让 PHP 服务开发更简单、更高效。</p>
-            <a class="primary-button" href="/intro.md">开始使用 <span aria-hidden="true">→</span></a>
+            <a class="primary-button" href="/QuickStart/index.md">快速开始 <span aria-hidden="true">→</span></a>
             <img class="hero-art" src="/Images/index.svg" alt="EasySwoole 框架应用场景插画" width="1559" height="625">
         </div>
     </section>

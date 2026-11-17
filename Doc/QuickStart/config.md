@@ -7,16 +7,15 @@ dev.php
 produce.php
 ```
 
-配置文件必须返回数组。
+配置文件必须返回数组。下面的端口实验复用[第一个 HTTP 接口](/QuickStart/helloworld.md)中的 `/hello`。
 
 刚安装完先只改 `dev.php`，因为 `php easyswoole.php server start` 默认以开发模式启动。`produce.php` 用于 `--mode=produce`，不要为了调试把两份配置同时改乱。
 
 ## 第一次改配置：换一个端口
 
-打开项目根目录的 `dev.php`，找到 `MAIN_SERVER` 下的 `PORT`，把 `9501` 改为 `9502`。仅改这一处即可。保存后在项目根目录完整停止并重新启动服务：
+打开项目根目录的 `dev.php`，找到 `MAIN_SERVER` 下的 `PORT`，把 `9501` 改为 `9502`。仅改这一处即可。保存后完整重启。服务在前台运行时，先在原终端按 `Ctrl+C`；后台运行时，在项目根目录执行 `php easyswoole.php server stop`。然后运行：
 
 ```bash
-php easyswoole.php server stop
 php easyswoole.php server start
 ```
 
