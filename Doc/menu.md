@@ -155,6 +155,11 @@
         - [发布消息与可靠投递](/Client/RabbitMq/publish.md)
         - [消费、确认与进程部署](/Client/RabbitMq/consume.md)
         - [配置、TLS 与故障处理](/Client/RabbitMq/config.md)
+- 微服务
+    - [RPC 安装与接入](/Microservice/Rpc/index.md)
+    - [定义与发布 RPC 服务](/Microservice/Rpc/server.md)
+    - [发起 RPC 调用](/Microservice/Rpc/client.md)
+    - [服务发现与部署](/Microservice/Rpc/discovery.md)
 - 厂商 SDK
     - Pay 支付
         - [安装与配置](/VendorSdk/Pay/index.md)
