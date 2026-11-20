@@ -26,6 +26,8 @@ FastDb 可以通过全局查询回调记录 SQL、绑定参数、执行耗时和
 | `getDuration(): float` | 查询执行阶段耗时，秒；不含获取连接及日志回调 |
 | `getStartTime()` / `getEndTime()` | Unix 时间戳，用于日志定位；查询执行耗时使用 getDuration() |
 
+归还连接时由连接池执行的提交或回滚不进入查询回调和查询栈，参见[连接归还策略](/FastDb/connection.md#归还连接时的事务策略)。
+
 ## 注册全局查询日志
 
 建议在项目根目录 `EasySwooleEvent.php` 的 `initialize()` 中完成连接注册后设置回调：
@@ -308,6 +310,6 @@ try {
 
 ## 源码依据
 
-- [FastDb 查询回调与查询栈](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
-- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/QueryResult.php)
-- [QueryStack](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/QueryStack.php)
+- [FastDb 查询回调与查询栈](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/QueryResult.php)
+- [QueryStack](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/QueryStack.php)

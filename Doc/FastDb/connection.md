@@ -68,6 +68,7 @@ class EasySwooleEvent implements Event
 | `charset` | `utf8mb4` | 连接字符集 |
 | `timeout` | `3.0` | 查询和事务操作默认超时，秒 |
 | `maxConnectTime` | `5.0` | 完整建连超时，秒 |
+| `transactionRecycleAction` | `TransactionRecycleAction::Rollback` | 归还连接时处理未结束事务的策略 |
 | `compress` | `false` | 是否请求 MySQL 协议压缩 |
 | `minObjectNum` | `8` | 单个连接池维持的最小连接数 |
 | `maxObjectNum` | `16` | 单个连接池最大连接数 |
@@ -121,7 +122,7 @@ FastDb 实体本身不固定连接名，实体查询使用当前协程在 FastDb
 
 ## 连接生命周期
 
-同一协程、同一连接名会复用当前连接。协程结束时连接自动归还池；归还前如果仍处于事务中，组件会尝试回滚。
+同一协程、同一连接名会复用当前连接。协程结束时连接自动归还池；仍有事务时，按 `transactionRecycleAction` 处理，默认回滚。
 
 ```php
 FastDb::getInstance()->currentConnection(); // 当前选中连接的 Connection|null
@@ -130,6 +131,39 @@ FastDb::getInstance()->reset();             // 重置所有已创建连接池
 ```
 
 `reset()` 用于测试、进程关闭或重新初始化，不要在每个 HTTP 请求结束时调用，否则会破坏常驻连接池的意义，并可能影响其他协程。
+
+## 归还连接时的事务策略
+
+FastDb 3.1.2 使用 `EasySwoole\FastDb\Mysql\TransactionRecycleAction` 配置归还行为。请在 `addDb()` 注册连接前设置。
+
+| 枚举值 | 行为 |
+| --- | --- |
+| `Rollback` | 回滚未结束事务，默认值 |
+| `Commit` | 提交未结束事务 |
+| `None` | 保留事务并归还连接，下一次借用将继承该事务、未提交修改和锁 |
+
+```php
+use EasySwoole\FastDb\Config as FastDbConfig;
+use EasySwoole\FastDb\Mysql\TransactionRecycleAction;
+
+$config = new FastDbConfig([
+    'host' => '127.0.0.1',
+    'user' => 'root',
+    'password' => 'your-password',
+    'database' => 'demo',
+    'transactionRecycleAction' => TransactionRecycleAction::Rollback,
+]);
+
+// 如需更改策略，在 addDb() 之前设置。
+$config->setTransactionRecycleAction(TransactionRecycleAction::Commit);
+$action = $config->getTransactionRecycleAction();
+```
+
+`recycleContext()`、`invoke()` 自己借用的连接，以及协程退出时归还的连接，都应用这个策略。没有事务时不会额外发送 COMMIT 或 ROLLBACK。策略只接受枚举，归还后继续保留配置。
+
+配置 `Commit` 后，即使 `invoke()` 的业务回调抛出异常，finally 中归还连接仍会提交尚未结束的事务。`transaction()` 会先按自身回调结果处理它开启的事务，归还策略只处理届时仍存在的事务。
+
+归还时提交或回滚使用 `AND NO CHAIN NO RELEASE`。执行失败的连接由池处理并丢弃。淘汰或关闭连接时直接关闭会话，MySQL 回滚未提交事务。归还阶段的事务操作不进入 FastDb 的查询回调和查询栈。
 
 ## 配置注意
 
@@ -140,6 +174,6 @@ FastDb::getInstance()->reset();             // 重置所有已创建连接池
 
 ## 源码依据
 
-- [FastDb](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
-- [Config](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Config.php)
-- [MySQL Pool](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/Pool.php)
+- [FastDb](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [Config](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Config.php)
+- [MySQL Pool](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/Pool.php)

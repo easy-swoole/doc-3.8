@@ -245,6 +245,6 @@ final class UserHook
 
 ## 源码依据
 
-- [AbstractEntity 钩子调用](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/AbstractEntity.php)
-- [Hook Attributes](https://github.com/easy-swoole/fast-db/tree/3.1.1/src/Attributes/Hook)
-- [ReflectionCache](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Utility/ReflectionCache.php)
+- [AbstractEntity 钩子调用](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/AbstractEntity.php)
+- [Hook Attributes](https://github.com/easy-swoole/fast-db/tree/3.1.2/src/Attributes/Hook)
+- [ReflectionCache](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Utility/ReflectionCache.php)

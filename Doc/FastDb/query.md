@@ -255,6 +255,6 @@ class Users extends Controller
 
 ## 源码依据
 
-- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/AbstractEntity.php)
-- [Query](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/Query.php)
-- [ListResult](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/ListResult.php)
+- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/AbstractEntity.php)
+- [Query](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/Query.php)
+- [ListResult](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/ListResult.php)

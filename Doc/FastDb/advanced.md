@@ -1,6 +1,6 @@
 # 转换与关联
 
-本章以 FastDb `3.1.1` 为准。先按[实体与字段映射](/FastDb/entity.md)创建 `users` 表、`App\Model\User`，并按[连接配置](/FastDb/connection.md)注册连接。下面的字段示例需要在原有 `User` 类中**替换或新增**对应属性，不是创建多个同名实体类。代码块中的 `use` 导入语句应放在 PHP 文件的 `namespace` 后、类声明前；属性和方法放在类的大括号内。
+本章以 FastDb `3.1.2` 为准。先按[实体与字段映射](/FastDb/entity.md)创建 `users` 表、`App\Model\User`，并按[连接配置](/FastDb/connection.md)注册连接。下面的字段示例需要在原有 `User` 类中**替换或新增**对应属性，不是创建多个同名实体类。代码块中的 `use` 导入语句应放在 PHP 文件的 `namespace` 后、类声明前；属性和方法放在类的大括号内。
 
 ## 转换在什么时候发生
 
@@ -120,7 +120,7 @@ var_dump($user->toArray()['profile']); // JSON 字符串。
 
 ## JSON 对象数组：类型化 ConvertList
 
-FastDb `3.1.1` 的 `ConvertList` 可以通过 `itemClass()` 指定列表元素的 Bean 类型。先增加列：
+FastDb `3.1.2` 的 `ConvertList` 可以通过 `itemClass()` 指定列表元素的 Bean 类型。先增加列：
 
 ```sql
 ALTER TABLE users ADD COLUMN contacts JSON DEFAULT NULL;
@@ -257,6 +257,13 @@ $user->update();
 
 `toObject()` 接受日期字符串、`DateTimeInterface`、整数 Unix 时间戳或 `null`；已有日期对象会复制，避免共享可变实例。非可空属性初始化时以 `null` 调用转换器，会得到当前时间。`toValue()` 通常输出 `Y-m-d H:i:s`，有微秒时输出 `Y-m-d H:i:s.u`；如需保留微秒，数据库列应使用 `DATETIME(6)`。MySQL `DATETIME` 不存时区，请统一 PHP 与数据库时区；空字符串和非法 MySQL 日期（包括零日期）会抛异常。
 
+3.1.2 对标准 MySQL 日期字符串校验后直接保留解析实例，保持默认时区和微秒精度。例如：
+
+```php
+$date = ConvertDateTime::toObject('2026-11-20 12:34:56.123456');
+echo $date->toValue(); // 2026-11-20 12:34:56.123456
+```
+
 如果数据库列允许 `NULL`，属性可声明为 `?ConvertDateTime`；此时 `setData(['created_at' => null])` 会写入 SQL `NULL`，不会转换成当前时间。
 
 ## 自定义转换：枚举
@@ -388,9 +395,9 @@ $orders = $user?->orders();
 
 ## 源码依据
 
-- [FastDb 3.1.1 README：属性转换](https://github.com/easy-swoole/fast-db/blob/3.1.1/README.md#属性转换)
-- [ConvertList](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/ConvertList.php)
-- [ConvertDateTime](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/ConvertDateTime.php)
-- [ConvertBean](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/ConvertBean.php)
-- [FieldCodec](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Internal/FieldCodec.php)
-- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Attributes/Property.php)
+- [FastDb 3.1.2 README：属性转换](https://github.com/easy-swoole/fast-db/blob/3.1.2/README.md#属性转换)
+- [ConvertList](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertList.php)
+- [ConvertDateTime](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertDateTime.php)
+- [ConvertBean](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertBean.php)
+- [FieldCodec](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Internal/FieldCodec.php)
+- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Attributes/Property.php)

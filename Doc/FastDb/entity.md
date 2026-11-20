@@ -79,7 +79,7 @@ class User extends AbstractEntity
 }
 ```
 
-只有带 `#[Property]` 的 public、非 static 属性参与输入、查询结果映射、写入和序列化。属性名就是数据库字段名，FastDb 3.1.1 的 `Property` 没有单独的列名映射参数。
+只有带 `#[Property]` 的 public、非 static 属性参与输入、查询结果映射、写入和序列化。属性名就是数据库字段名，FastDb 3.1.2 的 `Property` 没有单独的列名映射参数。
 
 ## Property 常用参数
 
@@ -194,6 +194,6 @@ $user = new User([
 
 ## 源码依据
 
-- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/AbstractInterface/AbstractEntity.php)
-- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Attributes/Property.php)
-- [EntityReflection](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Beans/EntityReflection.php)
+- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/AbstractEntity.php)
+- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Attributes/Property.php)
+- [EntityReflection](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/EntityReflection.php)

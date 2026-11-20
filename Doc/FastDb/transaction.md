@@ -202,7 +202,7 @@ $db->withConnection('A', function (FastDb $db): void {
 
 拥有层使用 flags 开始事务，timeout 分别传给本层实际发送的 BEGIN、COMMIT、ROLLBACK。每条控制 SQL 都有独立的单次预算；这不是 PHP 回调或整个事务的累计期限，业务 SQL 仍使用各自查询参数或连接配置。连接池等待也不包含在控制 SQL 超时内。
 
-开始或业务回调抛出的异常优先于回滚清理异常，回滚失败不会替换原异常。提交发生在业务回调正常返回之后：提交返回 false 会抛出 `RuntimeError`，提交本身或其日志回调抛出的异常直接向外传播，不自动重试，也不自动追加 ROLLBACK。尤其 COMMIT 已成功后的日志异常不能视为数据库未提交；提交超时、断线等结果不明时，由业务核实最终状态并处理。
+开始或业务回调抛出的异常优先于回滚清理异常，回滚失败不会替换原异常。提交发生在业务回调正常返回之后：提交本身或其日志回调抛出的异常直接向外传播，不自动重试，也不自动追加 ROLLBACK。尤其 COMMIT 已成功后的日志异常不能视为数据库未提交；提交超时、断线等结果不明时，由业务核实最终状态并处理。
 
 helper 不解析 SQL 白名单，不管理 savepoint，不跟踪事务代次，也不阻止回调手工开始、提交、回滚或执行会隐式提交的 SQL。这些操作对事务边界及业务原子性的影响由调用方负责。
 
@@ -229,7 +229,7 @@ try {
 
 ## 回收保护和异常
 
-连接回收时，如果仍处于未提交事务，FastDb 会尝试回滚；回滚失败的连接会从连接池丢弃。这只是防止带事务状态的脏连接被复用，不能替代显式异常处理。
+连接归还时，FastDb 按 `transactionRecycleAction` 处理未结束事务，默认回滚。`Commit` 会提交，`None` 会把事务及锁保留到下一次借用。配置示例和异常路径见[归还连接时的事务策略](/FastDb/connection.md#归还连接时的事务策略)。业务代码应明确管理事务边界。
 
 InnoDB 死锁错误 1213 会使整个事务回滚，组件清理事务标记，但不会自动重试。业务如果满足幂等条件，可以有限次数重试整个事务。锁等待超时 1205 和普通 SQL 错误仍需显式回滚。
 
@@ -247,6 +247,6 @@ InnoDB 死锁错误 1213 会使整个事务回滚，组件清理事务标记，�
 
 ## 源码依据
 
-- [FastDb 事务实现](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
-- [TransactionTest](https://github.com/easy-swoole/fast-db/blob/3.1.1/tests/TransactionTest.php)
-- [MySQL Connection](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/Connection.php)
+- [FastDb 事务实现](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [TransactionTest](https://github.com/easy-swoole/fast-db/blob/3.1.2/tests/TransactionTest.php)
+- [MySQL Connection](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/Connection.php)

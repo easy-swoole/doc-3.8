@@ -348,6 +348,6 @@ FastDb 的超时异常继承 `EasySwoole\FastDb\Exception\Exception`。调用方
 
 ## 源码依据
 
-- [FastDb query/rawQuery](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/FastDb.php)
-- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.1/src/Mysql/QueryResult.php)
+- [FastDb query/rawQuery](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/QueryResult.php)
 - [EasySwoole Mysqli QueryBuilder](https://github.com/easy-swoole/mysqli/blob/5.x/src/QueryBuilder.php)

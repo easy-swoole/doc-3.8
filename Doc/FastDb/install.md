@@ -4,7 +4,7 @@ FastDb 是面向 Swoole 协程环境的 MySQL 数据访问组件，组合了连�
 
 ## 运行要求
 
-本文档以 FastDb 3.1.1 为准，运行要求如下：
+本文档以 FastDb 3.1.2 为准，运行要求如下：
 
 | 依赖 | 版本 |
 | --- | --- |
@@ -27,10 +27,10 @@ php --ri swoole
 在项目根目录执行：
 
 ```bash
-composer require 'easyswoole/fast-db:^3.1.1'
+composer require 'easyswoole/fast-db:^3.1.2'
 ```
 
-`^3.1.1` 会安装 3.1.1 或兼容的后续 3.x 正式版。生产项目应提交 `composer.lock`，在测试环境验证后再部署，避免不同环境安装到不同版本。
+`^3.1.2` 会安装 3.1.2 或兼容的后续 3.x 正式版。生产项目应提交 `composer.lock`，在测试环境验证后再部署，避免不同环境安装到不同版本。
 
 确认版本和依赖：
 
@@ -42,7 +42,7 @@ composer show easyswoole/pool
 
 ## 从旧版本迁移
 
-升级到 FastDb 3.1.1 时，需要在实体中单独指定主键。将旧的 `#[Property(isPrimaryKey: true)]` 拆成 `#[Property]` 和 `#[PrimaryKey]`。如果数据库列使用 `AUTO_INCREMENT`，再加上 `#[AutoIncrement]`，以便插入后回填生成的值。每个实体最多声明一个主键，属性名应与数据库主键列名一致。
+升级到 FastDb 3.1.2 时，需要在实体中单独指定主键。将旧的 `#[Property(isPrimaryKey: true)]` 拆成 `#[Property]` 和 `#[PrimaryKey]`。如果数据库列使用 `AUTO_INCREMENT`，再加上 `#[AutoIncrement]`，以便插入后回填生成的值。每个实体最多声明一个主键，属性名应与数据库主键列名一致。
 
 ```php
 use EasySwoole\FastDb\Attributes\AutoIncrement;
@@ -84,6 +84,6 @@ public int $id;
 
 ## 源码依据
 
-- [FastDb 3.1.1](https://github.com/easy-swoole/fast-db/tree/3.1.1)
-- [FastDb 3.1.1 composer.json](https://github.com/easy-swoole/fast-db/blob/3.1.1/composer.json)
-- [FastDb 3.1.1 README](https://github.com/easy-swoole/fast-db/blob/3.1.1/README.md)
+- [FastDb 3.1.2](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+- [FastDb 3.1.2 composer.json](https://github.com/easy-swoole/fast-db/blob/3.1.2/composer.json)
+- [FastDb 3.1.2 README](https://github.com/easy-swoole/fast-db/blob/3.1.2/README.md)
