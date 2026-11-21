@@ -215,3 +215,7 @@ $children = $point->children();
 ```
 
 耗时由 `hrtime()` 单调时钟计算，不受系统时间校准影响。用于展示和查询的 Unix 微秒时间保存在 SpanBean 中。
+
+## 版本与 GitHub
+
+- [`easyswoole/trace` 2.0.2 · GitHub](https://github.com/easy-swoole/trace/tree/2.0.2)

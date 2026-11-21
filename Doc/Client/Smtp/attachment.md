@@ -116,3 +116,7 @@ $mailer->send($message);
 ```
 
 下一章：[响应、异常与常见问题](/Client/Smtp/error.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/smtp` 3.0.1 · GitHub](https://github.com/easy-swoole/smtp/tree/3.0.1)

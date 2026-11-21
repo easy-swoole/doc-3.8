@@ -62,5 +62,7 @@ $result = (new VerifyCode())->drawCode('AbC729');
 
 ## 源码依据
 
-- [verify-code 4.x README](https://github.com/easy-swoole/verify-code/blob/4.x/README.md)
-- [4.x composer.json](https://github.com/easy-swoole/verify-code/blob/4.x/composer.json)
+- [`easyswoole/verifycode` 4.0.1 · GitHub](https://github.com/easy-swoole/verify-code/tree/4.0.1)
+
+- [verify-code 4.0.1 README](https://github.com/easy-swoole/verify-code/blob/4.0.1/README.md)
+- [4.0.1 composer.json](https://github.com/easy-swoole/verify-code/blob/4.0.1/composer.json)

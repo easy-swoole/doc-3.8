@@ -58,5 +58,7 @@ $config->setDecoyCodeCount(1)       // 1～5 组，默认 2
 
 ## 源码依据
 
-- [4.x README：目标颜色与局部重叠干扰](https://github.com/easy-swoole/verify-code/blob/4.x/README.md)
-- [CaptchaColor.php](https://github.com/easy-swoole/verify-code/blob/4.x/src/CaptchaColor.php)
+- [`easyswoole/verifycode` 4.0.1 · GitHub](https://github.com/easy-swoole/verify-code/tree/4.0.1)
+
+- [4.0.1 README：目标颜色与局部重叠干扰](https://github.com/easy-swoole/verify-code/blob/4.0.1/README.md)
+- [CaptchaColor.php（4.0.1）](https://github.com/easy-swoole/verify-code/blob/4.0.1/src/CaptchaColor.php)

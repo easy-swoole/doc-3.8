@@ -106,3 +106,7 @@ try {
 相同类型的规则允许重复或重叠；精确 IP 与相反类型的网段也允许重叠，因为这正是设置精确例外所需要的组合。
 
 下一章：[IP 与端口规则](/Library/IpAccess/ip-port-access.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/ip-access` 1.0.1 · GitHub](https://github.com/easy-swoole/ip-access/tree/1.0.1)

@@ -131,3 +131,7 @@ user-service.request
 - 异常入口：把当前节点和根节点标记为异常。
 
 组件不会自动执行采样。需要采样时，应用应读取并传播 Trace Flags，并决定是否保存这条 Trace。
+
+## 版本与 GitHub
+
+- [`easyswoole/trace` 2.0.2 · GitHub](https://github.com/easy-swoole/trace/tree/2.0.2)

@@ -70,3 +70,7 @@ $nodes = MyRpc::getInstance()->getNodeManager()->getNodes('User');
 空数组表示查询成功、当前没有可用节点。返回 `false` 表示查询失败。排查时先检查路径第一段与节点的服务名是否一致，再核对 UDP 端口、密钥和 TCP 通告地址。
 
 多个服务和网关需要共享一个注册中心时，参考[集中式注册与自定义节点管理器](/Microservice/Rpc/node-manager.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/rpc` 6.0.1 · GitHub](https://github.com/easy-swoole/rpc/tree/6.0.1)

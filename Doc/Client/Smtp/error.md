@@ -107,3 +107,7 @@ $mailer->setMaxPackage(2 * 1024 * 1024);
 SMTP 包含连接、登录和传输过程。对实时性要求不高的邮件，应投递到 EasySwoole Task，由 Task Worker 异步发送，并为失败任务设置有限次数的重试。
 
 相关章节：[异步任务](/Advanced/task.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/smtp` 3.0.1 · GitHub](https://github.com/easy-swoole/smtp/tree/3.0.1)

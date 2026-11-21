@@ -67,5 +67,7 @@ php easyswoole.php server reload
 
 ## 源码依据
 
-- [EasySwoole Core](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
-- [EasySwooleEvent 模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/EasySwooleEvent._php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [EasySwoole Core（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Core.php)
+- [EasySwooleEvent 模板（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/EasySwooleEvent._php)

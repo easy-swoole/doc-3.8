@@ -185,7 +185,10 @@ PID 和时间只是示例，应以本机输出为准。
 
 ## 源码依据
 
-- [Server 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
-- [命令执行与终端刷新](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/command` 3.0.1 · GitHub](https://github.com/easy-swoole/command/tree/3.0.1)
+
+- [Server 管理命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [命令执行与终端刷新（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
 
 下一章：[进程管理](/Advanced/ManagementCommand/process.md)。

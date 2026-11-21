@@ -290,3 +290,8 @@ CurrentUser::$id = $userId;
 - 退出不能只删除浏览器 Cookie，还要让服务端 Session 或 Refresh Token 失效。
 - 错误信息不要区分“账号不存在”和“密码错误”，避免枚举账号。
 - 全站使用 HTTPS，避免凭据在传输过程中泄露。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

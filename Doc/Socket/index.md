@@ -22,10 +22,10 @@ Dispatcher 发送或关闭连接
 
 ## 安装组件
 
-Socket 2.x 当前通过 `2.x` 开发分支提供：
+本章引用 Socket `2.0.1`，在应用项目根目录安装：
 
 ```bash
-composer require easyswoole/socket:2.x-dev
+composer require 'easyswoole/socket:^2.0.1'
 ```
 
 它要求 PHP 8.1+ 和 Swoole 扩展。安装后可以确认版本：
@@ -273,7 +273,10 @@ UDP 是无连接协议，因此 `CLOSE` 对 UDP 只表示不响应，不存在�
 
 ## 源码依据
 
-- [Socket 2.x](https://github.com/easy-swoole/socket/tree/2.x)
-- [Dispatcher](https://github.com/easy-swoole/socket/blob/2.x/src/Dispatcher.php)
-- [ParserInterface](https://github.com/easy-swoole/socket/blob/2.x/src/AbstractInterface/ParserInterface.php)
-- [Controller](https://github.com/easy-swoole/socket/blob/2.x/src/AbstractInterface/Controller.php)
+- [`easyswoole/socket` 2.0.1 · GitHub](https://github.com/easy-swoole/socket/tree/2.0.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Socket 2.0.1](https://github.com/easy-swoole/socket/tree/2.0.1)
+- [Dispatcher（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Dispatcher.php)
+- [ParserInterface（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/AbstractInterface/ParserInterface.php)
+- [Controller（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/AbstractInterface/Controller.php)

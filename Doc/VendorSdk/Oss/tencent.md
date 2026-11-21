@@ -71,3 +71,7 @@ $url = $client->getObjectUrl(
 ```
 
 签名 URL 的有效期应尽量短，生成前检查当前用户对对象的业务权限。异常日志可记录 Request ID、Region、Bucket 和 Key，不能记录 SecretKey。
+
+## 版本与 GitHub
+
+- [`easyswoole/oss` 2.1.4 · GitHub](https://github.com/easy-swoole/oss/tree/2.1.4)

@@ -98,5 +98,7 @@ RequestScope::destroy();
 
 ## 源码依据
 
-- [Singleton](https://github.com/easy-swoole/component/blob/master/src/Singleton.php)
-- [CoroutineSingleTon](https://github.com/easy-swoole/component/blob/master/src/CoroutineSingleTon.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Singleton（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Singleton.php)
+- [CoroutineSingleTon（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/CoroutineSingleTon.php)

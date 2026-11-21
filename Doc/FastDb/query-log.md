@@ -310,6 +310,8 @@ try {
 
 ## 源码依据
 
-- [FastDb 查询回调与查询栈](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
-- [QueryResult](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/QueryResult.php)
-- [QueryStack](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/QueryStack.php)
+- [`easyswoole/fast-db` 3.1.2 · GitHub](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+
+- [FastDb 查询回调与查询栈（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [QueryResult（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/QueryResult.php)
+- [QueryStack（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/QueryStack.php)

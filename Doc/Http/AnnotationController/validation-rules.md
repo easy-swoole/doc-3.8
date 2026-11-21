@@ -607,3 +607,7 @@ new Param('price', from: ParamFrom::JSON, type: null, validate: [
 - 把数据库唯一性、库存等业务规则全部写成参数 Validator；这类规则仍应由 Service 和数据库约束完成。
 
 下一章：[响应参数与示例](/Http/AnnotationController/response-params.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)

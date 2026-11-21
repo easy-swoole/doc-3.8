@@ -70,5 +70,7 @@ isAllowAccess() 判断
 
 ## 源码依据
 
-- [IpAccess 仓库](https://github.com/easy-swoole/ip-access)
-- [IpAccess 源码](https://github.com/easy-swoole/ip-access/blob/main/src/IpAccess.php)
+- [`easyswoole/ip-access` 1.0.1 · GitHub](https://github.com/easy-swoole/ip-access/tree/1.0.1)
+
+- [IpAccess 仓库（1.0.1）](https://github.com/easy-swoole/ip-access/tree/1.0.1)
+- [IpAccess 源码（1.0.1）](https://github.com/easy-swoole/ip-access/blob/1.0.1/src/IpAccess.php)

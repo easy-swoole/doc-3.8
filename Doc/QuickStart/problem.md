@@ -61,3 +61,7 @@ composer show easyswoole/http-annotation
 ```
 
 反馈问题时提供出错命令、第一条完整报错、这些版本和最小复现代码。 [EasySwoole Issues](https://github.com/easy-swoole/easyswoole/issues)
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

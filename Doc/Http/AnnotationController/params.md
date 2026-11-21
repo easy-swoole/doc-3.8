@@ -100,3 +100,7 @@ public function index(array $data): void
 若希望某个未传入的可选字段完全不进入 `$data`，可在该 `Param` 上设置 `ignorePassArgWhenNotSet: true`。普通形参模式则按名称注入；不能混用一个数组形参与其他形参。
 
 控制器间共用的参数（例如 token）应写在 [`onRequest()` 公共参数](/Http/AnnotationController/common-params.md)，不是复制到每个 `Api::requestParam`。校验规则和失败处理见[参数验证](/Http/AnnotationController/validation.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)

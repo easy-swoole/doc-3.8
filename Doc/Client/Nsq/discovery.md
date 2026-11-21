@@ -77,5 +77,7 @@ $lookup = new Nsqlookupd(
 
 ## 源码依据
 
-- [Nsqlookupd](https://github.com/easy-swoole/nsq/blob/2.x/src/Lookup/Nsqlookupd.php)
-- [Nsq 客户端](https://github.com/easy-swoole/nsq/blob/2.x/src/Nsq.php)
+- [`easyswoole/nsq` 2.0.1 · GitHub](https://github.com/easy-swoole/nsq/tree/2.0.1)
+
+- [Nsqlookupd（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Lookup/Nsqlookupd.php)
+- [Nsq 客户端（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Nsq.php)

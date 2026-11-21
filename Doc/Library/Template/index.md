@@ -48,6 +48,8 @@ composer require 'league/plates:^3.6'
 
 ## 源码依据
 
-- [template 2.x README](https://github.com/easy-swoole/template/blob/2.x/README.md)
-- [Render.php](https://github.com/easy-swoole/template/blob/2.x/src/Render.php)
-- [RenderInterface.php](https://github.com/easy-swoole/template/blob/2.x/src/RenderInterface.php)
+- [`easyswoole/template` 2.0.2 · GitHub](https://github.com/easy-swoole/template/tree/2.0.2)
+
+- [template 2.0.2 README](https://github.com/easy-swoole/template/blob/2.0.2/README.md)
+- [Render.php（2.0.2）](https://github.com/easy-swoole/template/blob/2.0.2/src/Render.php)
+- [RenderInterface.php（2.0.2）](https://github.com/easy-swoole/template/blob/2.0.2/src/RenderInterface.php)

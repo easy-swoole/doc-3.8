@@ -227,4 +227,6 @@ $scheduler->dropItem('report-cache');
 
 ## 源码依据
 
-- [ReadyScheduler](https://github.com/easy-swoole/component/blob/master/src/ReadyScheduler.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [ReadyScheduler（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/ReadyScheduler.php)

@@ -116,3 +116,7 @@ $consumer->stopListen();
 ```
 
 下一章：[可信任务与框架接入](/Library/Queue/reliable.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)

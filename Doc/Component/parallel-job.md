@@ -250,5 +250,8 @@ function runBatch(SplQueue $jobs): bool
 
 ## 源码依据
 
+- [`easyswoole/component` 2.5.5 · GitHub](https://github.com/easy-swoole/component/tree/2.5.5)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
 - [ParallelJob 2.5.5 源码](https://github.com/easy-swoole/component/blob/2.5.5/src/CoroutineRunner/ParallelJob.php)
 - [ParallelJob 2.5.5 README 示例](https://github.com/easy-swoole/component/blob/2.5.5/README.md#paralleljob)

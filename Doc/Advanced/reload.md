@@ -466,11 +466,16 @@ tail -f Log/produce.log_$(date +%Y%m).log
 
 ## 源码依据
 
-- [EasySwoole Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
-- [EasySwoole Task 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/TaskCommand.php)
-- [TaskReloader](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/TaskReloader.php)
-- [EasySwoole Core Worker 事件](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
-- [Component AbstractProcess](https://github.com/easy-swoole/component/blob/master/src/Process/AbstractProcess.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+- [`easyswoole/task` 2.2.2 · GitHub](https://github.com/easy-swoole/task/tree/2.2.2)
+- [`easyswoole/crontab` 1.3.4 · GitHub](https://github.com/easy-swoole/crontab/tree/1.3.4)
+
+- [EasySwoole Server 命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [EasySwoole Task 命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/TaskCommand.php)
+- [TaskReloader（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/TaskReloader.php)
+- [EasySwoole Core Worker 事件（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Core.php)
+- [Component AbstractProcess（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Process/AbstractProcess.php)
 - [Swoole Server addProcess](https://openswoole.com/docs/modules/swoole-server-addProcess)
 - [Swoole Server reload](https://openswoole.com/docs/modules/swoole-server-reload)
 - [reload_async 与 max_wait_time](https://openswoole.com/docs/modules/swoole-server/configuration)

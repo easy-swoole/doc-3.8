@@ -61,3 +61,8 @@ curl -i http://127.0.0.1:9501/response/json
 `write()` 可以多次调用，非分块模式下内容会追加到 Body。`writeJson()` 会设置 JSON Content-Type、HTTP 状态码，并生成 `code/result/msg` 结构。若项目需要另一种统一格式，可在公共 Base Controller 中封装自己的响应方法。
 
 输出 HTML 时必须按上下文转义动态值；不要直接把 Query、异常消息或数据库内容拼进 HTML。JSON 编码失败、循环引用或无效 UTF-8 也应在统一响应层处理。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

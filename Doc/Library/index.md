@@ -37,3 +37,7 @@ IP 来源限制与业务权限不是一回事。IpAccess 判断“请求来自�
 3. 框架示例涉及 `EasySwooleEvent.php` 时，应把代码合并进已有事件方法，而不是用示例覆盖整个文件；改动后按相关章节的说明重启或重载服务。
 
 开始阅读：[连接池](/Library/Pool/index.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

@@ -98,5 +98,7 @@ final class MyRpc extends Rpc
 
 ## 源码依据
 
+- [`easyswoole/rpc` 6.0.1 · GitHub](https://github.com/easy-swoole/rpc/tree/6.0.1)
+
 - [RPC 6.0.1 源码](https://github.com/easy-swoole/rpc/tree/6.0.1)
 - [Composer 包](https://packagist.org/packages/easyswoole/rpc)

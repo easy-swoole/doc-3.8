@@ -249,5 +249,7 @@ $logger->info('request completed', [
 
 ## 源码依据
 
-- [Di](https://github.com/easy-swoole/component/blob/master/src/Di.php)
-- [ContextManager](https://github.com/easy-swoole/component/blob/master/src/Context/ContextManager.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Di（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Di.php)
+- [ContextManager（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Context/ContextManager.php)

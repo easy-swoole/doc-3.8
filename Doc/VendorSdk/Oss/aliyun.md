@@ -77,3 +77,7 @@ $url = $client->generatePresignedUrl(
 过期时间使用较短值，并在授权接口中先检查当前用户是否有权访问该对象。
 
 所有网络操作都可能抛出 `OssException`，应记录 Request ID、Bucket 和 Key，但不要记录访问密钥。
+
+## 版本与 GitHub
+
+- [`easyswoole/oss` 2.1.4 · GitHub](https://github.com/easy-swoole/oss/tree/2.1.4)

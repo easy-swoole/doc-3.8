@@ -68,3 +68,8 @@ class NativeRequest extends \EasySwoole\Http\AbstractInterface\Controller
 - 读取连接 fd、Swoole 特有 server 字段：才考虑原始对象。
 
 直接访问 `$swooleRequest->get`、`post`、`header` 会让控制器和 Swoole 紧密耦合，也绕开框架已经完成的规范化处理。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

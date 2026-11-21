@@ -66,5 +66,7 @@ curl -s http://127.0.0.1:9501/captcha/base64
 
 ## 源码依据
 
-- [4.x README：结果与输出](https://github.com/easy-swoole/verify-code/blob/4.x/README.md)
-- [Result.php](https://github.com/easy-swoole/verify-code/blob/4.x/src/Result.php)
+- [`easyswoole/verifycode` 4.0.1 · GitHub](https://github.com/easy-swoole/verify-code/tree/4.0.1)
+
+- [4.0.1 README：结果与输出](https://github.com/easy-swoole/verify-code/blob/4.0.1/README.md)
+- [Result.php（4.0.1）](https://github.com/easy-swoole/verify-code/blob/4.0.1/src/Result.php)

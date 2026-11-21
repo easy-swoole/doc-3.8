@@ -79,8 +79,10 @@ foreach (TemplateRender::getInstance()->getProcessTable() as $pid => $row) {
 
 ## 源码依据
 
-- [template 2.x README](https://github.com/easy-swoole/template/blob/2.x/README.md)
-- [Config.php](https://github.com/easy-swoole/template/blob/2.x/src/Config.php)
-- [ClientDeadline.php](https://github.com/easy-swoole/template/blob/2.x/src/ClientDeadline.php)
-- [UnixClient.php](https://github.com/easy-swoole/template/blob/2.x/src/UnixClient.php)
-- [RenderWorker.php](https://github.com/easy-swoole/template/blob/2.x/src/RenderWorker.php)
+- [`easyswoole/template` 2.0.2 · GitHub](https://github.com/easy-swoole/template/tree/2.0.2)
+
+- [template 2.0.2 README](https://github.com/easy-swoole/template/blob/2.0.2/README.md)
+- [Config.php（2.0.2）](https://github.com/easy-swoole/template/blob/2.0.2/src/Config.php)
+- [ClientDeadline.php（2.0.2）](https://github.com/easy-swoole/template/blob/2.0.2/src/ClientDeadline.php)
+- [UnixClient.php（2.0.2）](https://github.com/easy-swoole/template/blob/2.0.2/src/UnixClient.php)
+- [RenderWorker.php（2.0.2）](https://github.com/easy-swoole/template/blob/2.0.2/src/RenderWorker.php)

@@ -64,5 +64,7 @@ if (!$result->allAcknowledged() || $result->returned !== []) {
 
 ## 源码依据
 
-- [Channel 发布 API](https://github.com/easy-swoole/amqp/blob/main/src/Channel.php)
-- [PublisherBatch](https://github.com/easy-swoole/amqp/blob/main/src/PublisherBatch.php)
+- [`easyswoole/amqp` 1.0.1 · GitHub](https://github.com/easy-swoole/amqp/tree/1.0.1)
+
+- [Channel 发布 API（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/Channel.php)
+- [PublisherBatch（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/PublisherBatch.php)

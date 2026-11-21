@@ -107,6 +107,8 @@ php easyswoole.php server start --mode=produce
 
 ## 源码依据
 
-- [CLI 入口模板](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
-- [CommandRunner](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [CLI 入口模板（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
+- [CommandRunner（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
+- [Server 命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)

@@ -63,3 +63,7 @@ if ($error !== null) {
     throw new RuntimeException($error->message());
 }
 ```
+
+## 版本与 GitHub
+
+- [`easyswoole/oss` 2.1.4 · GitHub](https://github.com/easy-swoole/oss/tree/2.1.4)

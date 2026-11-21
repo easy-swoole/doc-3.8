@@ -144,3 +144,7 @@ Manager::getInstance()->register($newPool, 'demo');
 运行中直接替换可能遗留旧 Timer 和连接。需要更换连接池时，应先停止新请求、等待旧连接归还，再销毁旧池并注册新实例。
 
 `Manager::resetAll()` 会对已注册的池执行 `destroy()`，不会删除注册名称，也不会把这些池恢复为可用状态。若要继续使用某个实例，需要对该池调用 `reset()`，但常驻服务更建议在安全的进程生命周期中重建池。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

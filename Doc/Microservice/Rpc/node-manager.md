@@ -139,5 +139,9 @@ MyRpc::getInstance(
 
 有自己的 Redis、Etcd 或 Consul 客户端时，可以保留上述接口和注入方式，改用该后端的 TTL 或租约。默认节点选择器会按权重从查询结果中选择节点；有特殊调度要求时，可通过 `RpcDependencies` 注入实现 `NodeSelectorInterface` 的选择器。
 
-- [节点管理器契约](https://github.com/easy-swoole/rpc/blob/6.0.1/src/AbstractInterface/AbstractNodeManager.php)
-- [依赖配置](https://github.com/easy-swoole/rpc/blob/6.0.1/src/Config/RpcDependencies.php)
+- [节点管理器契约（6.0.1）](https://github.com/easy-swoole/rpc/blob/6.0.1/src/AbstractInterface/AbstractNodeManager.php)
+- [依赖配置（6.0.1）](https://github.com/easy-swoole/rpc/blob/6.0.1/src/Config/RpcDependencies.php)
+
+## 版本与 GitHub
+
+- [`easyswoole/rpc` 6.0.1 · GitHub](https://github.com/easy-swoole/rpc/tree/6.0.1)

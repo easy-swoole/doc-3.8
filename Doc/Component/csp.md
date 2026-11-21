@@ -162,4 +162,6 @@ function loadDashboard(): array
 
 ## 源码依据
 
-- [Csp](https://github.com/easy-swoole/component/blob/master/src/Csp.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Csp（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Csp.php)

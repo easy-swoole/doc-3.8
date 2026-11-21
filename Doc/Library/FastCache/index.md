@@ -50,3 +50,7 @@ public static function mainServerCreate(EventRegister $register): void
 ```
 
 下一章：[基础使用](/Library/FastCache/usage.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/fast-cache` 2.1.2 · GitHub](https://github.com/easy-swoole/fast-cache/tree/2.1.2)

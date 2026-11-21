@@ -260,3 +260,8 @@ EasySwoole\Http\AbstractInterface\Controller
 EasySwoole\Http\Response
     └── 将状态码、Header、Cookie、Body 或文件写回 Swoole
 ```
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

@@ -160,3 +160,7 @@ curl -i -X POST 'http://127.0.0.1:9501/admin/report' \
 ```
 
 `#[ExtendParam]` 只负责继承**参数定义**；想复用父类鉴权逻辑，仍要显式调用 `parent::onRequest($action, $data)`。不传参数时继承父类全部公共参数；`#[ExtendParam(parentParamsName: ['token'])]` 只继承列出的名称。子类声明同名 `#[Param]` 时以子类定义为准。完整选项见[Attribute 清单与定义参数](/Http/AnnotationController/attributes.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)

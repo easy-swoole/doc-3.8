@@ -189,7 +189,9 @@ $subRegister->add(EventRegister::onReceive, function (
 
 ## 源码依据
 
-- [EasySwooleEvent 模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/EasySwooleEvent._php)
-- [EventRegister](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Swoole/EventRegister.php)
-- [EventHelper](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Swoole/EventHelper.php)
-- [Core 默认回调](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [EasySwooleEvent 模板（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/EasySwooleEvent._php)
+- [EventRegister（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Swoole/EventRegister.php)
+- [EventHelper（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Swoole/EventHelper.php)
+- [Core 默认回调（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Core.php)

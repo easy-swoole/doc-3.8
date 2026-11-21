@@ -61,6 +61,8 @@ HTTP 错误会优先读取 `X-Consul-Reason` 响应头作为原因，没有该�
 
 ## 源码依据
 
-- [ResponseDecoder](https://github.com/easy-swoole/consul/blob/2.x/src/Http/ResponseDecoder.php)
-- [AbstractEndpoint](https://github.com/easy-swoole/consul/blob/2.x/src/AbstractEndpoint.php)
-- [请求序列化](https://github.com/easy-swoole/consul/blob/2.x/src/Request/RequestSerializer.php)
+- [`easyswoole/consul` 2.0.2 · GitHub](https://github.com/easy-swoole/consul/tree/2.0.2)
+
+- [ResponseDecoder（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Http/ResponseDecoder.php)
+- [AbstractEndpoint（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/AbstractEndpoint.php)
+- [请求序列化（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Request/RequestSerializer.php)

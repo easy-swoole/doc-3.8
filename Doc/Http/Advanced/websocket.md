@@ -460,3 +460,8 @@ location /ws {
 - 重要消息是否支持落库、确认、重试或重连补拉？
 - Nginx 是否转发 Upgrade/Connection Header，超时是否合理？
 - 日志是否避免记录完整 Token 和敏感消息内容？
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

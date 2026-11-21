@@ -139,3 +139,7 @@ $pool->keepMin();
 ```
 
 热重载或平滑发布时还要预留重叠空间。数据库最大连接数必须高于应用连接预算，并为管理连接、迁移脚本和其他服务保留余量。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

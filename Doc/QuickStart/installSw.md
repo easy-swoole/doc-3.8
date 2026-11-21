@@ -67,6 +67,8 @@ php --ri swoole
 
 ## 源码依据
 
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
 - [swoole/swoole-src](https://github.com/swoole/swoole-src)
 - [Swoole Releases](https://github.com/swoole/swoole-src/releases)
 - [Swoole 官方 Docker 镜像](https://github.com/swoole/docker-swoole)

@@ -123,3 +123,7 @@ $mailer->setFrom('service@example.com', '客户服务');
 邮件服务商可能要求发件地址与登录账号相同，或者要求发件地址属于已验证域名。即使组件允许设置不同地址，服务端仍可能拒绝投递或把邮件归类为垃圾邮件。
 
 下一章：[收件人、抄送与附件](/Client/Smtp/attachment.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/smtp` 3.0.1 · GitHub](https://github.com/easy-swoole/smtp/tree/3.0.1)

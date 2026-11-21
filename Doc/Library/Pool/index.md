@@ -147,3 +147,7 @@ Coroutine\run(function (): void {
 3. [Manager 与框架接入](/Library/Pool/manager.md)：在框架全局初始化事件中注册连接池。
 4. [获取、归还与销毁](/Library/Pool/usage.md)：选择 `invoke()`、`defer()` 或 `getObj()`。
 5. [预热、检查与监控](/Library/Pool/maintenance.md)：处理冷启动、健康检查和状态观测。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

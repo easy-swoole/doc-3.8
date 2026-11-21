@@ -102,3 +102,7 @@ foreach ($rules as [$path, $effect]) {
 组件没有删除单条路径的公开方法。需要撤销规则时，不要继续修改旧树，应从当前有效规则重新构建 `Policy`。
 
 下一章：[框架鉴权接入](/Library/AccessPolicy/integration.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)

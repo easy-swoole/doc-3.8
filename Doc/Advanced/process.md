@@ -277,6 +277,9 @@ php easyswoole.php process kill --group=OrderConsumer
 
 ## 源码依据
 
-- [AbstractProcess](https://github.com/easy-swoole/component/blob/master/src/Process/AbstractProcess.php)
-- [Process Manager](https://github.com/easy-swoole/component/blob/master/src/Process/Manager.php)
-- [Timer](https://github.com/easy-swoole/component/blob/master/src/Timer.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [AbstractProcess（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Process/AbstractProcess.php)
+- [Process Manager（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Process/Manager.php)
+- [Timer（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Timer.php)

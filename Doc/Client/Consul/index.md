@@ -189,7 +189,9 @@ $client->status()->leader($bySetter);
 
 ## 源码依据
 
-- [Consul 2.x README](https://github.com/easy-swoole/consul/blob/2.x/README.md)
-- [客户端配置](https://github.com/easy-swoole/consul/blob/2.x/src/ClientConfig.php)
-- [客户端入口](https://github.com/easy-swoole/consul/blob/2.x/src/ConsulClient.php)
-- [TLS 配置](https://github.com/easy-swoole/consul/blob/2.x/src/TlsConfig.php)
+- [`easyswoole/consul` 2.0.2 · GitHub](https://github.com/easy-swoole/consul/tree/2.0.2)
+
+- [Consul 2.0.2 README](https://github.com/easy-swoole/consul/blob/2.0.2/README.md)
+- [客户端配置（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/ClientConfig.php)
+- [客户端入口（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/ConsulClient.php)
+- [TLS 配置（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/TlsConfig.php)

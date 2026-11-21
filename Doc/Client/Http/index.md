@@ -121,3 +121,7 @@ go(function (): void {
 同一协程连续访问同一个 Host 时可以开启 Keep-Alive 后复用；不同 Host 应创建不同实例。
 
 超时的精确判定见[超时配置与判定](/Client/Http/timeout.md)。下一章：[发送请求](/Client/Http/request.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-client` 1.7.1 · GitHub](https://github.com/easy-swoole/http-client/tree/1.7.1)

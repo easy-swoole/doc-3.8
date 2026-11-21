@@ -18,3 +18,8 @@ curl -i http://127.0.0.1:9501/hello
 两个请求都应返回 200；`/hello` 正文应为 `Hello EasySwoole`。如果连不上，先检查启动终端里的报错、`dev.php` 中的端口及端口占用。修改控制器文件后运行 `php easyswoole.php server reload`；修改监听端口、Worker 数量等启动期配置后要完整停止并重启。测试结束时，在第一个终端按 `Ctrl+C`。
 
 HTTP 控制器放在 `App/HttpController`。不要用 PHP 内置 Web Server 代替 Swoole，它们的进程与生命周期不同。生产环境建议使用[systemd](/QuickStart/systemd.md)等进程管理器。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

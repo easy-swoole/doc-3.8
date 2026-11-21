@@ -13,7 +13,7 @@
 | Jolly Lodger | ![Jolly Lodger](/Images/verifyCodeExample/font-5.png) |
 | Play Bold | ![Play Bold](/Images/verifyCodeExample/font-6.png) |
 
-内置字体经过数字和英文字母字符集裁剪；部分字体大小写看起来相同。其许可证说明在[组件仓库的字体目录](https://github.com/easy-swoole/verify-code/blob/4.x/src/assets/ttf/FONT-LICENSES.md)。
+内置字体经过数字和英文字母字符集裁剪；部分字体大小写看起来相同。其许可证说明在[组件仓库的字体目录（4.0.1）](https://github.com/easy-swoole/verify-code/blob/4.0.1/src/assets/ttf/FONT-LICENSES.md)。
 
 ## 使用自有字体
 
@@ -57,5 +57,7 @@ $config->setMimeType(MIME::JPG); // MIME::PNG、MIME::GIF 或 MIME::JPG
 
 ## 源码依据
 
-- [4.x README：字体与格式](https://github.com/easy-swoole/verify-code/blob/4.x/README.md)
-- [MIME.php](https://github.com/easy-swoole/verify-code/blob/4.x/src/MIME.php)
+- [`easyswoole/verifycode` 4.0.1 · GitHub](https://github.com/easy-swoole/verify-code/tree/4.0.1)
+
+- [4.0.1 README：字体与格式](https://github.com/easy-swoole/verify-code/blob/4.0.1/README.md)
+- [MIME.php（4.0.1）](https://github.com/easy-swoole/verify-code/blob/4.0.1/src/MIME.php)

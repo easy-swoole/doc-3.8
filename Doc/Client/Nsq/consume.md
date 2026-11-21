@@ -159,5 +159,7 @@ public static function mainServerCreate(\EasySwoole\EasySwoole\Swoole\EventRegis
 
 ## 源码依据
 
-- [Nsq 消费与确认](https://github.com/easy-swoole/nsq/blob/2.x/src/Nsq.php)
-- [Message](https://github.com/easy-swoole/nsq/blob/2.x/src/Message/Message.php)
+- [`easyswoole/nsq` 2.0.1 · GitHub](https://github.com/easy-swoole/nsq/tree/2.0.1)
+
+- [Nsq 消费与确认（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Nsq.php)
+- [Message（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Message/Message.php)

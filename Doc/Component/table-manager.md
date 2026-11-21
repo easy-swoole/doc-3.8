@@ -23,4 +23,6 @@ $manager->del('users');
 
 ## 源码依据
 
-- [Component 仓库](https://github.com/easy-swoole/component)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Component 仓库（2.5.7）](https://github.com/easy-swoole/component/tree/2.5.7)

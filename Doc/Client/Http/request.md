@@ -140,3 +140,7 @@ $client->setTimeout(5.0)
 | `setWriteTimeout()` | 发送请求数据，覆盖该阶段的基础设置 |
 
 单位均为秒，可以使用 `0.5` 这样的浮点数。具体超时判定、负数状态码及重定向的影响见[超时配置与判定](/Client/Http/timeout.md)。下一章：[超时配置与判定](/Client/Http/timeout.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-client` 1.7.1 · GitHub](https://github.com/easy-swoole/http-client/tree/1.7.1)

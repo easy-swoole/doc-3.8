@@ -113,3 +113,8 @@ $routeCollector->get(
 ## 参数覆盖规则
 
 使用 `PARSE_PARAMS_IN_GET` 时，框架以路径参数优先的方式合并 Query。比如访问 `/users/42?id=99`，最终 `id` 是 `42`。即便如此，也不要设计同名的路径参数和查询参数表达不同含义。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

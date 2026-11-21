@@ -19,3 +19,8 @@
 ## 上传触发 413、超时或文件为空
 
 用同一个文件分别请求后端和代理入口，定位在哪一层失败。逐层检查代理请求体限制、Swoole 大小限制和应用上传校验，修改后用同一文件重试。参见[大文件上传](/Http/File/large-upload.md)和[文件校验与保存](/Http/File/validate-save.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

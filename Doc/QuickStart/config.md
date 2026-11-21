@@ -111,5 +111,7 @@ Config::getInstance()->loadEnv(EASYSWOOLE_ROOT . '/.env');
 
 ## 源码依据
 
-- [默认配置模板](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/Config._php)
-- [Config 实现](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Config.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [默认配置模板（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/Config._php)
+- [Config 实现（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Config.php)

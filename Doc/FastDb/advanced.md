@@ -395,9 +395,11 @@ $orders = $user?->orders();
 
 ## 源码依据
 
+- [`easyswoole/fast-db` 3.1.2 · GitHub](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+
 - [FastDb 3.1.2 README：属性转换](https://github.com/easy-swoole/fast-db/blob/3.1.2/README.md#属性转换)
-- [ConvertList](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertList.php)
-- [ConvertDateTime](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertDateTime.php)
-- [ConvertBean](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertBean.php)
-- [FieldCodec](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Internal/FieldCodec.php)
-- [Property](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Attributes/Property.php)
+- [ConvertList（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertList.php)
+- [ConvertDateTime（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertDateTime.php)
+- [ConvertBean（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/ConvertBean.php)
+- [FieldCodec（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Internal/FieldCodec.php)
+- [Property（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Attributes/Property.php)

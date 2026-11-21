@@ -110,3 +110,7 @@ Pool 保存的是同一个可变 `Config` 对象，但并非所有选项都适�
 - `intervalCheckBatchSize` 会在下一轮检查时读取新值。
 
 需要修改容量或检查周期时，更安全的方式是停止新请求、等待连接归还，然后重建连接池。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

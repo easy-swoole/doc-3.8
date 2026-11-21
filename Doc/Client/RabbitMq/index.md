@@ -113,5 +113,7 @@ Coroutine\run(function (): void {
 
 ## 源码依据
 
-- [AMQP README](https://github.com/easy-swoole/amqp/blob/main/README.md)
-- [AMQP 客户端](https://github.com/easy-swoole/amqp/blob/main/src/AMQP.php)
+- [`easyswoole/amqp` 1.0.1 · GitHub](https://github.com/easy-swoole/amqp/tree/1.0.1)
+
+- [AMQP README（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/README.md)
+- [AMQP 客户端（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/AMQP.php)

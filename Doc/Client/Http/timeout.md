@@ -99,8 +99,10 @@ $body = $response->getBody();
 
 ## 源码依据
 
-- [HTTP Client 最新 README：超时与长连接](https://github.com/easy-swoole/http-client/blob/master/README.md)
-- [Request.php：四个超时设置](https://github.com/easy-swoole/http-client/blob/master/src/Traits/Request.php)
-- [HttpClient.php：请求、响应与下载](https://github.com/easy-swoole/http-client/blob/master/src/HttpClient.php)
+- [`easyswoole/http-client` 1.7.1 · GitHub](https://github.com/easy-swoole/http-client/tree/1.7.1)
+
+- [HTTP Client 最新 README：超时与长连接（1.7.1）](https://github.com/easy-swoole/http-client/blob/1.7.1/README.md)
+- [Request.php：四个超时设置（1.7.1）](https://github.com/easy-swoole/http-client/blob/1.7.1/src/Traits/Request.php)
+- [HttpClient.php：请求、响应与下载（1.7.1）](https://github.com/easy-swoole/http-client/blob/1.7.1/src/HttpClient.php)
 - [Swoole 协程客户端超时设置](https://openswoole.com/docs/modules/swoole-coroutine-client-timeouts)
 - [Swoole HTTP 客户端负数状态码](https://openswoole.com/docs/modules/swoole-coroutine-http-client-getstatuscode)

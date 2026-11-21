@@ -136,8 +136,10 @@ $allReady = $scheduler->waitReady(
 
 ## 源码依据
 
-- [WaitGroup](https://github.com/easy-swoole/component/blob/master/src/WaitGroup.php)
-- [ChannelLock](https://github.com/easy-swoole/component/blob/master/src/ChannelLock.php)
-- [Csp](https://github.com/easy-swoole/component/blob/master/src/Csp.php)
-- [CoroutineRunner](https://github.com/easy-swoole/component/tree/master/src/CoroutineRunner)
-- [ReadyScheduler](https://github.com/easy-swoole/component/blob/master/src/ReadyScheduler.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [WaitGroup（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/WaitGroup.php)
+- [ChannelLock（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/ChannelLock.php)
+- [Csp（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Csp.php)
+- [CoroutineRunner（2.5.7）](https://github.com/easy-swoole/component/tree/2.5.7/src/CoroutineRunner)
+- [ReadyScheduler（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/ReadyScheduler.php)

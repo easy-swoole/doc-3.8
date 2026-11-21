@@ -85,3 +85,7 @@ $config->setGateWay(Gateway::SANDBOX);
 ```
 
 沙箱 AppID、密钥和账户不能与生产环境混用。
+
+## 版本与 GitHub
+
+- [`easyswoole/pay` 2.0.1 · GitHub](https://github.com/easy-swoole/pay/tree/2.0.1)

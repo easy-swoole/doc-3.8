@@ -97,5 +97,7 @@ php easyswoole.php server start -d --mode=produce
 
 ## 源码依据
 
-- [安装命令实现](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/InstallAction.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [安装命令实现（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/InstallAction.php)
 - [框架 3.8.2](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

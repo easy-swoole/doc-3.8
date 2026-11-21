@@ -31,3 +31,7 @@
 | 发布 RPC 服务或找不到节点 | [RPC 安装](/Microservice/Rpc/index.md)、[服务发现与部署](/Microservice/Rpc/discovery.md) |
 | 接入 WebSocket、TCP 或 UDP | [Socket 组件与协议基础](/Socket/index.md) |
 | 管理服务进程或部署上线 | [基础管理命令](/QuickStart/command.md)、[systemd 部署](/QuickStart/systemd.md)、[反向代理](/Http/Advanced/proxy.md) |
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

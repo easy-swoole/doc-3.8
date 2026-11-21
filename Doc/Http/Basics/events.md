@@ -374,3 +374,8 @@ public static function initialize(): void
 - 修改 `EasySwooleEvent.php` 后只刷新浏览器，没有重启常驻服务。
 - 在事件回调中执行阻塞时间很长的日志、网络请求或文件操作，阻塞 Worker。
 - 使用静态属性保存当前用户、Token 等请求态数据，导致不同请求串数据。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

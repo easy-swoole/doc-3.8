@@ -16,3 +16,8 @@
 合并时使用流式复制，不要把所有分片读入一个 PHP 字符串。完成后验证 SHA-256、原子移动到正式目录并写入数据库。定时任务清理超时分片；多实例部署时使用共享对象存储或确保同一 uploadId 固定到同一存储节点。
 
 能使用对象存储时，推荐由应用鉴权后签发短期上传 URL，让客户端直传，再通过回调或完成接口确认结果，减少 HTTP Worker 和本机磁盘压力。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

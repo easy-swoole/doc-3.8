@@ -223,6 +223,9 @@ $client = new \EasySwoole\Socket\Tools\Client(
 
 ## 源码依据
 
-- [EasySwoole ServerManager](https://github.com/easy-swoole/easyswoole/blob/3.x/src/ServerManager.php)
-- [Socket TCP Dispatcher](https://github.com/easy-swoole/socket/blob/2.x/src/Dispatcher.php)
-- [Socket TCP 客户端信息](https://github.com/easy-swoole/socket/blob/2.x/src/Client/Tcp.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/socket` 2.0.1 · GitHub](https://github.com/easy-swoole/socket/tree/2.0.1)
+
+- [EasySwoole ServerManager（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/ServerManager.php)
+- [Socket TCP Dispatcher（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Dispatcher.php)
+- [Socket TCP 客户端信息（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Client/Tcp.php)

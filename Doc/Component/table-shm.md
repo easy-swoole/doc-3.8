@@ -47,4 +47,6 @@ PHP 模式能保留更多 PHP 类型，但只应读取可信进程写入的数�
 
 ## 源码依据
 
-- [Component 仓库](https://github.com/easy-swoole/component)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Component 仓库（2.5.7）](https://github.com/easy-swoole/component/tree/2.5.7)

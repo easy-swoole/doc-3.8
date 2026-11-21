@@ -323,6 +323,9 @@ TCP 建立连接不等于完成业务认证。常见做法是要求第一条数�
 
 ## 源码依据
 
-- [TCP 分发入口](https://github.com/easy-swoole/socket/blob/2.x/src/Dispatcher.php)
-- [Protocol](https://github.com/easy-swoole/socket/blob/2.x/src/Tools/Protocol.php)
-- [协程客户端](https://github.com/easy-swoole/socket/blob/2.x/src/Tools/Client.php)
+- [`easyswoole/socket` 2.0.1 · GitHub](https://github.com/easy-swoole/socket/tree/2.0.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [TCP 分发入口（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Dispatcher.php)
+- [Protocol（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Tools/Protocol.php)
+- [协程客户端（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Tools/Client.php)

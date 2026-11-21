@@ -128,3 +128,7 @@ Coroutine\run(function (): void {
 ```
 
 下一章：[发送文本与 HTML 邮件](/Client/Smtp/send.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/smtp` 3.0.1 · GitHub](https://github.com/easy-swoole/smtp/tree/3.0.1)

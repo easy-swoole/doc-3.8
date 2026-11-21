@@ -125,3 +125,7 @@ try {
 - 长时间运行的消费循环。
 
 应在专用自定义进程中创建专用 Redis 连接并自行处理重连和退出，不要占用普通请求连接池。
+
+## 版本与 GitHub
+
+- [`easyswoole/redis-pool` 4.0.1 · GitHub](https://github.com/easy-swoole/redis-pool/tree/4.0.1)

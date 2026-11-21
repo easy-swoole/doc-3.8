@@ -58,6 +58,8 @@ Coroutine\run(function (): void {
 
 ## 源码依据
 
-- [NSQ 2.x README](https://github.com/easy-swoole/nsq/blob/2.x/README.md)
-- [Nsq 客户端](https://github.com/easy-swoole/nsq/blob/2.x/src/Nsq.php)
-- [连接配置](https://github.com/easy-swoole/nsq/blob/2.x/src/Config.php)
+- [`easyswoole/nsq` 2.0.1 · GitHub](https://github.com/easy-swoole/nsq/tree/2.0.1)
+
+- [NSQ 2.0.1 README](https://github.com/easy-swoole/nsq/blob/2.0.1/README.md)
+- [Nsq 客户端（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Nsq.php)
+- [连接配置（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Config.php)

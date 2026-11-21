@@ -110,3 +110,7 @@ try {
 ```
 
 日志可以记录商户订单号和错误码，不能记录私钥、APIv3 密钥或完整敏感支付数据。
+
+## 版本与 GitHub
+
+- [`easyswoole/pay` 2.0.1 · GitHub](https://github.com/easy-swoole/pay/tree/2.0.1)

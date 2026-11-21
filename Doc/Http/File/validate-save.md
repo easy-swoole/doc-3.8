@@ -32,3 +32,8 @@ public function avatar(): void
 `moveTo()` 会创建目标目录并复制上传流，但目录权限、磁盘空间和异常仍需处理。上传目录应位于 Web 根目录之外；下载时根据数据库 ID 鉴权。不要保留客户端路径和文件名。图片若公开展示，建议用图像库重新解码生成，以移除伪造内容和危险元数据。
 
 数据库和文件系统无法天然组成同一事务：可先写临时文件，业务记录提交后再改为正式状态；失败时补偿删除，并定期清理孤儿文件。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

@@ -100,3 +100,8 @@ location / {
 ```
 
 用户私有文件不能放在公开静态目录。应先由应用鉴权，再用 `sendFile()` 或 Nginx 的内部跳转机制返回。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

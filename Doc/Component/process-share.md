@@ -141,6 +141,8 @@ $table->set('stock', $row);
 
 ## 源码依据
 
-- [AtomicManager](https://github.com/easy-swoole/component/blob/master/src/AtomicManager.php)
-- [TableManager](https://github.com/easy-swoole/component/blob/master/src/TableManager.php)
-- [TableShm](https://github.com/easy-swoole/component/blob/master/src/TableShm.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [AtomicManager（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/AtomicManager.php)
+- [TableManager（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/TableManager.php)
+- [TableShm（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/TableShm.php)

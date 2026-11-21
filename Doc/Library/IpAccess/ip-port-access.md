@@ -93,3 +93,7 @@ $access = (new IpPortAccess())
 端口必须在 `1` 到 `65535` 之间，起始端口不能大于结束端口。非法 IP、CIDR 或端口会抛出 `InvalidArgumentException`，相反名单发生规则冲突时会抛出 `LogicException`。
 
 下一章：[框架接入与代理部署](/Library/IpAccess/integration.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/ip-access` 1.0.1 · GitHub](https://github.com/easy-swoole/ip-access/tree/1.0.1)

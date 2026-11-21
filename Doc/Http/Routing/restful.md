@@ -101,3 +101,8 @@ curl -i http://127.0.0.1:9501/api/v1/not-found
 ```
 
 路由只决定“请求交给谁”。JSON 解析、字段验证、数据库事务和权限判断仍由控制器及 Service 完成。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

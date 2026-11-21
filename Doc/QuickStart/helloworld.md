@@ -75,5 +75,8 @@ php easyswoole.php server reload
 
 ## 源码依据
 
-- [安装器生成的 Index 控制器](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Resource/Http/Index._php)
-- [Controller](https://github.com/easy-swoole/http/blob/3.x/src/AbstractInterface/Controller.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)
+
+- [安装器生成的 Index 控制器（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/Http/Index._php)
+- [Controller（3.2.1）](https://github.com/easy-swoole/http/blob/3.2.1/src/AbstractInterface/Controller.php)

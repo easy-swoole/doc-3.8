@@ -120,6 +120,8 @@ Socket 文件名为 `SyncInvoker.<serverName>.<workerIndex>.sock`。
 
 ## 源码依据
 
-- [组件 README](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/README.md)
-- [调用客户端](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/Client/Client.php)
-- [同步进程](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/Process/Worker.php)
+- [`easyswoole/sync-invoker` 2.2.4 · GitHub](https://github.com/easy-swoole/sync-invoker/tree/2.2.4)
+
+- [组件 README（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/README.md)
+- [调用客户端（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/Client/Client.php)
+- [同步进程（2.2.4）](https://github.com/easy-swoole/sync-invoker/blob/2.2.4/src/Process/Worker.php)

@@ -171,5 +171,7 @@ if ($clientIp === '' || $serverPort === 0 || !$access->isAllowAccess($clientIp, 
 
 ## 源码依据
 
-- [IpAccess README](https://github.com/easy-swoole/ip-access/blob/main/README.md)
-- [IpPortAccess 源码](https://github.com/easy-swoole/ip-access/blob/main/src/IpPortAccess.php)
+- [`easyswoole/ip-access` 1.0.1 · GitHub](https://github.com/easy-swoole/ip-access/tree/1.0.1)
+
+- [IpAccess README（1.0.1）](https://github.com/easy-swoole/ip-access/blob/1.0.1/README.md)
+- [IpPortAccess 源码（1.0.1）](https://github.com/easy-swoole/ip-access/blob/1.0.1/src/IpPortAccess.php)

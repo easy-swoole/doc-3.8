@@ -94,3 +94,7 @@ $status = $pool?->status();
 业务获取连接时优先使用 `invoke()` 或 `defer()`，避免直接 `getObj()` 后忘记归还。
 
 下一章：[数据操作与事务](/Client/Redis/usage.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/redis-pool` 4.0.1 · GitHub](https://github.com/easy-swoole/redis-pool/tree/4.0.1)

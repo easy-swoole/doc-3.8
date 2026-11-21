@@ -75,6 +75,8 @@ $client = new Nsq(new Config(host: 'nsqd.internal', tls: $tls));
 
 ## 源码依据
 
-- [Config](https://github.com/easy-swoole/nsq/blob/2.x/src/Config.php)
-- [TlsConfig](https://github.com/easy-swoole/nsq/blob/2.x/src/TlsConfig.php)
-- [连接握手](https://github.com/easy-swoole/nsq/blob/2.x/src/Connection/Connection.php)
+- [`easyswoole/nsq` 2.0.1 · GitHub](https://github.com/easy-swoole/nsq/tree/2.0.1)
+
+- [Config（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Config.php)
+- [TlsConfig（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/TlsConfig.php)
+- [连接握手（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Connection/Connection.php)

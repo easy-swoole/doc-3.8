@@ -80,5 +80,8 @@ Dispatcher 支持 `setHttpExceptionHandler()`。它适合处理控制器构造�
 
 ## 源码依据
 
-- [Controller 异常流程](https://github.com/easy-swoole/http/blob/3.x/src/AbstractInterface/Controller.php)
-- [Dispatcher 异常处理](https://github.com/easy-swoole/http/blob/3.x/src/Dispatcher.php)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Controller 异常流程（3.2.1）](https://github.com/easy-swoole/http/blob/3.2.1/src/AbstractInterface/Controller.php)
+- [Dispatcher 异常处理（3.2.1）](https://github.com/easy-swoole/http/blob/3.2.1/src/Dispatcher.php)

@@ -9,3 +9,8 @@ $port = Config::getInstance()->getConf('MAIN_SERVER.PORT');
 ```
 
 常调参数包括 `SERVER_NAME`、`LISTEN_ADDRESS`、`PORT`、`SERVER_TYPE` 和 `SETTING` 下的 `worker_num`、`max_request`、上传限制等。环境差异应拆为独立配置或环境变量，密钥不要提交到仓库。修改进程级配置后应完整重启服务。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

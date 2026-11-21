@@ -89,3 +89,8 @@ $routeCollector->addGroup('/api', function (RouteCollector $api): void {
 ```
 
 分组本身只负责路径前缀，并不会自动增加鉴权中间件。当前版本中，可让 `/Api` 下的控制器继承同一个 `BaseController`，在 `onRequest()` 中集中认证。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

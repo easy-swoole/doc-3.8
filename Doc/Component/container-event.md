@@ -181,7 +181,9 @@ $events->add('order.paid', function (int $orderId): void {
 
 ## 源码依据
 
-- [Container](https://github.com/easy-swoole/component/blob/master/src/Container.php)
-- [MultiContainer](https://github.com/easy-swoole/component/blob/master/src/MultiContainer.php)
-- [Event](https://github.com/easy-swoole/component/blob/master/src/Event.php)
-- [MultiEvent](https://github.com/easy-swoole/component/blob/master/src/MultiEvent.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Container（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Container.php)
+- [MultiContainer（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/MultiContainer.php)
+- [Event（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Event.php)
+- [MultiEvent（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/MultiEvent.php)

@@ -253,9 +253,11 @@ EasySwoole 的请求回调通常已经运行在 Server Worker 环境中，但仍
 
 ## 源码依据
 
-- [Component 仓库](https://github.com/easy-swoole/component)
-- [Singleton](https://github.com/easy-swoole/component/blob/master/src/Singleton.php)
-- [CoroutineSingleTon](https://github.com/easy-swoole/component/blob/master/src/CoroutineSingleTon.php)
-- [Container](https://github.com/easy-swoole/component/blob/master/src/Container.php)
-- [Di](https://github.com/easy-swoole/component/blob/master/src/Di.php)
-- [Event](https://github.com/easy-swoole/component/blob/master/src/Event.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Component 仓库（2.5.7）](https://github.com/easy-swoole/component/tree/2.5.7)
+- [Singleton（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Singleton.php)
+- [CoroutineSingleTon（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/CoroutineSingleTon.php)
+- [Container（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Container.php)
+- [Di（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Di.php)
+- [Event（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Event.php)

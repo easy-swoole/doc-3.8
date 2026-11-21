@@ -87,6 +87,8 @@ $client->agent()->serviceDeregister(new DeRegister([
 
 ## 源码依据
 
-- [Agent 端点](https://github.com/easy-swoole/consul/blob/2.x/src/Agent.php)
-- [Health 端点](https://github.com/easy-swoole/consul/blob/2.x/src/Health.php)
-- [服务注册请求](https://github.com/easy-swoole/consul/blob/2.x/src/Request/Agent/Service/Register.php)
+- [`easyswoole/consul` 2.0.2 · GitHub](https://github.com/easy-swoole/consul/tree/2.0.2)
+
+- [Agent 端点（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Agent.php)
+- [Health 端点（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Health.php)
+- [服务注册请求（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Request/Agent/Service/Register.php)

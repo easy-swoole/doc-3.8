@@ -110,7 +110,9 @@ public static function mainServerCreate(EventRegister $register)
 
 ## 源码依据
 
-- [CLI 入口模板](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
-- [Core](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
-- [ServerManager](https://github.com/easy-swoole/easyswoole/blob/3.x/src/ServerManager.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [CLI 入口模板（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
+- [Core（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Core.php)
+- [Server 命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [ServerManager（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/ServerManager.php)

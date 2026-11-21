@@ -186,3 +186,7 @@ $point = $trace->next('query-user', [
 - 完整请求体、响应体、文件内容或大型对象。
 
 下一章：[调用链与状态](/Library/Trace/span.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/trace` 2.0.2 · GitHub](https://github.com/easy-swoole/trace/tree/2.0.2)

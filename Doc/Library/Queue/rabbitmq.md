@@ -82,3 +82,7 @@ RabbitMQ 驱动通过消息 TTL、延迟队列和 Dead Letter Exchange 实现延
 可信任务尚未 ACK 时连接中断，RabbitMQ 会重新投递原消息。确认超时后，驱动会先通过 Publisher Confirm 发布带有最新 `runTimes` 的任务，再 ACK 原消息。即便如此，确认临界点发生网络异常时仍可能重复，因此业务幂等不可省略。
 
 下一章：[生产、消费与延迟任务](/Library/Queue/usage.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)

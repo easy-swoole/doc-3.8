@@ -257,3 +257,8 @@ $this->setGlobalMode(true);
 - 请求方法不一致，例如只注册 POST，却直接在浏览器地址栏用 GET 访问。
 
 下一章将给 `/users/{id}` 加上动态参数并演示两种读取方式。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

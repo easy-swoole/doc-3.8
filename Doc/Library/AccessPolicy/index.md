@@ -69,6 +69,8 @@ AccessPolicy 只负责“路径规则的建立与匹配”，不负责以下工�
 
 ## 源码依据
 
-- [Policy 仓库](https://github.com/easy-swoole/policy)
-- [Policy 源码](https://github.com/easy-swoole/policy/blob/master/src/Policy.php)
-- [PolicyNode 源码](https://github.com/easy-swoole/policy/blob/master/src/PolicyNode.php)
+- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)
+
+- [Policy 仓库（1.2.1）](https://github.com/easy-swoole/policy/tree/1.2.1)
+- [Policy 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/Policy.php)
+- [PolicyNode 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/PolicyNode.php)

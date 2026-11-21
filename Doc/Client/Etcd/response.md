@@ -91,7 +91,9 @@ $client = $etcd->client;
 
 ## 源码依据
 
-- [Client](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Client.php)
-- [EasySwooleTransport](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Transport/EasySwooleTransport.php)
-- [Config](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Config.php)
-- [TlsConfig](https://github.com/easy-swoole/etcd-client/blob/2.x/src/TlsConfig.php)
+- [`easyswoole/etcd-client` 2.0.2 · GitHub](https://github.com/easy-swoole/etcd-client/tree/2.0.2)
+
+- [Client（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Client.php)
+- [EasySwooleTransport（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Transport/EasySwooleTransport.php)
+- [Config（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Config.php)
+- [TlsConfig（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/TlsConfig.php)

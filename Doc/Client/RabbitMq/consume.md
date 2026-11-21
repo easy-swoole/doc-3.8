@@ -124,5 +124,7 @@ public static function mainServerCreate(EventRegister $register)
 
 ## 源码依据
 
-- [Channel 消费 API](https://github.com/easy-swoole/amqp/blob/main/src/Channel.php)
-- [Message](https://github.com/easy-swoole/amqp/blob/main/src/Message.php)
+- [`easyswoole/amqp` 1.0.1 · GitHub](https://github.com/easy-swoole/amqp/tree/1.0.1)
+
+- [Channel 消费 API（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/Channel.php)
+- [Message（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/Message.php)

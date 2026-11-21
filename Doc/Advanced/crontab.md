@@ -206,5 +206,8 @@ php easyswoole.php crontab reload --mode=produce
 
 ## 源码依据
 
-- [EasySwoole Crontab 组件](https://github.com/easy-swoole/crontab)
-- [框架 Crontab 单例](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Crontab/Crontab.php)
+- [`easyswoole/crontab` 1.3.4 · GitHub](https://github.com/easy-swoole/crontab/tree/1.3.4)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [EasySwoole Crontab 组件（1.3.4）](https://github.com/easy-swoole/crontab/tree/1.3.4)
+- [框架 Crontab 单例（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Crontab/Crontab.php)

@@ -217,7 +217,10 @@ new Param(
 
 ## 源码依据
 
+- [`easyswoole/http-annotation` 4.2.2 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.2)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
 - [HTTP Annotation 4.2.2：嵌套请求参数](https://github.com/easy-swoole/http-annotation/blob/4.2.2/README.md#嵌套请求参数)
-- [Shipping Example](https://github.com/easy-swoole/http-annotation/blob/4.2.2/tests/ControllerExample/Api/Shipping.php)
-- [ObjectShape](https://github.com/easy-swoole/http-annotation/blob/4.2.2/src/Validator/ObjectShape.php)
-- [Each](https://github.com/easy-swoole/http-annotation/blob/4.2.2/src/Validator/Each.php)
+- [Shipping Example（4.2.2）](https://github.com/easy-swoole/http-annotation/blob/4.2.2/tests/ControllerExample/Api/Shipping.php)
+- [ObjectShape（4.2.2）](https://github.com/easy-swoole/http-annotation/blob/4.2.2/src/Validator/ObjectShape.php)
+- [Each（4.2.2）](https://github.com/easy-swoole/http-annotation/blob/4.2.2/src/Validator/Each.php)

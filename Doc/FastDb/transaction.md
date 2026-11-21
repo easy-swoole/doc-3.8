@@ -247,6 +247,8 @@ InnoDB 死锁错误 1213 会使整个事务回滚，组件清理事务标记，�
 
 ## 源码依据
 
-- [FastDb 事务实现](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
-- [TransactionTest](https://github.com/easy-swoole/fast-db/blob/3.1.2/tests/TransactionTest.php)
-- [MySQL Connection](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/Connection.php)
+- [`easyswoole/fast-db` 3.1.2 · GitHub](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+
+- [FastDb 事务实现（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [TransactionTest（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/tests/TransactionTest.php)
+- [MySQL Connection（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/Connection.php)

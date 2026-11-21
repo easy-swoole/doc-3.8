@@ -68,6 +68,8 @@ public function create(): void
 
 ## 源码依据
 
-- [ApiGroup.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Attributes/ApiGroup.php)
-- [Api.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Attributes/Api.php)
-- [Document.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Document/Document.php)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
+- [ApiGroup.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Attributes/ApiGroup.php)
+- [Api.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Attributes/Api.php)
+- [Document.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Document/Document.php)

@@ -166,3 +166,7 @@ final class ClientConnection implements \EasySwoole\Pool\ObjectInterface
 ```
 
 业务代码通过 `$connection->client()` 取得客户端。这样连接的建立、探活、恢复和关闭规则都集中在一个类中。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

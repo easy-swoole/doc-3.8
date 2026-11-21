@@ -45,3 +45,8 @@ curl -X POST http://127.0.0.1:9501/upload/avatar \
 读取单个文件用 `getUploadedFile('avatar')`，读取全部用 `getUploadedFiles()`；同名多文件可能得到数组，应逐项检查。`getClientFilename()` 和 `getClientMediaType()` 都由客户端提供，不能作为安全依据。错误码、大小、真实 MIME 和业务权限必须在保存前验证。
 
 常见错误：表单字段名和代码不一致、客户端未使用 multipart、只检查扩展名、直接使用原文件名保存，以及先移动后验证。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

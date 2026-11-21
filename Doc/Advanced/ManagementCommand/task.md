@@ -177,8 +177,12 @@ php easyswoole.php task show --mode=produce
 
 ## 源码依据
 
-- [Task 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/TaskCommand.php)
-- [TaskReloader](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/TaskReloader.php)
-- [Task 2.2.1](https://github.com/easy-swoole/task)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/task` 2.2.2 · GitHub](https://github.com/easy-swoole/task/tree/2.2.2)
+- [`easyswoole/command` 3.0.1 · GitHub](https://github.com/easy-swoole/command/tree/3.0.1)
+
+- [Task 管理命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/TaskCommand.php)
+- [TaskReloader（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/TaskReloader.php)
+- [Task 2.2.1](https://github.com/easy-swoole/task/tree/2.2.2)
 
 下一章：[Crontab 管理](/Advanced/ManagementCommand/crontab.md)。

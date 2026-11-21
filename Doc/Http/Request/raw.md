@@ -55,3 +55,8 @@ curl -X POST http://127.0.0.1:9501/webhook \
 签名必须针对原始字节验证，不能先解码 JSON 再重新编码；空格、换行和键顺序变化都会改变签名。密钥应来自环境变量或密钥服务，不能像示例一样写死。
 
 可先检查 `Content-Length` 并在 Nginx/Swoole 层限制 Body 大小，但 Header 也可能伪造，最终仍以实际接收数据为准。大文件不要用原始 Body 一次性读入内存，应使用上传机制或对象存储直传。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

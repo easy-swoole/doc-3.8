@@ -61,5 +61,7 @@ $admin->deleteRole('config-reader');
 
 ## 源码依据
 
-- [Client 认证与权限方法](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Client.php)
-- [Permission 枚举](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Permission.php)
+- [`easyswoole/etcd-client` 2.0.2 · GitHub](https://github.com/easy-swoole/etcd-client/tree/2.0.2)
+
+- [Client 认证与权限方法（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Client.php)
+- [Permission 枚举（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Permission.php)

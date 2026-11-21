@@ -55,6 +55,9 @@ lsof -iTCP:9501 -sTCP:LISTEN
 
 ## 源码依据
 
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
 - [EasySwoole 3.8.2 composer.json](https://github.com/easy-swoole/easyswoole/blob/3.8.2/composer.json)
 - [Swoole 源码与安装说明](https://github.com/swoole/swoole-src)
-- [HTTP Annotation 4.x](https://github.com/easy-swoole/http-annotation/tree/4.x)
+- [HTTP Annotation 4.2.4](https://github.com/easy-swoole/http-annotation/tree/4.2.4)

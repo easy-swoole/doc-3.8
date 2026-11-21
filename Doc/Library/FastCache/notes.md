@@ -17,5 +17,7 @@ Socket 文件名为 `{serverName}.fastCache.sock`。同一主机上的服务实�
 
 ## 源码依据
 
+- [`easyswoole/fast-cache` 2.1.2 · GitHub](https://github.com/easy-swoole/fast-cache/tree/2.1.2)
+
 - [FastCache 2.1.2 README](https://github.com/easy-swoole/fast-cache/blob/2.1.2/README.md)
-- [FastCache 客户端实现](https://github.com/easy-swoole/fast-cache/blob/2.1.2/src/FastCache.php)
+- [FastCache 客户端实现（2.1.2）](https://github.com/easy-swoole/fast-cache/blob/2.1.2/src/FastCache.php)

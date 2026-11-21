@@ -88,3 +88,7 @@ Redis 驱动使用 List 保存待消费任务，用 Sorted Set 保存延迟时�
 Redis 自身的持久化方式仍会影响数据安全。需要降低 Redis 重启后的消息丢失风险时，应根据业务设置 AOF/RDB、主从和 Cluster，而不是只依赖客户端的 `retryTimes`。
 
 下一章：[RabbitMQ 驱动](/Library/Queue/rabbitmq.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)

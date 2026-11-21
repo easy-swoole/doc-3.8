@@ -47,3 +47,7 @@ $job = MyCache::getInstance()->pop('preview-jobs', timeout: 0.5);
 队列满时入队等待空位，超时或队列关闭时返回 `false`。队列空时出队等待消息，超时或队列关闭时返回 `null`。消息在回包前就已出队，连接中断时可能丢失。需可靠消费的业务可使用[可信队列](/Library/Queue/index.md)。
 
 下一章：[注意事项](/Library/FastCache/notes.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/fast-cache` 2.1.2 · GitHub](https://github.com/easy-swoole/fast-cache/tree/2.1.2)

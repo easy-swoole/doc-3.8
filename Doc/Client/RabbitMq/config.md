@@ -66,6 +66,8 @@ $config = new Config(
 
 ## 源码依据
 
-- [Config](https://github.com/easy-swoole/amqp/blob/main/src/Config.php)
-- [TlsConfig](https://github.com/easy-swoole/amqp/blob/main/src/TlsConfig.php)
-- [AMQP README](https://github.com/easy-swoole/amqp/blob/main/README.md)
+- [`easyswoole/amqp` 1.0.1 · GitHub](https://github.com/easy-swoole/amqp/tree/1.0.1)
+
+- [Config（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/Config.php)
+- [TlsConfig（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/src/TlsConfig.php)
+- [AMQP README（1.0.1）](https://github.com/easy-swoole/amqp/blob/1.0.1/README.md)

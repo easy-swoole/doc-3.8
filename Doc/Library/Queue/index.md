@@ -111,5 +111,7 @@ array(1) {
 
 ## 源码依据
 
-- [Queue 5.x](https://github.com/easy-swoole/queue/tree/5.x)
-- [Queue 核心类](https://github.com/easy-swoole/queue/blob/5.x/src/Queue.php)
+- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)
+
+- [Queue 5.0.3](https://github.com/easy-swoole/queue/tree/5.0.3)
+- [Queue 核心类（5.0.3）](https://github.com/easy-swoole/queue/blob/5.0.3/src/Queue.php)

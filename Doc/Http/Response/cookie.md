@@ -42,3 +42,8 @@ curl -i -b /tmp/demo-cookie.txt https://example.com/profile
 ```
 
 Cookie 容量有限且每次请求都会携带，只保存随机会话标识等短数据。不要保存密码、权限列表或完整用户资料；签名 Cookie 也只能防篡改，不能防止内容被看到。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

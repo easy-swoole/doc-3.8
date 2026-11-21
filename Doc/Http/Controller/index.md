@@ -77,4 +77,7 @@ App/HttpController/
 
 ## 源码依据
 
-- [Controller](https://github.com/easy-swoole/http/blob/3.x/src/AbstractInterface/Controller.php)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Controller（3.2.1）](https://github.com/easy-swoole/http/blob/3.2.1/src/AbstractInterface/Controller.php)

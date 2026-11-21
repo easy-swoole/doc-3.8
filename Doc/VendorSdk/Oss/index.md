@@ -30,3 +30,7 @@ composer show easyswoole/oss
 - 数据库保存 Bucket、Key、大小、MIME、哈希和业务归属，不要只保存临时 URL。
 
 后续选择[阿里云 OSS](/VendorSdk/Oss/aliyun.md)、[七牛云 Kodo](/VendorSdk/Oss/qiniu.md)或[腾讯云 COS](/VendorSdk/Oss/tencent.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/oss` 2.1.4 · GitHub](https://github.com/easy-swoole/oss/tree/2.1.4)

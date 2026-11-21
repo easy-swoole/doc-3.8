@@ -120,7 +120,9 @@ new ResParam(
 
 ## 源码依据
 
-- [4.x README：响应参数与完整响应示例](https://github.com/easy-swoole/http-annotation/blob/4.x/README.md)
-- [ResParam.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Bean/Example/ResParam.php)
-- [ResParamType.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Bean/Example/ResParamType.php)
-- [Document.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Document/Document.php)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
+- [4.2.4 README：响应参数与完整响应示例](https://github.com/easy-swoole/http-annotation/blob/4.2.4/README.md)
+- [ResParam.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Bean/Example/ResParam.php)
+- [ResParamType.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Bean/Example/ResParamType.php)
+- [Document.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Document/Document.php)

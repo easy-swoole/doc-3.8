@@ -217,7 +217,9 @@ tail -f Log/produce.swoole.log
 
 ## 源码依据
 
-- [Core](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Core.php)
-- [ServerManager](https://github.com/easy-swoole/easyswoole/blob/3.x/src/ServerManager.php)
-- [EventRegister](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Swoole/EventRegister.php)
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Core（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Core.php)
+- [ServerManager（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/ServerManager.php)
+- [EventRegister（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Swoole/EventRegister.php)
+- [Server 命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)

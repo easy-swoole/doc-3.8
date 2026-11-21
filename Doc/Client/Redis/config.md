@@ -138,3 +138,7 @@ RedisPool::getInstance()->register($sessionConfig, 'session');
 ```
 
 同名池不能重复注册。下一章：[获取与归还](/Client/Redis/connection.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/redis-pool` 4.0.1 · GitHub](https://github.com/easy-swoole/redis-pool/tree/4.0.1)

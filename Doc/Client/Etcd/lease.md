@@ -39,4 +39,6 @@ $client->revokeLease($leaseId);
 
 ## 源码依据
 
-- [Client 租约方法](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Client.php)
+- [`easyswoole/etcd-client` 2.0.2 · GitHub](https://github.com/easy-swoole/etcd-client/tree/2.0.2)
+
+- [Client 租约方法（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Client.php)

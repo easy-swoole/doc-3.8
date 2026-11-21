@@ -141,4 +141,8 @@ protected function onException(\Throwable $error, ResponseBuilder $response): vo
 
 例如，`detail()` 可以在用户 ID 无效时抛出 `DomainException`。客户端会进入该调用的失败回调，默认故障策略保留这个健康节点。
 
-- [服务端请求处理源码](https://github.com/easy-swoole/rpc/tree/6.0.1/src/Server)
+- [服务端请求处理源码（6.0.1）](https://github.com/easy-swoole/rpc/tree/6.0.1/src/Server)
+
+## 版本与 GitHub
+
+- [`easyswoole/rpc` 6.0.1 · GitHub](https://github.com/easy-swoole/rpc/tree/6.0.1)

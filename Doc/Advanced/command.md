@@ -150,6 +150,9 @@ CommandRunner::getInstance()->addProvider(new AppCommandProvider());
 
 ## 源码依据
 
-- [框架命令接入说明](https://github.com/easy-swoole/easyswoole/blob/3.8.2/docs/command-3.x.md)
-- [CommandRunner](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
-- [Command 3.x](https://github.com/easy-swoole/command/tree/3.0.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/command` 3.0.1 · GitHub](https://github.com/easy-swoole/command/tree/3.0.1)
+
+- [框架命令接入说明（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/docs/command-3.x.md)
+- [CommandRunner（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/CommandRunner.php)
+- [Command 3.0.1](https://github.com/easy-swoole/command/tree/3.0.1)

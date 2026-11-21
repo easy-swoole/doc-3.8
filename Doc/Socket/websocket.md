@@ -527,8 +527,11 @@ $response->setStatus(ResponseStatus::RESPONSE_AND_CLOSE);
 
 ## 源码依据
 
-- [WebSocket 分发入口](https://github.com/easy-swoole/socket/blob/2.x/src/Dispatcher.php)
-- [WebSocket 客户端信息](https://github.com/easy-swoole/socket/blob/2.x/src/Client/WebSocket.php)
-- [Response](https://github.com/easy-swoole/socket/blob/2.x/src/Bean/Response.php)
+- [`easyswoole/socket` 2.0.1 · GitHub](https://github.com/easy-swoole/socket/tree/2.0.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [WebSocket 分发入口（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Dispatcher.php)
+- [WebSocket 客户端信息（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Client/WebSocket.php)
+- [Response（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Bean/Response.php)
 - [IANA WebSocket Close Code 注册表](https://www.iana.org/assignments/websocket/websocket.xhtml#close-code-number)
 - [RFC 6455 状态码定义](https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4)

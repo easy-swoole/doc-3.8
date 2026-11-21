@@ -62,5 +62,7 @@ curl -i http://127.0.0.1:9501/helloAnnotation
 
 ## 源码依据
 
-- [HTTP Annotation 4.x README](https://github.com/easy-swoole/http-annotation/blob/4.x/README.md)
-- [AnnotationController](https://github.com/easy-swoole/http-annotation/blob/4.x/src/AnnotationController.php)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
+- [HTTP Annotation 4.2.4 README](https://github.com/easy-swoole/http-annotation/blob/4.2.4/README.md)
+- [AnnotationController（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/AnnotationController.php)

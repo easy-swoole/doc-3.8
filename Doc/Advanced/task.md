@@ -238,6 +238,10 @@ TaskWorker 使用 Unix Domain Socket。完整路径格式为：
 
 ## 源码依据
 
-- [EasySwoole Task](https://github.com/easy-swoole/task)
-- [TaskStatus](https://github.com/easy-swoole/task/blob/2.2.1/src/TaskStatus.php)
-- [框架 TaskManager](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Task/TaskManager.php)
+- [`easyswoole/task` 2.2.1 · GitHub](https://github.com/easy-swoole/task/tree/2.2.1)
+- [`easyswoole/task` 2.2.2 · GitHub](https://github.com/easy-swoole/task/tree/2.2.2)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [EasySwoole Task（2.2.2）](https://github.com/easy-swoole/task/tree/2.2.2)
+- [TaskStatus（2.2.1）](https://github.com/easy-swoole/task/blob/2.2.1/src/TaskStatus.php)
+- [框架 TaskManager（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Task/TaskManager.php)

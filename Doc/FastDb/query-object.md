@@ -400,7 +400,10 @@ $disabledUsers = $entity->all();
 
 ## 源码依据
 
-- [FastDb Query](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/Query.php)
-- [AbstractEntity](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/AbstractEntity.php)
-- [ListResult](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/ListResult.php)
-- [Mysqli QueryBuilder](https://github.com/easy-swoole/mysqli/blob/5.x/src/QueryBuilder.php)
+- [`easyswoole/fast-db` 3.1.2 · GitHub](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+- [`easyswoole/mysqli` 5.1.6 · GitHub](https://github.com/easy-swoole/mysqli/tree/5.1.6)
+
+- [FastDb Query（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/Query.php)
+- [AbstractEntity（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/AbstractInterface/AbstractEntity.php)
+- [ListResult（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Beans/ListResult.php)
+- [Mysqli QueryBuilder（5.1.6）](https://github.com/easy-swoole/mysqli/blob/5.1.6/src/QueryBuilder.php)

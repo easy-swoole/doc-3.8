@@ -275,3 +275,8 @@ HTML 输出按所在上下文转义。正文、HTML Attribute、JavaScript 和 U
 - SQL、HTML、文件路径、跳转和外部 URL 是否采用安全 API 或允许列表？
 - 日志是否脱敏，并可通过 Request ID 关联？
 - 多 Worker、多实例下的状态是否使用共享、原子的存储？
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

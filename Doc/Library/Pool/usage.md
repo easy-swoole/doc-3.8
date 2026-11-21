@@ -139,3 +139,7 @@ try {
 - `objectRestore()` 和 `gc()` 时间。
 
 因此客户端本身还要分别设置连接超时、读写超时和探活超时。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

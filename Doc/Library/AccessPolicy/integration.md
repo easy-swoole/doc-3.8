@@ -206,6 +206,8 @@ function checkRoles(array $roles, string $path): string
 
 ## 源码依据
 
-- [Policy README](https://github.com/easy-swoole/policy/blob/master/README.md)
-- [Policy 源码](https://github.com/easy-swoole/policy/blob/master/src/Policy.php)
-- [PolicyNode 源码](https://github.com/easy-swoole/policy/blob/master/src/PolicyNode.php)
+- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)
+
+- [Policy README（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/README.md)
+- [Policy 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/Policy.php)
+- [PolicyNode 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/PolicyNode.php)

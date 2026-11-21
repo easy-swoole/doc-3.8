@@ -400,3 +400,8 @@ class PublicArticle extends Controller
 - 把 `login` 错写为路由地址 `/admin/login`；白名单匹配的是 Action 方法名，不是 URL。
 - 在 Base 中放行过于常见的 `index`，意外让多个管理员控制器绕过鉴权。
 - 把当前管理员保存在 `static` 属性或常驻单例中，造成不同请求之间串用户。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

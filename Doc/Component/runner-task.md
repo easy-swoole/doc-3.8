@@ -226,5 +226,7 @@ $status = $runner->status();
 
 ## 源码依据
 
-- [Runner](https://github.com/easy-swoole/component/blob/master/src/CoroutineRunner/Runner.php)
-- [Task](https://github.com/easy-swoole/component/blob/master/src/CoroutineRunner/Task.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [Runner（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/CoroutineRunner/Runner.php)
+- [Task（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/CoroutineRunner/Task.php)

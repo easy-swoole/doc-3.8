@@ -198,3 +198,7 @@ echo json_encode(
 ```
 
 生产环境应按 Trace ID 查询，不要把所有 Span 全量加载到内存。参数和错误信息展示前还需要做权限控制及敏感信息脱敏。
+
+## 版本与 GitHub
+
+- [`easyswoole/trace` 2.0.2 · GitHub](https://github.com/easy-swoole/trace/tree/2.0.2)

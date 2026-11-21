@@ -115,3 +115,7 @@ $pool->reset();
 ```
 
 不要在仍有连接被借用、正在建连或健康检查运行时调用 `reset()`。常规请求处理中也不应销毁或重置整个连接池。
+
+## 版本与 GitHub
+
+- [`easyswoole/pool` 3.0.6 · GitHub](https://github.com/easy-swoole/pool/tree/3.0.6)

@@ -100,3 +100,8 @@ $name = $this->request()->getRequestParam('name');
 它合并 Form Parsed Body 和 Query，同名时 Form 优先，不会解析 JSON。公共 API 建议使用明确的读取方法，让参数来源一目了然。
 
 未传、空字符串、字符串 `'0'`、整数 `0` 和 JSON `null` 含义不同，不要一律用 `empty()`。常见错误还包括用 `getParsedBody()` 读取 JSON、只做 `(int)` 强转而不验证，以及把密码或 Token 放进 Query。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

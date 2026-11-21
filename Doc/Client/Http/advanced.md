@@ -150,3 +150,7 @@ WebSocket 是长连接，应在同一协程中维护读取循环、心跳和关�
 只有幂等操作或具备可靠幂等键时才自动重试，并设置最大次数、退避和总超时。下单、支付等非幂等 POST 不能因网络异常盲目重试。
 
 URL 包含用户输入时，应使用域名白名单并禁止访问环回、内网和云元数据地址，避免 SSRF。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-client` 1.7.1 · GitHub](https://github.com/easy-swoole/http-client/tree/1.7.1)

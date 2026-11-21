@@ -103,5 +103,8 @@ EasySwoole 可用于 HTTP API 服务、需要实时推送的 WebSocket 应用、
 
 初次使用建议依次阅读[环境要求](/QuickStart/environment.md)、[安装框架](/QuickStart/install.md)和[第一个 HTTP 接口](/QuickStart/helloworld.md)。如果希望理解命令解析、事件注册到服务启动的内部过程，可以继续阅读[框架设计](/FrameworkDesign/index.md)。
 
-项目源码：[EasySwoole 3.x](https://github.com/easy-swoole/easyswoole/tree/3.x)。
+项目源码：[EasySwoole 3.8.2](https://github.com/easy-swoole/easyswoole/tree/3.8.2)。
 
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

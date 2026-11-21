@@ -530,3 +530,8 @@ Swoole Server 的 `stats()` 可以提供连接、请求、Worker/Task 等运行�
 - [OpenSwoole HTTP Server 配置](https://openswoole.com/docs/modules/swoole-http-server/configuration)
 
 项目使用的是 Swoole 扩展时，应以实际安装版本的配置文档和启动警告为准；OpenSwoole 文档用于解释同源配置概念，不代表每个版本都支持完全相同的 Setting。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

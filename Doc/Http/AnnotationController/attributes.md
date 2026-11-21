@@ -144,6 +144,8 @@ protected function onRequest(?string $action, ?array $data = null): ?bool
 
 ## 源码依据
 
-- [4.x README](https://github.com/easy-swoole/http-annotation/blob/4.x/README.md)
-- [Attributes 源码目录](https://github.com/easy-swoole/http-annotation/tree/4.x/src/Attributes)
-- [AttributeCache](https://github.com/easy-swoole/http-annotation/blob/4.x/src/AttributeCache.php)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
+- [4.2.4 README](https://github.com/easy-swoole/http-annotation/blob/4.2.4/README.md)
+- [Attributes 源码目录（4.2.4）](https://github.com/easy-swoole/http-annotation/tree/4.2.4/src/Attributes)
+- [AttributeCache（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/AttributeCache.php)

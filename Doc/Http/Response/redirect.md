@@ -35,3 +35,8 @@ $this->response()->redirect($this->request()->getQueryParam('next'));
 ```
 
 可只允许以单个 `/` 开头的站内路径，并拒绝 `//evil.example`，或者把目标映射为服务端预定义名称。重定向设置后应立即 `return`，避免后续代码继续修改响应或执行敏感操作。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

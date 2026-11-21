@@ -170,7 +170,10 @@ not any process match
 
 ## 源码依据
 
-- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ProcessCommand.php)
-- [ProcessSelector](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/Selector/ProcessSelector.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/command` 3.0.1 · GitHub](https://github.com/easy-swoole/command/tree/3.0.1)
+
+- [Process 管理命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ProcessCommand.php)
+- [ProcessSelector（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/Selector/ProcessSelector.php)
 
 下一章：[异步管理](/Advanced/ManagementCommand/task.md)。

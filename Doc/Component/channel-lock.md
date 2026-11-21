@@ -125,4 +125,6 @@ $lock->deferLock("order:{$orderId}", 1.0);
 
 ## 源码依据
 
-- [ChannelLock](https://github.com/easy-swoole/component/blob/master/src/ChannelLock.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [ChannelLock（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/ChannelLock.php)

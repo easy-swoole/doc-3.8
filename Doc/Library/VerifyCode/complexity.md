@@ -77,5 +77,7 @@ $config->setComplexityLevel(7)->setUseNoise(false)->setUseCurve(false);
 
 ## 源码依据
 
-- [4.x README：噪点、曲线与复杂度](https://github.com/easy-swoole/verify-code/blob/4.x/README.md)
-- [Config.php](https://github.com/easy-swoole/verify-code/blob/4.x/src/Config.php)
+- [`easyswoole/verifycode` 4.0.1 · GitHub](https://github.com/easy-swoole/verify-code/tree/4.0.1)
+
+- [4.0.1 README：噪点、曲线与复杂度](https://github.com/easy-swoole/verify-code/blob/4.0.1/README.md)
+- [Config.php（4.0.1）](https://github.com/easy-swoole/verify-code/blob/4.0.1/src/Config.php)

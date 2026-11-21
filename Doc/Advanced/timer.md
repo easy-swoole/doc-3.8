@@ -182,5 +182,8 @@ HTTP Worker 的主要职责是处理请求。循环定时器回调执行时间�
 
 ## 源码依据
 
-- [Timer](https://github.com/easy-swoole/component/blob/master/src/Timer.php)
-- [EventRegister](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Swoole/EventRegister.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Timer（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/Timer.php)
+- [EventRegister（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Swoole/EventRegister.php)

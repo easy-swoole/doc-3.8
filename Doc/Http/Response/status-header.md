@@ -69,3 +69,8 @@ $response->getHeaderLine('Content-Type');                 // 读取
 Header 必须在响应真正发送前设置。名称和值不得包含换行，避免 Header 注入。认证接口通常使用 `Cache-Control: no-store`；缓存策略要根据资源是否公开、是否因用户而变化设计。
 
 204 响应不要再写 Body。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

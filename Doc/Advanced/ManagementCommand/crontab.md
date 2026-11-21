@@ -314,6 +314,9 @@ php easyswoole.php
 
 ## 源码依据
 
-- [Crontab 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/CrontabCommand.php)
-- [CrontabSelector](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Command/Selector/CrontabSelector.php)
-- [Process 管理命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ProcessCommand.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/command` 3.0.1 · GitHub](https://github.com/easy-swoole/command/tree/3.0.1)
+
+- [Crontab 管理命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/CrontabCommand.php)
+- [CrontabSelector（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/Selector/CrontabSelector.php)
+- [Process 管理命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ProcessCommand.php)

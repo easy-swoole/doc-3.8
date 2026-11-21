@@ -174,6 +174,8 @@ $action = $config->getTransactionRecycleAction();
 
 ## 源码依据
 
-- [FastDb](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
-- [Config](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Config.php)
-- [MySQL Pool](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/Pool.php)
+- [`easyswoole/fast-db` 3.1.2 · GitHub](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+
+- [FastDb（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/FastDb.php)
+- [Config（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Config.php)
+- [MySQL Pool（3.1.2）](https://github.com/easy-swoole/fast-db/blob/3.1.2/src/Mysql/Pool.php)

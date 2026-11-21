@@ -181,4 +181,6 @@ $waitGroup->add(function () use (&$errors): void {
 
 ## 源码依据
 
-- [WaitGroup](https://github.com/easy-swoole/component/blob/master/src/WaitGroup.php)
+- [`easyswoole/component` 2.5.7 · GitHub](https://github.com/easy-swoole/component/tree/2.5.7)
+
+- [WaitGroup（2.5.7）](https://github.com/easy-swoole/component/blob/2.5.7/src/WaitGroup.php)

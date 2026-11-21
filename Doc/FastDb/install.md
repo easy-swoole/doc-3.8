@@ -84,6 +84,8 @@ public int $id;
 
 ## 源码依据
 
+- [`easyswoole/fast-db` 3.1.2 · GitHub](https://github.com/easy-swoole/fast-db/tree/3.1.2)
+
 - [FastDb 3.1.2](https://github.com/easy-swoole/fast-db/tree/3.1.2)
 - [FastDb 3.1.2 composer.json](https://github.com/easy-swoole/fast-db/blob/3.1.2/composer.json)
 - [FastDb 3.1.2 README](https://github.com/easy-swoole/fast-db/blob/3.1.2/README.md)

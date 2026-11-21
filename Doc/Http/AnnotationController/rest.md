@@ -182,3 +182,7 @@ Controller → Service → Repository → Database/Cache
 ```
 
 这样可以独立测试业务逻辑，也能让 CLI、Task Worker 或 RPC 复用同一 Service。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)

@@ -61,5 +61,7 @@ public function create(): void
 
 ## 源码依据
 
-- [Nsq 发布方法](https://github.com/easy-swoole/nsq/blob/2.x/src/Nsq.php)
-- [Packet 命令编码](https://github.com/easy-swoole/nsq/blob/2.x/src/Wire/Packet.php)
+- [`easyswoole/nsq` 2.0.1 · GitHub](https://github.com/easy-swoole/nsq/tree/2.0.1)
+
+- [Nsq 发布方法（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Nsq.php)
+- [Packet 命令编码（2.0.1）](https://github.com/easy-swoole/nsq/blob/2.0.1/src/Wire/Packet.php)

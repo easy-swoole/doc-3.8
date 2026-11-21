@@ -521,8 +521,10 @@ Logger 和 Trigger 会在 `initialize()` 结束后按框架流程完成创建，
 
 ## 源码依据
 
-- [Logger](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Logger.php)
-- [Trigger](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Trigger.php)
-- [DefaultLogger](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Utility/DefaultLogger.php)
-- [DefaultTrigger](https://github.com/easy-swoole/easyswoole/blob/3.x/src/Utility/DefaultTrigger.php)
-- [TriggerInterface](https://github.com/easy-swoole/easyswoole/blob/3.x/src/AbstractInterface/Log/TriggerInterface.php)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Logger（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Logger.php)
+- [Trigger（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Trigger.php)
+- [DefaultLogger（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Utility/DefaultLogger.php)
+- [DefaultTrigger（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Utility/DefaultTrigger.php)
+- [TriggerInterface（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/AbstractInterface/Log/TriggerInterface.php)

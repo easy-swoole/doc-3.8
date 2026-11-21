@@ -68,3 +68,7 @@ $this->response()->write(Alipay::success());
 - 已成功订单再次收到通知时只返回成功，不重复发货。
 
 不要信任前端提交的“支付成功”，也不要在验签前写入数据库。回调处理成功后再返回成功字符串；处理失败应返回失败，让支付平台按规则重试。
+
+## 版本与 GitHub
+
+- [`easyswoole/pay` 2.0.1 · GitHub](https://github.com/easy-swoole/pay/tree/2.0.1)

@@ -55,3 +55,8 @@ $remoteIp = $request->getServerParams()['remote_addr'] ?? '';
 同样，Host 和 Scheme 可能受客户端或代理配置影响。生成密码重置链接、签名地址或跳转地址时，应使用应用配置的公开域名允许列表，而不是直接拼接请求 Host。
 
 常见 Server Params 包括 `request_method`、`request_uri`、`path_info`、`query_string`、`remote_addr`、`remote_port` 和 `server_port`；具体键取决于 Swoole 版本和协议环境，使用前应提供默认值。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

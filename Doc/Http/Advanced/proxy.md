@@ -297,3 +297,8 @@ EasySwoole 代码更新可使用 reload，但 Server 类型、监听端口、底
 - 静态文件是否由 Nginx/CDN 处理，私有文件是否经过鉴权？
 - 健康检查是否区分存活与就绪？
 - 多实例是否移除了进程本地 Session 和上传文件依赖？
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

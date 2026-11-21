@@ -84,5 +84,7 @@ $leader = $client->status()->leader(new Leader(['dc' => 'dc1']));
 
 ## 源码依据
 
-- [Session 端点](https://github.com/easy-swoole/consul/blob/2.x/src/Session.php)
-- [ConsulClient 端点列表](https://github.com/easy-swoole/consul/blob/2.x/src/ConsulClient.php)
+- [`easyswoole/consul` 2.0.2 · GitHub](https://github.com/easy-swoole/consul/tree/2.0.2)
+
+- [Session 端点（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Session.php)
+- [ConsulClient 端点列表（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/ConsulClient.php)

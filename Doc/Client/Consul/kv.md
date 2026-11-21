@@ -83,5 +83,7 @@ if ($updated !== true) {
 
 ## 源码依据
 
-- [KVStore](https://github.com/easy-swoole/consul/blob/2.x/src/KVStore.php)
-- [KV 请求对象](https://github.com/easy-swoole/consul/blob/2.x/src/Request/Kv.php)
+- [`easyswoole/consul` 2.0.2 · GitHub](https://github.com/easy-swoole/consul/tree/2.0.2)
+
+- [KVStore（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/KVStore.php)
+- [KV 请求对象（2.0.2）](https://github.com/easy-swoole/consul/blob/2.0.2/src/Request/Kv.php)

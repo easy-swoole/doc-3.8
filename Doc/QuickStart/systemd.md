@@ -301,3 +301,7 @@ grep 'Max open files' "/proc/${MAIN_PID}/limits"
 ```
 
 最后可以在维护窗口执行一次服务器重启，确认服务能够自动启动，并再次进行 HTTP 健康检查。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)

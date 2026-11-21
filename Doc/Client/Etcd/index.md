@@ -122,7 +122,9 @@ HTTPS、私有 CA 和双向 TLS 的完整配置见[响应、异常与 TLS](/Clie
 
 ## 源码依据
 
-- [etcd-client 2.x README](https://github.com/easy-swoole/etcd-client/blob/2.x/README.md)
-- [Config](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Config.php)
-- [Etcd 入口](https://github.com/easy-swoole/etcd-client/blob/2.x/src/Etcd.php)
-- [TLS 配置](https://github.com/easy-swoole/etcd-client/blob/2.x/src/TlsConfig.php)
+- [`easyswoole/etcd-client` 2.0.2 · GitHub](https://github.com/easy-swoole/etcd-client/tree/2.0.2)
+
+- [etcd-client 2.0.2 README](https://github.com/easy-swoole/etcd-client/blob/2.0.2/README.md)
+- [Config（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Config.php)
+- [Etcd 入口（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/Etcd.php)
+- [TLS 配置（2.0.2）](https://github.com/easy-swoole/etcd-client/blob/2.0.2/src/TlsConfig.php)

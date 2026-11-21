@@ -89,6 +89,8 @@ php easyswoole.php process kill --mode=produce --pid=12345
 
 ## 源码依据
 
-- [Server 命令](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
-- [命令入口模板](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [Server 命令（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Command/DefaultCommand/ServerCommand.php)
+- [命令入口模板（3.8.2）](https://github.com/easy-swoole/easyswoole/blob/3.8.2/src/Resource/easyswoole)
 - [Swoole Server 配置：daemonize 与 chroot](https://openswoole.com/docs/modules/swoole-server/configuration)

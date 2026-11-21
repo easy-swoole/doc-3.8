@@ -246,6 +246,9 @@ UDP 源地址可能被伪造，服务端不能仅凭 IP 和端口认定身份。
 
 ## 源码依据
 
-- [UDP 分发入口](https://github.com/easy-swoole/socket/blob/2.x/src/Dispatcher.php)
-- [UDP 客户端信息](https://github.com/easy-swoole/socket/blob/2.x/src/Client/Udp.php)
-- [SocketType](https://github.com/easy-swoole/socket/blob/2.x/src/Enum/SocketType.php)
+- [`easyswoole/socket` 2.0.1 · GitHub](https://github.com/easy-swoole/socket/tree/2.0.1)
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+
+- [UDP 分发入口（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Dispatcher.php)
+- [UDP 客户端信息（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Client/Udp.php)
+- [SocketType（2.0.1）](https://github.com/easy-swoole/socket/blob/2.0.1/src/Enum/SocketType.php)

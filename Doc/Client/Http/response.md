@@ -113,3 +113,7 @@ try {
 ## 重试原则
 
 只有幂等操作或具备可靠幂等键时才重试，并设置次数、退避和总超时。下单、支付等非幂等 POST 可能已经被服务端执行，不能因客户端超时直接重试。
+
+## 版本与 GitHub
+
+- [`easyswoole/http-client` 1.7.1 · GitHub](https://github.com/easy-swoole/http-client/tree/1.7.1)

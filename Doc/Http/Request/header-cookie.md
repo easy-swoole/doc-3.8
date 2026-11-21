@@ -64,3 +64,8 @@ $sessionId = $request->getCookieParams('session_id');
 读取不到时单个 Cookie 返回 `null`。请求 Cookie 和响应 `Set-Cookie` 是两件事：读取用 Request，写入用 `$this->response()->setCookie()`。
 
 认证信息不要写入日志。Cookie 不应保存密码或完整用户资料；认证 Cookie 要在响应端启用 `Secure`、`HttpOnly` 和合理的 `SameSite`。Header 与 Cookie 的格式验证通过，也不代表身份真实，仍需向 Session/Token 服务验证。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

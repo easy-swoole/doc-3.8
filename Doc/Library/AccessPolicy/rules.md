@@ -91,3 +91,7 @@ try {
 ```
 
 下一章：[策略树与持久化](/Library/AccessPolicy/tree.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)

@@ -102,4 +102,8 @@ MyRpc::getInstance()->client()->setOnException(static function (\Throwable $erro
 
 常见网络失败和无可用节点通过失败 `Response` 返回。未预期的节点查询、选择策略或调用回调异常进入客户端全局回调。未配置回调时，异常会从调用协程抛出。配置回调接管异常后，若异常发生在取得响应之前，`exec()` 的结果会缺少对应路径。若已取得响应，调用回调抛出的异常仍会上报，但响应会保留。批次创建、非法路径和调用环境等同步错误应在对应调用处捕获 `RpcException`。
 
-- [客户端与批次实现](https://github.com/easy-swoole/rpc/tree/6.0.1/src/Client)
+- [客户端与批次实现（6.0.1）](https://github.com/easy-swoole/rpc/tree/6.0.1/src/Client)
+
+## 版本与 GitHub
+
+- [`easyswoole/rpc` 6.0.1 · GitHub](https://github.com/easy-swoole/rpc/tree/6.0.1)

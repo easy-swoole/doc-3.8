@@ -57,3 +57,8 @@ if ($file === false || !str_starts_with($file, $root . DIRECTORY_SEPARATOR)) {
 下载名来自数据库或用户输入时要过滤 CR/LF、引号和路径分隔符，防止 Header 注入。非 ASCII 文件名可按 RFC 5987 增加 `filename*`。
 
 公开大文件更适合由 Nginx/CDN 或对象存储处理；私有大文件可在应用鉴权后使用 Nginx 内部跳转或短期签名 URL，避免长期占用 PHP Worker。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

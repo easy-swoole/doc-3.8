@@ -35,3 +35,8 @@ $routeCollector->get('/assets/{path:.+}', '/StaticFile/read');
 控制器必须对 `realpath()` 后的最终路径做根目录边界检查，再设置真实 MIME、Cache-Control 并 `sendFile()`。不能只删除字符串中的 `..`，也不能把 URL 路径直接交给 `sendFile()`。完整安全控制器参见“路由 → 静态资源路由”。
 
 Range、ETag、Last-Modified、压缩和高并发传输应交给 Nginx/CDN。应用适合做鉴权与定位文件，不适合替代成熟静态文件服务器。
+
+## 版本与 GitHub
+
+- [`easyswoole/easyswoole` 3.8.2 · GitHub](https://github.com/easy-swoole/easyswoole/tree/3.8.2)
+- [`easyswoole/http` 3.2.1 · GitHub](https://github.com/easy-swoole/http/tree/3.2.1)

@@ -95,5 +95,7 @@ curl -i -X POST http://127.0.0.1:9501/member/create \
 
 ## 源码依据
 
-- [4.x README：参数验证](https://github.com/easy-swoole/http-annotation/blob/4.x/README.md)
-- [Param.php](https://github.com/easy-swoole/http-annotation/blob/4.x/src/Attributes/Param.php)
+- [`easyswoole/http-annotation` 4.2.4 · GitHub](https://github.com/easy-swoole/http-annotation/tree/4.2.4)
+
+- [4.2.4 README：参数验证](https://github.com/easy-swoole/http-annotation/blob/4.2.4/README.md)
+- [Param.php（4.2.4）](https://github.com/easy-swoole/http-annotation/blob/4.2.4/src/Attributes/Param.php)

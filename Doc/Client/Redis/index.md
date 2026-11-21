@@ -39,3 +39,7 @@ composer show easyswoole/pool
 ```
 
 下一章：[配置与注册](/Client/Redis/config.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/redis-pool` 4.0.1 · GitHub](https://github.com/easy-swoole/redis-pool/tree/4.0.1)

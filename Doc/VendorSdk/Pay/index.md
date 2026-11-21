@@ -54,3 +54,7 @@ composer show easyswoole/pay
 - 创建支付前先在本地数据库保存待支付订单，不能只依赖前端返回结果。
 
 后续按使用平台阅读[微信支付](/VendorSdk/Pay/wechat.md)或[支付宝](/VendorSdk/Pay/alipay.md)。
+
+## 版本与 GitHub
+
+- [`easyswoole/pay` 2.0.1 · GitHub](https://github.com/easy-swoole/pay/tree/2.0.1)
