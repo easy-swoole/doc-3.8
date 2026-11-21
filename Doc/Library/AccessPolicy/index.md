@@ -4,30 +4,30 @@
 
 ## 环境要求与安装
 
-组件要求 PHP 8.1 或更高版本。在项目根目录执行：
+本文以 Policy `1.2.2` 为准，需要 PHP 8.1+ 和 JSON 扩展。在项目根目录执行：
 
 ```bash
-composer require easyswoole/policy
+composer require 'easyswoole/policy:^1.2.2'
 ```
 
 安装后无需注册服务提供者，Composer 会自动加载组件类：
 
 ```php
 use EasySwoole\Policy\Policy;
-use EasySwoole\Policy\PolicyNode;
+use EasySwoole\Policy\AccessStatus;
 ```
 
 ## 三种判断结果
 
-`check()` 返回字符串，而不是布尔值：
+`check()` 返回 `AccessStatus` 枚举成员：
 
-| 常量 | 字符串 | 含义 |
+| 枚举成员 | 字符串值 | 含义 |
 | --- | --- | --- |
-| `PolicyNode::EFFECT_ALLOW` | `allow` | 明确允许 |
-| `PolicyNode::EFFECT_DENY` | `deny` | 明确拒绝 |
-| `PolicyNode::EFFECT_UNKNOWN` | `unknown` | 没有匹配到有效策略 |
+| `AccessStatus::ALLOW` | `allow` | 明确允许 |
+| `AccessStatus::DENY` | `deny` | 明确拒绝 |
+| `AccessStatus::UNKNOWN` | `unknown` | 没有匹配到有效策略 |
 
-`unknown` 不等于允许。后台权限、管理接口等安全场景应采用默认拒绝：只有结果严格等于 `EFFECT_ALLOW` 才继续执行。
+`unknown` 不等于允许。后台权限、管理接口等安全场景应采用默认拒绝：只有结果严格等于 `AccessStatus::ALLOW` 才继续执行。
 
 ## 最小示例
 
@@ -39,18 +39,18 @@ use EasySwoole\Policy\PolicyNode;
 require __DIR__ . '/vendor/autoload.php';
 
 use EasySwoole\Policy\Policy;
-use EasySwoole\Policy\PolicyNode;
+use EasySwoole\Policy\AccessStatus;
 
 $policy = new Policy();
-$policy->addPath('/article/read', PolicyNode::EFFECT_ALLOW);
-$policy->addPath('/article/delete', PolicyNode::EFFECT_DENY);
+$policy->addPath('/article/read', AccessStatus::ALLOW);
+$policy->addPath('/article/delete', AccessStatus::DENY);
 
-var_dump($policy->check('/article/read'));   // allow
-var_dump($policy->check('/article/delete')); // deny
-var_dump($policy->check('/article/create')); // unknown
+var_dump($policy->check('/article/read'));   // AccessStatus::ALLOW
+var_dump($policy->check('/article/delete')); // AccessStatus::DENY
+var_dump($policy->check('/article/create')); // AccessStatus::UNKNOWN
 ```
 
-运行 `php policy-demo.php`，三行结果依次应为 `string(5) "allow"`、`string(4) "deny"`、`string(7) "unknown"`。这个例子不依赖登录系统或数据库，也不需要启动 HTTP 服务。
+运行 `php policy-demo.php`，三行结果依次为 `AccessStatus::ALLOW`、`AccessStatus::DENY`、`AccessStatus::UNKNOWN`。需要输出字符串时，读取枚举的 `->value`。这个例子不依赖登录系统或数据库，也不需要启动 HTTP 服务。
 
 路径开头和结尾的 `/` 会被忽略，因此 `article/read`、`/article/read` 与 `/article/read/` 表示同一条路径。路径大小写敏感，建议项目统一使用小写名称。
 
@@ -69,8 +69,8 @@ AccessPolicy 只负责“路径规则的建立与匹配”，不负责以下工�
 
 ## 源码依据
 
-- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)
+- [`easyswoole/policy` 1.2.2 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.2)
 
-- [Policy 仓库（1.2.1）](https://github.com/easy-swoole/policy/tree/1.2.1)
-- [Policy 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/Policy.php)
-- [PolicyNode 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/PolicyNode.php)
+- [Policy 仓库（1.2.2）](https://github.com/easy-swoole/policy/tree/1.2.2)
+- [Policy 源码（1.2.2）](https://github.com/easy-swoole/policy/blob/1.2.2/src/Policy.php)
+- [PolicyNode 源码（1.2.2）](https://github.com/easy-swoole/policy/blob/1.2.2/src/PolicyNode.php)

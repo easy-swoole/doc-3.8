@@ -13,7 +13,7 @@ namespace App\Permission;
 
 use EasySwoole\Component\Singleton;
 use EasySwoole\Policy\Policy;
-use EasySwoole\Policy\PolicyNode;
+use EasySwoole\Policy\AccessStatus;
 
 final class AccessPolicyManager
 {
@@ -34,12 +34,12 @@ final class AccessPolicyManager
         // 实际项目应从配置或数据库读取这些规则。
         $rules = match ($role) {
             'superAdmin' => [
-                ['/admin/*', PolicyNode::EFFECT_ALLOW],
+                ['/admin/*', AccessStatus::ALLOW],
             ],
             'operator' => [
-                ['/admin/user/read', PolicyNode::EFFECT_ALLOW],
-                ['/admin/user/create', PolicyNode::EFFECT_ALLOW],
-                ['/admin/user/delete', PolicyNode::EFFECT_DENY],
+                ['/admin/user/read', AccessStatus::ALLOW],
+                ['/admin/user/create', AccessStatus::ALLOW],
+                ['/admin/user/delete', AccessStatus::DENY],
             ],
             default => [],
         };
@@ -66,7 +66,7 @@ namespace App\HttpController\Admin;
 
 use App\Permission\AccessPolicyManager;
 use EasySwoole\Http\AbstractInterface\Controller;
-use EasySwoole\Policy\PolicyNode;
+use EasySwoole\Policy\AccessStatus;
 
 abstract class Base extends Controller
 {
@@ -97,7 +97,7 @@ abstract class Base extends Controller
         }
 
         $effect = AccessPolicyManager::getInstance()->forRole($role)->check($permission);
-        if ($effect !== PolicyNode::EFFECT_ALLOW) {
+        if ($effect !== AccessStatus::ALLOW) {
             // deny 与 unknown 都拒绝，避免漏配规则时意外放行。
             $this->writeJson(403, null, '没有操作权限');
             return false;
@@ -173,23 +173,26 @@ Policy::check()
 组件不会自动合并多个 `Policy`。应用必须明确冲突策略。例如“任一角色拒绝即拒绝，否则任一角色允许即允许”：
 
 ```php
-function checkRoles(array $roles, string $path): string
+use App\Permission\AccessPolicyManager;
+use EasySwoole\Policy\AccessStatus;
+
+function checkRoles(array $roles, string $path): AccessStatus
 {
     $hasAllow = false;
 
     foreach ($roles as $role) {
         $effect = AccessPolicyManager::getInstance()->forRole($role)->check($path);
-        if ($effect === PolicyNode::EFFECT_DENY) {
-            return PolicyNode::EFFECT_DENY;
+        if ($effect === AccessStatus::DENY) {
+            return AccessStatus::DENY;
         }
-        if ($effect === PolicyNode::EFFECT_ALLOW) {
+        if ($effect === AccessStatus::ALLOW) {
             $hasAllow = true;
         }
     }
 
     return $hasAllow
-        ? PolicyNode::EFFECT_ALLOW
-        : PolicyNode::EFFECT_UNKNOWN;
+        ? AccessStatus::ALLOW
+        : AccessStatus::UNKNOWN;
 }
 ```
 
@@ -206,8 +209,8 @@ function checkRoles(array $roles, string $path): string
 
 ## 源码依据
 
-- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)
+- [`easyswoole/policy` 1.2.2 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.2)
 
-- [Policy README（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/README.md)
-- [Policy 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/Policy.php)
-- [PolicyNode 源码（1.2.1）](https://github.com/easy-swoole/policy/blob/1.2.1/src/PolicyNode.php)
+- [Policy README（1.2.2）](https://github.com/easy-swoole/policy/blob/1.2.2/README.md)
+- [Policy 源码（1.2.2）](https://github.com/easy-swoole/policy/blob/1.2.2/src/Policy.php)
+- [PolicyNode 源码（1.2.2）](https://github.com/easy-swoole/policy/blob/1.2.2/src/PolicyNode.php)

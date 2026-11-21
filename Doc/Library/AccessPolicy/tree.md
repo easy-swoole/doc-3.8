@@ -5,27 +5,28 @@
 ## 直接构建策略树
 
 ```php
+use EasySwoole\Policy\AccessStatus;
 use EasySwoole\Policy\PolicyNode;
 
 $root = new PolicyNode('*');
-$user = $root->addChild('user');
-$user->addChild('read')->setAllow(PolicyNode::EFFECT_ALLOW);
-$user->addChild('delete')->setAllow(PolicyNode::EFFECT_DENY);
+$article = $root->addChild('article');
+$article->addChild('read')->setAllow(AccessStatus::ALLOW);
+$article->addChild('delete')->setAllow(AccessStatus::DENY);
 
-$node = $root->search('/user/read');
-$effect = $node?->getEffect() ?? PolicyNode::EFFECT_UNKNOWN;
+$node = $root->search('/article/read');
+$effect = $node?->getEffect() ?? AccessStatus::UNKNOWN;
 
-echo $effect; // allow
+echo $effect->value; // allow
 ```
 
-`search()` 返回匹配到的节点或 `null`，因此直接使用 `PolicyNode` 时要自行把 `null` 转换为 `EFFECT_UNKNOWN`。
+`search()` 返回匹配到的节点或 `null`，因此直接使用 `PolicyNode` 时要自行把 `null` 转换为 `AccessStatus::UNKNOWN`。
 
 ## 导出策略结构
 
 `Policy::toArray()` 和 `PolicyNode::toArray()` 都可以导出完整树结构：
 
 ```php
-$data = $policy->toArray();
+$data = $root->toArray();
 $json = json_encode(
     $data,
     JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
@@ -54,6 +55,8 @@ $json = json_encode(
 }
 ```
 
+导出数组中的 `allow` 字段使用 `allow`、`deny`、`unknown` 字符串。恢复时由组件校验并转换为枚举。
+
 ## 从数组恢复 PolicyNode
 
 ```php
@@ -61,7 +64,7 @@ $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 $root = new PolicyNode($data);
 
 $node = $root->search('/article/read');
-$effect = $node?->getEffect() ?? PolicyNode::EFFECT_UNKNOWN;
+$effect = $node?->getEffect() ?? AccessStatus::UNKNOWN;
 ```
 
 也可以在节点名称不变时调用 `restore()` 更新节点内容：
@@ -71,17 +74,19 @@ $root = new PolicyNode('*');
 $root->restore($data);
 ```
 
-`Policy` 没有接收导出数组的构造参数。业务如果希望继续调用 `Policy::check()`，更适合持久化下面这样的平面规则，然后重新构建对象：
+`Policy` 没有接收导出数组的构造参数。业务如果希望继续调用 `Policy::check()`，更适合持久化下面这样的平面规则，然后重新构建对象。加载时通过 `AccessStatus::from()` 将保存的字符串转换成枚举；非法字符串会抛出 `ValueError`：
 
 ```php
+use EasySwoole\Policy\Policy;
+
 $rules = [
-    ['/article/read', PolicyNode::EFFECT_ALLOW],
-    ['/article/delete', PolicyNode::EFFECT_DENY],
+    ['/article/read', 'allow'],
+    ['/article/delete', 'deny'],
 ];
 
 $policy = new Policy();
 foreach ($rules as [$path, $effect]) {
-    $policy->addPath($path, $effect);
+    $policy->addPath($path, AccessStatus::from($effect));
 }
 ```
 
@@ -105,4 +110,4 @@ foreach ($rules as [$path, $effect]) {
 
 ## 版本与 GitHub
 
-- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)
+- [`easyswoole/policy` 1.2.2 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.2)

@@ -13,22 +13,22 @@
 
 ```php
 use EasySwoole\Policy\Policy;
-use EasySwoole\Policy\PolicyNode;
+use EasySwoole\Policy\AccessStatus;
 
 $policy = new Policy();
-$policy->addPath('/admin/user/read', PolicyNode::EFFECT_ALLOW);
-$policy->addPath('/admin/user/delete', PolicyNode::EFFECT_DENY);
+$policy->addPath('/admin/user/read', AccessStatus::ALLOW);
+$policy->addPath('/admin/user/delete', AccessStatus::DENY);
 
-echo $policy->check('/admin/user/read');   // allow
-echo $policy->check('/admin/user/delete'); // deny
-echo $policy->check('/admin/user/update'); // unknown
+echo $policy->check('/admin/user/read')->value;   // allow
+echo $policy->check('/admin/user/delete')->value; // deny
+echo $policy->check('/admin/user/update')->value; // unknown
 ```
 
 重复添加同一路径会更新该节点的结果：
 
 ```php
-$policy->addPath('/admin/user/read', PolicyNode::EFFECT_DENY);
-echo $policy->check('/admin/user/read'); // deny
+$policy->addPath('/admin/user/read', AccessStatus::DENY);
+echo $policy->check('/admin/user/read')->value; // deny
 ```
 
 ## 使用通配符
@@ -37,21 +37,21 @@ echo $policy->check('/admin/user/read'); // deny
 
 ```php
 $policy = new Policy();
-$policy->addPath('/article/*', PolicyNode::EFFECT_ALLOW);
+$policy->addPath('/article/*', AccessStatus::ALLOW);
 
-echo $policy->check('/article/read');          // allow
-echo $policy->check('/article/comment/read');  // allow
-echo $policy->check('/member/read');           // unknown
+echo $policy->check('/article/read')->value;          // allow
+echo $policy->check('/article/comment/read')->value;  // allow
+echo $policy->check('/member/read')->value;           // unknown
 ```
 
 通配符位于中间且后面还有子节点时，只消费当前位置的一个路径段：
 
 ```php
 $policy = new Policy();
-$policy->addPath('/tenant/*/report/read', PolicyNode::EFFECT_ALLOW);
+$policy->addPath('/tenant/*/report/read', AccessStatus::ALLOW);
 
-echo $policy->check('/tenant/acme/report/read');       // allow
-echo $policy->check('/tenant/acme/2026/report/read');  // unknown
+echo $policy->check('/tenant/acme/report/read')->value;       // allow
+echo $policy->check('/tenant/acme/2026/report/read')->value;  // unknown
 ```
 
 ## 精确规则优先
@@ -60,11 +60,11 @@ echo $policy->check('/tenant/acme/2026/report/read');  // unknown
 
 ```php
 $policy = new Policy();
-$policy->addPath('/admin/*', PolicyNode::EFFECT_DENY);
-$policy->addPath('/admin/profile/read', PolicyNode::EFFECT_ALLOW);
+$policy->addPath('/admin/*', AccessStatus::DENY);
+$policy->addPath('/admin/profile/read', AccessStatus::ALLOW);
 
-echo $policy->check('/admin/profile/read'); // allow，精确规则优先
-echo $policy->check('/admin/user/read');    // deny，回退到 /admin/*
+echo $policy->check('/admin/profile/read')->value; // allow，精确规则优先
+echo $policy->check('/admin/user/read')->value;    // deny，回退到 /admin/*
 ```
 
 匹配时会先查找精确分支；精确分支没有有效结果时，再尝试同级通配分支。设计规则时应避免堆叠过多互相覆盖的规则，以免维护者难以判断最终结果。
@@ -78,7 +78,7 @@ $policy->addPath('');                  // 抛出 Policy Exception
 $policy->addPath('/admin//user/read'); // 抛出 Policy Exception
 ```
 
-调用 `check('/admin//user/read')` 时不会抛出上述异常，而是返回 `unknown`。配置规则来自数据库或后台表单时，应在加载阶段捕获异常并拒绝启用错误配置。
+调用 `check('/admin//user/read')` 时不会抛出上述异常，而是返回 `AccessStatus::UNKNOWN`。配置规则来自数据库或后台表单时，应在加载阶段捕获异常并拒绝启用错误配置。
 
 ```php
 use EasySwoole\Policy\Exception\Exception as PolicyException;
@@ -94,4 +94,4 @@ try {
 
 ## 版本与 GitHub
 
-- [`easyswoole/policy` 1.2.1 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.1)
+- [`easyswoole/policy` 1.2.2 · GitHub](https://github.com/easy-swoole/policy/tree/1.2.2)
