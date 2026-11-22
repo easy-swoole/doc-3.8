@@ -12,6 +12,7 @@
 | 在协程服务中调用阻塞 SDK | [同步调用](/Library/SyncInvoker/index.md) | 不需要；会启动独立同步进程 |
 | 记录一次请求的调用链和耗时 | [链路追踪](/Library/Trace/index.md) | 单脚本示例不需要；持久化按需选择 |
 | 按 IP 或端口限制访问 | [IpAccess](/Library/IpAccess/index.md) | 不需要 |
+| 限制用户、IP 或接口的请求速率 | [令牌桶限流器](/Library/AtomicLimit/index.md) | 不需要，多个 Worker 共享内存状态 |
 | 按资源路径判断权限 | [AccessPolicy](/Library/AccessPolicy/index.md) | 不需要；用户和角色数据由应用提供 |
 | 在 HTTP 控制器中渲染 HTML 模板 | [模板引擎](/Library/Template/index.md) | 不需要外部服务；会启动独立渲染进程 |
 | 查看 CPU、内存、磁盘和网络等系统指标 | [运维指标](/Library/LinuxDash/index.md) | 不需要；读取当前进程可见的系统信息 |
