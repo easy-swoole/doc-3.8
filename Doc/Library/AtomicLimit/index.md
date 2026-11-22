@@ -6,10 +6,10 @@
 
 ## 安装与定义入口
 
-本章使用 **AtomicLimit 3.0.1**，运行环境为 64 位 PHP 和 Swoole 6.2.x。在应用项目根目录执行：
+本章使用 **AtomicLimit 3.0.2**，运行环境为 64 位 PHP 和 Swoole 6.2.x。在应用项目根目录执行：
 
 ```bash
-composer require 'easyswoole/atomic-limit:^3.0.1'
+composer require 'easyswoole/atomic-limit:^3.0.2'
 composer show easyswoole/atomic-limit
 php --ri swoole
 ```
@@ -106,16 +106,31 @@ if (!MyLimiter::getInstance()->setRule('127.0.0.1:/limited/index', 5, 10)) {
 
 `setRule($key, $rate, $capacity)` 支持正小数速率，例如 `0.5` 表示平均每两秒补一个令牌；容量必须是大于等于 1 的整数。设置成功返回 `true`。修改已有桶时，先按旧规则结算，再按新容量截断余额。删除专属规则用 `removeRule($key)`，该桶随后使用默认配置。
 
+## 手动回收桶
+
+需要主动释放已补满桶的空间时，可以在协程中调用：
+
+```php
+use App\Limiter\MyLimiter;
+
+$removed = MyLimiter::getInstance()->gc(); // 扫描所有分片，返回实际回收的桶数。
+$removedForKey = MyLimiter::getInstance()->gc('127.0.0.1:/limited/index');
+```
+
+3.0.2 的无参数 `gc()` 会从头扫描所有分片的桶表，先在租约外筛选候选桶，再分批获取租约。每次删除前重新读取桶和规则，确认桶已补满。某个分片获取租约超时，本轮跳过该分片剩余工作，继续处理其他分片。传入 key 时只检查该桶。
+
+若要由自定义进程统一回收，可在主进程初始化时调用 `MyLimiter::getInstance()->setAutoGc(false)`，再在继承同一实例的自定义进程中定时调用 `gc()`。关闭自动回收后，请求会跳过定期回收和插入失败时的回收重试，分片空间不足的新 key 会被拒绝，直到手动回收释放空间。需要恢复请求内回收时调用 `setAutoGc(true)`。
+
 ## 统计与使用边界
 
 - `MyLimiter::getInstance()->qps($key)` 返回最近三个一秒时间片中，有请求时间片的平均尝试次数，包含桶内记录的拒绝请求。
-- 默认启用请求内自动回收，回收已补满的桶以释放桶位。手动调用 `gc()` 会分批检查，每次最多检查 64 个候选桶；专属规则需要通过 `removeRule()` 删除。
+- 默认启用请求内自动回收，分批回收已补满的桶以释放桶位。专属规则需要通过 `removeRule()` 删除。
 - `access()` 返回 `false` 也可能是租约等待超时或桶分片容量不足。应结合 key 数量和负载检查容量配置。
 - 共享范围是同一 Swoole Server 派生出的进程。独立部署的多实例各自计数，需要跨机器总额度时应使用共享后端的限流方案。
 - 完整停止并重新启动服务后，内存中的桶状态、统计和动态规则会丢失。固定规则应在主进程初始化时重新设置。
 
 ## 版本与 GitHub
 
-- [AtomicLimit 3.0.1 源码](https://github.com/easy-swoole/atomic-limit/tree/3.0.1)
-- [AtomicLimit 3.0.1 使用说明](https://github.com/easy-swoole/atomic-limit/blob/3.0.1/README.md)
-- [令牌桶及分片实现（3.0.1）](https://github.com/easy-swoole/atomic-limit/blob/3.0.1/src/AtomicLimitShard.php)
+- [AtomicLimit 3.0.2 源码](https://github.com/easy-swoole/atomic-limit/tree/3.0.2)
+- [AtomicLimit 3.0.2 使用说明](https://github.com/easy-swoole/atomic-limit/blob/3.0.2/README.md)
+- [令牌桶及分片实现（3.0.2）](https://github.com/easy-swoole/atomic-limit/blob/3.0.2/src/AtomicLimitShard.php)
