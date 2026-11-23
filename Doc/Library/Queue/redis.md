@@ -91,4 +91,4 @@ Redis 自身的持久化方式仍会影响数据安全。需要降低 Redis 重�
 
 ## 版本与 GitHub
 
-- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)
+- [`easyswoole/queue` 5.0.4 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.4)

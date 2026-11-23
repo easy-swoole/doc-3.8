@@ -268,9 +268,9 @@ public static function mainServerCreate(EventRegister $register)
 
 ## 源码依据
 
-- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)
+- [`easyswoole/queue` 5.0.4 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.4)
 
-- [Queue README（5.0.3）](https://github.com/easy-swoole/queue/blob/5.0.3/README.md)
-- [Consumer（5.0.3）](https://github.com/easy-swoole/queue/blob/5.0.3/src/Consumer.php)
-- [Redis 驱动（5.0.3）](https://github.com/easy-swoole/queue/blob/5.0.3/src/Driver/Redis/Redis.php)
-- [RabbitMQ 驱动（5.0.3）](https://github.com/easy-swoole/queue/blob/5.0.3/src/Driver/RabbitMQ/RabbitMQ.php)
+- [Queue README（5.0.4）](https://github.com/easy-swoole/queue/blob/5.0.4/README.md)
+- [Consumer（5.0.4）](https://github.com/easy-swoole/queue/blob/5.0.4/src/Consumer.php)
+- [Redis 驱动（5.0.4）](https://github.com/easy-swoole/queue/blob/5.0.4/src/Driver/Redis/Redis.php)
+- [RabbitMQ 驱动（5.0.4）](https://github.com/easy-swoole/queue/blob/5.0.4/src/Driver/RabbitMQ/RabbitMQ.php)

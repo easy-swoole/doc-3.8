@@ -1,23 +1,23 @@
 # 可信队列：安装与基本概念
 
-`easyswoole/queue` 用于在协程环境中生产和消费队列任务。当前 `5.x` 版本提供 Redis 与 RabbitMQ 驱动，并内置连接池，支持普通任务、延迟任务和需要确认的可信任务。
+`easyswoole/queue` 用于在协程环境中生产和消费队列任务。本文以 `5.0.4` 为准，组件提供 Redis 与 RabbitMQ 驱动，并内置连接池，支持普通任务、延迟任务和需要确认的可信任务。
 
 ## 安装
 
 在项目根目录执行：
 
 ```bash
-composer require easyswoole/queue="^5.0"
+composer require 'easyswoole/queue:^5.0.4'
 ```
 
 运行环境要求：
 
-- PHP 8.0 或更高版本。
+- PHP 8.1 或更高版本。
 - Swoole 5.1 或更高版本。
 - `phpredis` 扩展。
 - 协程运行环境。
 
-组件的 Composer 依赖同时包含 Redis、连接池和 RabbitMQ 客户端。即使只使用 RabbitMQ，当前版本仍要求安装 `ext-redis`。
+组件的 Composer 依赖包含连接池与 `easyswoole/amqp:^1.0.1`，并要求 Redis 扩展。即使只使用 RabbitMQ，当前版本仍要求安装 `ext-redis`。
 
 检查环境：
 
@@ -111,7 +111,7 @@ array(1) {
 
 ## 源码依据
 
-- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)
+- [`easyswoole/queue` 5.0.4 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.4)
 
-- [Queue 5.0.3](https://github.com/easy-swoole/queue/tree/5.0.3)
-- [Queue 核心类（5.0.3）](https://github.com/easy-swoole/queue/blob/5.0.3/src/Queue.php)
+- [Queue 5.0.4](https://github.com/easy-swoole/queue/tree/5.0.4)
+- [Queue 核心类（5.0.4）](https://github.com/easy-swoole/queue/blob/5.0.4/src/Queue.php)

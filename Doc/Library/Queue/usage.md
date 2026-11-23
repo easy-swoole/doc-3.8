@@ -119,4 +119,4 @@ $consumer->stopListen();
 
 ## 版本与 GitHub
 
-- [`easyswoole/queue` 5.0.3 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.3)
+- [`easyswoole/queue` 5.0.4 · GitHub](https://github.com/easy-swoole/queue/tree/5.0.4)
