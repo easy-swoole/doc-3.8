@@ -10,6 +10,8 @@
 | 对象内有更多字段，或列表要逐项验证 | [ObjectShape 与 Each](/Http/AnnotationController/nested-validation.md) |
 | 预约时间必须在一天以后，或限制查询开始和结束的跨度 | [日期与时间规则](/Http/AnnotationController/validation-rules.md#日期与时间规则) |
 
+校验失败需要向客户端返回具体信息时，见[如何返回参数校验错误](/Http/problem.md#注解参数校验失败时如何返回错误信息)，包含 `onException()`、HTTP 状态码和 JSON 响应示例。
+
 ## 定义接口和规则
 
 在应用项目根目录新建 `App/HttpController/Member.php`：
